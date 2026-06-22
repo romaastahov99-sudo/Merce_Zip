@@ -6,6 +6,7 @@
     <title>GURU</title>
     <link rel="manifest" href="/manifest.json" />
     <style>
+        /* ===== ТЫСЯЧИ СТРОК СТИЛЕЙ ===== */
         *{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0f0f1a;color:#fff;height:100vh;display:flex;flex-direction:column;padding:0;overflow:hidden;transition:background .3s,color .3s}body.light{background:#f0f2f5;color:#1a1a2e}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2a2a4a;border-radius:4px}body.light ::-webkit-scrollbar-thumb{background:#c0c0c0}
         #authScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0f0f1a;padding:20px}body.light #authScreen{background:#f0f2f5}#authScreen h1{background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:52px;font-weight:900;letter-spacing:4px;margin-bottom:6px}#authScreen .subtitle{color:#888;font-size:13px;margin-bottom:30px;letter-spacing:3px;text-transform:uppercase}body.light #authScreen .subtitle{color:#666}#authScreen input{padding:14px 20px;border-radius:28px;border:none;background:#1a1a2e;color:#fff;font-size:18px;text-align:center;width:80%;max-width:320px;margin-bottom:14px;outline:none;transition:.3s}#authScreen input:focus{box-shadow:0 0 0 2px #ffd200}body.light #authScreen input{background:#fff;color:#1a1a2e;box-shadow:0 2px 8px rgba(0,0,0,0.06)}body.light #authScreen input:focus{box-shadow:0 0 0 2px #0084ff}#authScreen button{padding:14px 30px;border-radius:28px;border:none;background:#e94560;color:#fff;font-size:17px;font-weight:600;cursor:pointer;width:80%;max-width:320px;margin:4px 0;transition:.3s}#authScreen button:hover{opacity:.85;transform:scale(1.01)}#authScreen .hint{color:#666;font-size:12px;margin-top:20px;padding:10px;text-align:center;line-height:1.6}body.light #authScreen .hint{color:#888}
         #appScreen{display:none;flex-direction:column;height:100vh;padding:0 10px}#header{display:flex;justify-content:space-between;align-items:center;padding:12px 0 8px;border-bottom:1px solid #2a2a3a;flex-wrap:wrap;gap:6px}body.light #header{border-bottom-color:#d0d0d0}#header h1{font-size:22px;background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900;letter-spacing:2px;cursor:pointer}.my-code{font-size:12px;color:#888;background:#1a1a2e;padding:4px 12px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:6px}.my-code:hover{background:#2a2a4a}body.light .my-code{background:#fff!important;color:#1a1a2e!important;box-shadow:0 1px 4px rgba(0,0,0,0.06)}#profileBtn{font-size:20px;cursor:pointer;background:transparent;border:none;color:#fff;padding:4px 8px}#profileBtn img{width:32px;height:32px;border-radius:50%;object-fit:cover}body.light #profileBtn{color:#1a1a2e}.theme-toggle{cursor:pointer;font-size:18px;background:transparent;border:none;color:#ffd200;padding:4px 6px}body.light .theme-toggle{color:#1a1a2e}
@@ -216,8 +217,8 @@
         // =========================================================
         // 1. FIREBASE
         // =========================================================
-        const FIREBASE_URL = "https://console.firebase.google.com/project/guromessenger-ef076/database/guromessenger-ef076-default-rtdb/data/~2F";
-        const STORAGE_BUCKET = "gs://guromessenger-ef076.firebasestorage.app";
+        const FIREBASE_URL = "https://guromessenger-ef076-default-rtdb.firebaseio.com/"; // ⚠️ ЗАМЕНИ НА СВОЮ
+        const STORAGE_BUCKET = "gs://guromessenger-ef076.firebasestorage.app"; // ⚠️ ЗАМЕНИ НА СВОЙ
         firebase.initializeApp({ databaseURL: FIREBASE_URL, storageBucket: STORAGE_BUCKET });
         const db = firebase.database();
         const storage = firebase.storage();
@@ -772,7 +773,7 @@
             }
             if (messageText.startsWith('/give ')) {
                 const amount = parseInt(messageText.split(' ')[1]);
-                if (!isNaN(amount) && amount > 0 && messageText.includes(myCode)) {
+                if (!isNaN(amount) && amount > 0) {
                     db.ref('users/' + myCode + '/stars').transaction(current => (current || 0) + amount);
                     alert('✅ Тебе начислено ' + amount + ' звёзд!');
                     msgInput.value = '';
@@ -1115,7 +1116,7 @@
             }
             if (messageText.startsWith('/give ')) {
                 const amount = parseInt(messageText.split(' ')[1]);
-                if (!isNaN(amount) && amount > 0 && messageText.includes(myCode)) {
+                if (!isNaN(amount) && amount > 0) {
                     db.ref('users/' + myCode + '/stars').transaction(current => (current || 0) + amount);
                     alert('✅ Тебе начислено ' + amount + ' звёзд!');
                     groupMsgInput.value = '';
