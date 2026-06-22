@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-    <title>GURU 3.0</title>
-    <link rel="manifest" href="/manifest.json" />
+    <title>GURU</title>
     <style>
+        /* ===== СТИЛИ ТОЧНО КАК В TELEGRAM ===== */
         *{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0f0f1a;color:#fff;height:100vh;display:flex;flex-direction:column;padding:0;overflow:hidden;transition:background .3s,color .3s}body.light{background:#f0f2f5;color:#1a1a2e}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2a2a4a;border-radius:4px}body.light ::-webkit-scrollbar-thumb{background:#c0c0c0}
         #authScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0f0f1a;padding:20px}body.light #authScreen{background:#f0f2f5}#authScreen h1{background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:52px;font-weight:900;letter-spacing:4px;margin-bottom:6px}#authScreen .subtitle{color:#888;font-size:13px;margin-bottom:30px;letter-spacing:3px;text-transform:uppercase}body.light #authScreen .subtitle{color:#666}#authScreen input{padding:14px 20px;border-radius:28px;border:none;background:#1a1a2e;color:#fff;font-size:18px;text-align:center;width:80%;max-width:320px;margin-bottom:14px;outline:none;transition:.3s}#authScreen input:focus{box-shadow:0 0 0 2px #ffd200}body.light #authScreen input{background:#fff;color:#1a1a2e;box-shadow:0 2px 8px rgba(0,0,0,0.06)}body.light #authScreen input:focus{box-shadow:0 0 0 2px #0084ff}#authScreen button{padding:14px 30px;border-radius:28px;border:none;background:#e94560;color:#fff;font-size:17px;font-weight:600;cursor:pointer;width:80%;max-width:320px;margin:4px 0;transition:.3s}#authScreen button:hover{opacity:.85;transform:scale(1.01)}#authScreen .hint{color:#666;font-size:12px;margin-top:20px;padding:10px;text-align:center;line-height:1.6}body.light #authScreen .hint{color:#888}
         #appScreen{display:none;flex-direction:column;height:100vh;padding:0 10px}#header{display:flex;justify-content:space-between;align-items:center;padding:12px 0 8px;border-bottom:1px solid #2a2a3a;flex-wrap:wrap;gap:6px}body.light #header{border-bottom-color:#d0d0d0}#header h1{font-size:22px;background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900;letter-spacing:2px;cursor:pointer}.my-code{font-size:12px;color:#888;background:#1a1a2e;padding:4px 12px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:6px}.my-code:hover{background:#2a2a4a}body.light .my-code{background:#fff!important;color:#1a1a2e!important;box-shadow:0 1px 4px rgba(0,0,0,0.06)}#profileBtn{font-size:20px;cursor:pointer;background:transparent;border:none;color:#fff;padding:4px 8px}#profileBtn img{width:32px;height:32px;border-radius:50%;object-fit:cover}body.light #profileBtn{color:#1a1a2e}.theme-toggle{cursor:pointer;font-size:18px;background:transparent;border:none;color:#ffd200;padding:4px 6px}body.light .theme-toggle{color:#1a1a2e}
@@ -21,20 +21,18 @@
         #profileModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;z-index:1000;backdrop-filter:blur(4px)}#profileModal.active{display:flex}#profileModal .modal-content{background:#1a1a2e;padding:30px 20px;border-radius:24px;width:92%;max-width:380px;text-align:center;max-height:90vh;overflow-y:auto}body.light #profileModal .modal-content{background:#fff}#profileModal .modal-content h2{margin-bottom:18px;font-size:28px;font-weight:900;letter-spacing:2px}#profileModal .avatar-container{position:relative;width:90px;height:90px;margin:0 auto 16px;cursor:pointer}#profileModal .avatar-container img{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #e94560}#profileModal .avatar-container .edit-badge{position:absolute;bottom:0;right:0;background:#e94560;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px}#profileModal input[type=text],#profileModal input[type=password]{width:100%;padding:10px 16px;border-radius:24px;border:none;background:#0f0f1a;color:#fff;font-size:15px;margin:6px 0;outline:none}body.light #profileModal input{background:#f0f2f5;color:#1a1a2e}#profileModal .info-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;color:#aaa;border-bottom:1px solid #2a2a3a}#profileModal .info-row span:first-child{color:#666}#profileModal .info-row span:last-child{color:#fff}body.light #profileModal .info-row span:last-child{color:#1a1a2e}#profileModal .privacy-section{margin:12px 0;text-align:left}#profileModal .privacy-section h3{font-size:14px;color:#ffd200;margin-bottom:6px}body.light #profileModal .privacy-section h3{color:#0084ff}#profileModal .privacy-section label{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;color:#aaa;cursor:pointer}body.light #profileModal .privacy-section label{color:#333}#profileModal .privacy-section label input[type=checkbox]{width:18px;height:18px;accent-color:#e94560;cursor:pointer}#profileModal .btn-group{display:flex;flex-direction:column;gap:8px;margin-top:16px}#profileModal .btn-group button{padding:12px;border-radius:28px;border:none;font-size:15px;font-weight:600;cursor:pointer;transition:.2s}#profileModal .btn-group button:hover{opacity:.85}#profileModal .btn-group button:first-child{background:#e94560;color:#fff}#profileModal .btn-group button.secondary{background:#1e2a4a;color:#ffd200}body.light #profileModal .btn-group button.secondary{background:#e4e6eb;color:#1a1a2e}#profileModal .btn-group button.danger{background:#4a1a2a;color:#ff6b6b}
         .file-input-hidden{display:none}#loader{display:none;text-align:center;padding:20px;color:#888}.avatar-small{width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:6px}#videoPreview{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a2e;padding:10px;border-radius:16px;z-index:999;text-align:center;border:2px solid #e94560}#videoPreview video{width:150px;height:150px;border-radius:50%;object-fit:cover}#videoPreview .controls{display:flex;gap:10px;justify-content:center;margin-top:6px}#videoPreview .controls button{padding:4px 14px;border-radius:16px;border:none;font-size:12px;cursor:pointer}#videoPreview .controls .send{background:#4caf50;color:#fff}#videoPreview .controls .cancel{background:#e94560;color:#fff}.search-input{width:100%;padding:10px 14px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;font-size:14px;outline:none;margin-bottom:8px}body.light .search-input{background:#fff;color:#1a1a2e;box-shadow:0 1px 4px rgba(0,0,0,0.06)}.search-input::placeholder{color:#555}body.light .search-input::placeholder{color:#999}#pinMessage{background:#1a1a2e;border-radius:12px;padding:8px 12px;margin-bottom:8px;border-left:3px solid #ffd200;display:none;font-size:13px;color:#888}#pinMessage .pin-close{float:right;cursor:pointer;color:#ff6b6b;background:transparent;border:none;font-size:14px}body.light #pinMessage{background:#fff}#info{text-align:center;font-size:11px;color:#444;padding:4px 0}body.light #info{color:#999}
         .gift-emoji{font-size:60px;display:block;margin:0 auto}.gift-item{background:#1e2a4a;border-radius:12px;padding:12px;margin:6px 0;display:flex;align-items:center;gap:12px}body.light .gift-item{background:#e4e6eb}.gift-item .gift-info{flex:1}.gift-item .gift-from{font-size:12px;color:#888}.stars-display{font-size:18px;font-weight:700;color:#ffd200;margin-left:8px}
-        .shop-item{background:#1a1a2e;border-radius:12px;padding:12px;margin:6px 0;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.2s}.shop-item:hover{background:#24243a}body.light .shop-item{background:#fff}body.light .shop-item:hover{background:#f5f5f5}.shop-item .shop-emoji{font-size:40px}.shop-item .shop-info{flex:1}.shop-item .shop-price{color:#ffd200;font-weight:700}
-        .task-item{background:#1a1a2e;border-radius:12px;padding:12px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}body.light .task-item{background:#fff}.task-item .task-info{flex:1}.task-item .task-reward{color:#ffd200;font-weight:700}.task-item .task-status{font-size:12px}.task-item .task-status.done{color:#4caf50}.task-item .task-status.pending{color:#ff6b6b}
     </style>
 </head>
 <body>
 
-    <!-- ===== АВТОРИЗАЦИЯ ===== -->
+    <!-- ===== ЭКРАН ВХОДА ===== -->
     <div id="authScreen">
         <h1>GURU</h1>
         <div class="subtitle">твой приватный мир</div>
-        <input id="codeInput" placeholder="Введи код" />
+        <input id="codeInput" placeholder="Код" />
         <button id="loginBtn">Войти</button>
-        <button id="newCodeBtn" style="background:#1e2a4a;">Создать новый аккаунт</button>
-        <div class="hint">💡 Придумай код, который не забудешь!<br />Он нужен, чтобы восстановить аккаунт.</div>
+        <button id="newCodeBtn" style="background:#1e2a4a;">Создать аккаунт</button>
+        <div class="hint">💡 Придумай код, который не забудешь!</div>
     </div>
 
     <!-- ===== ОСНОВНОЙ ЭКРАН ===== -->
@@ -50,17 +48,14 @@
 
         <div id="tabs">
             <button class="active" data-tab="chats">💬 Чаты</button>
-            <button data-tab="groups">👥 Группы</button>
             <button data-tab="contacts">📇 Контакты</button>
-            <button data-tab="shop">🎁 Магазин</button>
-            <button data-tab="tasks">📋 Задания</button>
             <button data-tab="settings">⚙️ Настройки</button>
         </div>
 
         <div id="content">
             <!-- Чаты -->
             <div id="tab-chats">
-                <input class="search-input" id="chatSearch" placeholder="🔍 Поиск по чатам..." />
+                <input class="search-input" id="chatSearch" placeholder="🔍 Поиск..." />
                 <div id="chatList"></div>
                 <div id="chatView" class="chat-area">
                     <button class="back-btn" id="backToChats">← Назад</button>
@@ -69,7 +64,7 @@
                             <img id="chatAvatar" src="" alt="avatar" />
                             <span id="chatHeader">Chat</span>
                         </div>
-                        <button class="mute-btn" id="muteChatBtn" title="Отключить уведомления">🔔</button>
+                        <button class="mute-btn" id="muteChatBtn">🔔</button>
                     </div>
                     <div id="pinMessage"></div>
                     <div id="chatMessages"></div>
@@ -78,7 +73,6 @@
                         <button id="attachBtn">📎</button>
                         <button id="recordBtn">🎤</button>
                         <button id="videoBtn">🎥</button>
-                        <button id="shareContactBtn">📇</button>
                         <button id="sendBtn">➤</button>
                         <button id="callBtn">📞</button>
                     </div>
@@ -86,52 +80,13 @@
                 </div>
             </div>
 
-            <!-- Группы -->
-            <div id="tab-groups" style="display:none;">
-                <div id="groupCreate">
-                    <input id="groupNameInput" placeholder="Название группы" />
-                    <button id="createGroupBtn">Создать</button>
-                    <button id="createChannelBtn" style="background:#ffd200;color:#0f0f1a;font-weight:bold;">📢 Канал</button>
-                </div>
-                <div id="groupList"></div>
-                <div id="groupView" class="chat-area">
-                    <button class="back-btn" id="backToGroups">← Назад</button>
-                    <div class="chat-header">
-                        <span id="groupHeader">Group</span>
-                        <button class="mute-btn" id="muteGroupBtn" title="Отключить уведомления">🔔</button>
-                    </div>
-                    <div id="pinGroupMessage"></div>
-                    <div id="groupMessages"></div>
-                    <div id="bottomGroup">
-                        <input id="groupMsgInput" placeholder="Сообщение..." />
-                        <button id="groupAttachBtn">📎</button>
-                        <button id="groupRecordBtn">🎤</button>
-                        <button id="groupVideoBtn">🎥</button>
-                        <button id="groupShareContactBtn">📇</button>
-                        <button id="groupSendBtn">➤</button>
-                        <button id="groupCallBtn">📞</button>
-                    </div>
-                    <input type="file" id="groupFileInput" class="file-input-hidden" accept="image/*,video/*" multiple />
-                </div>
-            </div>
-
             <!-- Контакты -->
             <div id="tab-contacts" style="display:none;">
                 <div style="padding:10px 0;">
-                    <input id="contactSearch" placeholder="Поиск по коду или username..." style="width:100%;padding:10px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;outline:none;" />
-                    <button id="addContactBtn" style="margin-top:8px;padding:10px 20px;border-radius:24px;border:none;background:#e94560;color:#fff;cursor:pointer;width:100%;">Добавить контакт</button>
+                    <input id="contactSearch" placeholder="Поиск..." style="width:100%;padding:10px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;outline:none;" />
+                    <button id="addContactBtn" style="margin-top:8px;padding:10px 20px;border-radius:24px;border:none;background:#e94560;color:#fff;cursor:pointer;width:100%;">➕ Добавить</button>
                 </div>
                 <div id="contactList"></div>
-            </div>
-
-            <!-- Магазин -->
-            <div id="tab-shop" style="display:none;">
-                <div id="shopContainer"></div>
-            </div>
-
-            <!-- Задания -->
-            <div id="tab-tasks" style="display:none;">
-                <div id="tasksContainer"></div>
             </div>
 
             <!-- Настройки -->
@@ -146,34 +101,31 @@
     <!-- ===== ПРОФИЛЬ (МОДАЛКА) ===== -->
     <div id="profileModal">
         <div class="modal-content">
-            <h2>GURU</h2>
+            <h2>Профиль</h2>
             <div class="avatar-container" id="avatarContainer">
                 <img id="profileAvatar" src="" alt="Аватар" />
                 <div class="edit-badge">📷</div>
             </div>
-            <input id="profileUsername" placeholder="Username" />
+            <input id="profileUsername" placeholder="Имя" />
             <input id="profileBio" placeholder="О себе" />
-            <div class="info-row"><span>Код</span><span id="profileCode">----</span></div>
-            <div class="info-row"><span>Дата регистрации</span><span id="profileDate">----</span></div>
             <div class="info-row"><span>⭐ Звёзды</span><span id="profileStars">0</span></div>
+            <div class="info-row"><span>📅 Регистрация</span><span id="profileDate">----</span></div>
             <div id="giftsContainer" style="margin:12px 0;"></div>
             <div class="privacy-section">
                 <h3>🔒 Приватность</h3>
                 <label><span>Разрешать добавлять в группы</span><input type="checkbox" id="privacyGroups" checked /></label>
                 <label><span>Звонки только из контактов</span><input type="checkbox" id="privacyCalls" /></label>
-                <label><span>Скрыть онлайн-статус</span><input type="checkbox" id="privacyOnline" /></label>
-                <label><span>Скрыть аватарку от незнакомцев</span><input type="checkbox" id="privacyAvatar" /></label>
-                <label><span>Скрыть подарки от других</span><input type="checkbox" id="privacyGifts" /></label>
-                <label><span>Разрешать сообщения от незнакомцев</span><input type="checkbox" id="privacyMessages" checked /></label>
+                <label><span>Скрыть онлайн</span><input type="checkbox" id="privacyOnline" /></label>
+                <label><span>Скрыть аватарку</span><input type="checkbox" id="privacyAvatar" /></label>
+                <label><span>Скрыть подарки</span><input type="checkbox" id="privacyGifts" /></label>
+                <label><span>Сообщения от незнакомцев</span><input type="checkbox" id="privacyMessages" checked /></label>
             </div>
             <div id="jackpotSection" style="margin:12px 0;padding:12px;background:#1e2a4a;border-radius:12px;text-align:left;">
                 <div style="display:flex;justify-content:space-between;">
                     <span>🏆 Копилка</span>
                     <span id="jackpotAmount" style="color:#ffd200;font-weight:700;">0 ⭐</span>
                 </div>
-                <div style="font-size:11px;color:#888;margin-top:4px;">
-                    Следующий розыгрыш: <span id="jackpotNextDraw">--</span>
-                </div>
+                <div style="font-size:11px;color:#888;margin-top:4px;">Розыгрыш: <span id="jackpotNextDraw">--</span></div>
             </div>
             <div class="btn-group">
                 <button id="saveProfileBtn">💾 Сохранить</button>
@@ -186,7 +138,7 @@
         </div>
     </div>
 
-    <!-- ===== ПАНЕЛЬ РЕАКЦИЙ ===== -->
+    <!-- ===== РЕАКЦИИ ===== -->
     <div id="reactionPanel" class="reaction-panel">
         <button class="emoji-btn" data-emoji="❤️">❤️</button>
         <button class="emoji-btn" data-emoji="🔥">🔥</button>
@@ -226,20 +178,16 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
     <script>
         // =========================================================
-        // 1. НАСТРОЙКИ FIREBASE
+        // 1. FIREBASE
         // =========================================================
-        const FIREBASE_URL = "https://guromessenger-ef076-default-rtdb.firebaseio.com/"; // ⚠️ ЗАМЕНИ НА СВОЮ ССЫЛКУ
-        const STORAGE_BUCKET = "gs://guromessenger-ef076.firebasestorage.app"; // ⚠️ ЗАМЕНИ НА СВОЙ STORAGE
-        const firebaseConfig = { 
-            databaseURL: FIREBASE_URL,
-            storageBucket: STORAGE_BUCKET
-        };
-        firebase.initializeApp(firebaseConfig);
+        const FIREBASE_URL = "https://guromessenger-ef076-default-rtdb.firebaseio.com";
+        const STORAGE_BUCKET = "gs://guromessenger-ef076.firebasestorage.app";
+        firebase.initializeApp({ databaseURL: FIREBASE_URL, storageBucket: STORAGE_BUCKET });
         const db = firebase.database();
         const storage = firebase.storage();
 
         // =========================================================
-        // 2. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+        // 2. ПЕРЕМЕННЫЕ
         // =========================================================
         let myCode = null;
         let currentChat = null;
@@ -284,28 +232,23 @@
             { id: 'd1', name: 'Отправить 5 сообщений', target: 5, reward: 3 },
             { id: 'd2', name: 'Отправить 1 голосовое', target: 1, reward: 2 },
             { id: 'd3', name: 'Зайти в приложение', target: 1, reward: 1 },
-            { id: 'd4', name: 'Поставить 3 реакции', target: 3, reward: 2 },
-            { id: 'd5', name: 'Открыть чат с другом', target: 1, reward: 1 }
+            { id: 'd4', name: 'Поставить 3 реакции', target: 3, reward: 2 }
         ];
         const WEEKLY_TASKS = [
             { id: 'w1', name: 'Отправить 30 сообщений', target: 30, reward: 10 },
             { id: 'w2', name: 'Отправить 5 голосовых', target: 5, reward: 8 },
             { id: 'w3', name: 'Добавить 2 контакта', target: 2, reward: 10 },
-            { id: 'w4', name: 'Создать группу или канал', target: 1, reward: 15 },
-            { id: 'w5', name: 'Отправить подарок', target: 1, reward: 8 }
+            { id: 'w4', name: 'Создать группу', target: 1, reward: 15 }
         ];
         const JACKPOT_COMMISSION = 0.13;
         const JACKPOT_INTERVAL_DAYS = 14;
 
         // =========================================================
-        // 3. РАБОТА С КОДОМ
+        // 3. АВТОРИЗАЦИЯ
         // =========================================================
         function loadMyCode() {
             const saved = localStorage.getItem('myCode');
-            if (saved) {
-                myCode = saved;
-                return true;
-            }
+            if (saved) { myCode = saved; return true; }
             return false;
         }
         function saveMyCode(code) {
@@ -313,9 +256,6 @@
             myCode = code;
         }
 
-        // =========================================================
-        // 4. АВТОРИЗАЦИЯ
-        // =========================================================
         const authScreen = document.getElementById('authScreen');
         const appScreen = document.getElementById('appScreen');
         const codeInput = document.getElementById('codeInput');
@@ -332,21 +272,12 @@
             appScreen.style.display = 'flex';
             loadUserData();
             loadChats();
-            loadGroups();
             loadContacts();
-            loadShop();
-            loadTasks();
             loadSettings();
             updateOnlineStatus();
             listenOnlineStatus();
             registerSW();
             loadJackpot();
-            window.addEventListener('offline', function() {
-                document.getElementById('info').innerHTML = '🔴 Соединение...';
-            });
-            window.addEventListener('online', function() {
-                document.getElementById('info').innerHTML = '👀 Жёлтые галочки — прочитано • 🟢 Онлайн';
-            });
         }
 
         loginBtn.addEventListener('click', function() {
@@ -360,23 +291,23 @@
                     saveMyCode(code);
                     showAppScreen();
                 } else {
-                    alert('❌ Аккаунт с таким кодом не найден!');
+                    alert('❌ Аккаунт не найден!');
                 }
             }).catch(err => {
                 loader.style.display = 'none';
-                alert('Ошибка соединения! Проверь интернет.');
+                alert('Ошибка соединения!');
             });
         });
 
         newCodeBtn.addEventListener('click', function() {
             const newCode = codeInput.value.trim();
             if (!newCode) return alert('Придумай код!');
-            if (newCode.length < 3) return alert('Код должен быть минимум 3 символа!');
+            if (newCode.length < 3) return alert('Минимум 3 символа!');
             loader.style.display = 'block';
             db.ref('users/' + newCode).once('value').then(snap => {
                 loader.style.display = 'none';
                 if (snap.exists()) {
-                    alert('❌ Этот код уже занят! Придумай другой.');
+                    alert('❌ Код занят!');
                     return;
                 }
                 const defaultUsername = 'user_' + newCode.substring(0, 4);
@@ -400,11 +331,11 @@
                     myCode = newCode;
                     saveMyCode(newCode);
                     showAppScreen();
-                    alert('✅ Аккаунт создан!\nТвой код: ' + newCode + '\nUsername: ' + defaultUsername + '\n+10 звёзд за регистрацию!');
+                    alert('✅ Аккаунт создан! +10 звёзд');
                 });
             }).catch(err => {
                 loader.style.display = 'none';
-                alert('Ошибка соединения! Проверь интернет.');
+                alert('Ошибка соединения!');
             });
         });
 
@@ -420,34 +351,25 @@
             }).catch(err => {
                 loader.style.display = 'none';
                 showAuthScreen();
-                alert('Ошибка соединения! Проверь интернет.');
+                alert('Ошибка соединения!');
             });
         } else {
             showAuthScreen();
         }
 
         // =========================================================
-        // 5. SERVICE WORKER
+        // 4. SERVICE WORKER
         // =========================================================
         function registerSW() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js')
-                    .then(reg => {
-                        console.log('✅ SW зарегистрирован');
-                        if (Notification.permission === 'default') {
-                            Notification.requestPermission().then(perm => {
-                                if (perm === 'granted') {
-                                    console.log('✅ Уведомления разрешены');
-                                }
-                            });
-                        }
-                    })
-                    .catch(err => console.error('❌ Ошибка SW:', err));
+                    .then(reg => console.log('✅ SW зарегистрирован'))
+                    .catch(err => console.error('❌ SW ошибка:', err));
             }
         }
 
         // =========================================================
-        // 6. ПРОФИЛЬ
+        // 5. ПРОФИЛЬ
         // =========================================================
         function loadUserData() {
             if (!myCode) return;
@@ -470,9 +392,6 @@
                 document.getElementById('privacyGifts').checked = privacy.gifts === true;
                 document.getElementById('privacyMessages').checked = privacy.messages !== false;
                 document.getElementById('profileDate').textContent = data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '----';
-                document.getElementById('profileCode').textContent = myCode;
-                document.getElementById('profileUsername').value = data.username || '';
-                document.getElementById('profileBio').value = data.bio || '';
                 document.getElementById('profileStars').textContent = data.stars || 0;
                 renderGifts(data.gifts || []);
                 updateTasks(data.tasks || {});
@@ -481,7 +400,7 @@
 
         function renderGifts(gifts) {
             const container = document.getElementById('giftsContainer');
-            container.innerHTML = '<h3 style="font-size:14px;color:#ffd200;margin-bottom:6px;">🎁 Мои подарки</h3>';
+            container.innerHTML = '<h3 style="font-size:14px;color:#ffd200;">🎁 Мои подарки</h3>';
             if (!gifts || gifts.length === 0) {
                 container.innerHTML += '<div style="color:#888;font-size:13px;">Нет подарков</div>';
                 return;
@@ -514,31 +433,23 @@
                 const giftPrice = GIFTS.find(item => item.emoji === gift.emoji)?.price || 0;
                 const commission = Math.round(giftPrice * JACKPOT_COMMISSION);
                 const starsToAdd = giftPrice - commission;
-                
-                if (!confirm(`Обменять подарок ${gift.emoji} на ${starsToAdd} звёзд? (Комиссия ${commission} ⭐ уйдёт в копилку)`)) return;
-                
+                if (!confirm(`Обменять ${gift.emoji} на ${starsToAdd} звёзд? (${commission} ⭐ в копилку)`)) return;
                 gifts.splice(index, 1);
                 const newStars = (data.stars || 0) + starsToAdd;
-                db.ref('jackpot/amount').transaction(current => {
-                    return (current || 0) + commission;
-                });
-                db.ref('users/' + myCode).update({
-                    gifts: gifts,
-                    stars: newStars
-                }).then(() => {
-                    alert(`✅ Подарок обменян! +${starsToAdd} ⭐. ${commission} ⭐ ушли в копилку.`);
+                db.ref('jackpot/amount').transaction(current => (current || 0) + commission);
+                db.ref('users/' + myCode).update({ gifts, stars: newStars }).then(() => {
+                    alert(`✅ +${starsToAdd} ⭐`);
                     loadUserData();
                 });
             });
         }
 
         // =========================================================
-        // 7. КОПИЛКА
+        // 6. КОПИЛКА
         // =========================================================
         function loadJackpot() {
             db.ref('jackpot/amount').on('value', snap => {
-                const amount = snap.val() || 0;
-                document.getElementById('jackpotAmount').textContent = amount + ' ⭐';
+                document.getElementById('jackpotAmount').textContent = (snap.val() || 0) + ' ⭐';
             });
             db.ref('jackpot/lastDraw').once('value').then(snap => {
                 const lastDraw = snap.val() || Date.now();
@@ -550,8 +461,7 @@
 
         function checkJackpotDraw() {
             db.ref('jackpot/lastDraw').once('value').then(snap => {
-                const lastDraw = snap.val() || Date.now();
-                if (Date.now() - lastDraw >= JACKPOT_INTERVAL_DAYS * 86400000) {
+                if (Date.now() - (snap.val() || Date.now()) >= JACKPOT_INTERVAL_DAYS * 86400000) {
                     performJackpotDraw();
                 }
             });
@@ -560,10 +470,7 @@
         function performJackpotDraw() {
             db.ref('jackpot/amount').once('value').then(snap => {
                 const amount = snap.val() || 0;
-                if (amount < 10) {
-                    db.ref('jackpot/lastDraw').set(Date.now());
-                    return;
-                }
+                if (amount < 10) { db.ref('jackpot/lastDraw').set(Date.now()); return; }
                 db.ref('users').once('value').then(snap => {
                     const users = snap.val() || {};
                     const activeUsers = [];
@@ -573,46 +480,33 @@
                             activeUsers.push(code);
                         }
                     }
-                    if (activeUsers.length === 0) {
-                        db.ref('jackpot/lastDraw').set(Date.now());
-                        return;
-                    }
+                    if (activeUsers.length === 0) { db.ref('jackpot/lastDraw').set(Date.now()); return; }
                     const winner = activeUsers[Math.floor(Math.random() * activeUsers.length)];
-                    db.ref('users/' + winner + '/stars').transaction(current => {
-                        return (current || 0) + amount;
-                    });
+                    db.ref('users/' + winner + '/stars').transaction(current => (current || 0) + amount);
                     db.ref('jackpot/amount').set(0);
                     db.ref('jackpot/lastDraw').set(Date.now());
                     db.ref('jackpot/lastWinner').set(winner);
                     db.ref('jackpot/lastAmount').set(amount);
-                    alert(`🏆 Пользователь ${winner} выиграл ${amount} ⭐ в розыгрыше!`);
+                    alert(`🏆 ${winner} выиграл ${amount} ⭐!`);
                 });
             });
         }
 
         // =========================================================
-        // 8. ЗАДАНИЯ
+        // 7. ЗАДАНИЯ
         // =========================================================
         function updateTasks(tasksData) {
             const daily = tasksData.daily || {};
             const weekly = tasksData.weekly || {};
             const today = new Date().toDateString();
             const weekStart = getWeekStart();
-            
-            // Сбрасываем ежедневные задания, если новый день
             if (daily.lastDate !== today) {
-                DAILY_TASKS.forEach(t => {
-                    daily[t.id] = 0;
-                });
+                DAILY_TASKS.forEach(t => daily[t.id] = 0);
                 daily.lastDate = today;
                 db.ref('users/' + myCode + '/tasks/daily').set(daily);
             }
-            
-            // Сбрасываем недельные задания, если новая неделя
             if (weekly.lastWeek !== weekStart) {
-                WEEKLY_TASKS.forEach(t => {
-                    weekly[t.id] = 0;
-                });
+                WEEKLY_TASKS.forEach(t => weekly[t.id] = 0);
                 weekly.lastWeek = weekStart;
                 db.ref('users/' + myCode + '/tasks/weekly').set(weekly);
             }
@@ -625,76 +519,12 @@
             return new Date(d.setDate(diff)).toDateString();
         }
 
-        function loadTasks() {
-            const container = document.getElementById('tasksContainer');
-            container.innerHTML = '<h3 style="color:#ffd200;margin-bottom:12px;">📋 Ежедневные задания</h3>';
-            DAILY_TASKS.forEach(task => {
-                const div = document.createElement('div');
-                div.className = 'task-item';
-                div.innerHTML = `
-                    <div class="task-info">${task.name}</div>
-                    <div class="task-reward">+${task.reward} ⭐</div>
-                    <div class="task-status pending">⏳</div>
-                `;
-                container.appendChild(div);
-            });
-            container.innerHTML += '<h3 style="color:#ffd200;margin:12px 0;">📋 Недельные задания</h3>';
-            WEEKLY_TASKS.forEach(task => {
-                const div = document.createElement('div');
-                div.className = 'task-item';
-                div.innerHTML = `
-                    <div class="task-info">${task.name}</div>
-                    <div class="task-reward">+${task.reward} ⭐</div>
-                    <div class="task-status pending">⏳</div>
-                `;
-                container.appendChild(div);
-            });
+        function updateTaskProgress(type, taskId, amount) {
+            db.ref('users/' + myCode + '/tasks/' + type + '/' + taskId).transaction(current => (current || 0) + amount);
         }
 
         // =========================================================
-        // 9. МАГАЗИН
-        // =========================================================
-        function loadShop() {
-            const container = document.getElementById('shopContainer');
-            container.innerHTML = '<h3 style="color:#ffd200;margin-bottom:12px;">🎁 Магазин подарков</h3>';
-            GIFTS.forEach(gift => {
-                const div = document.createElement('div');
-                div.className = 'shop-item';
-                div.innerHTML = `
-                    <span class="shop-emoji">${gift.emoji}</span>
-                    <div class="shop-info">
-                        <div>${gift.name}</div>
-                        <div style="font-size:12px;color:#888;">${gift.price} ⭐</div>
-                    </div>
-                    <button class="buy-btn" data-emoji="${gift.emoji}" data-price="${gift.price}" style="background:#e94560;border:none;border-radius:12px;padding:6px 14px;color:#fff;cursor:pointer;">Купить</button>
-                `;
-                container.appendChild(div);
-                div.querySelector('.buy-btn').addEventListener('click', function() {
-                    const emoji = this.dataset.emoji;
-                    const price = parseInt(this.dataset.price);
-                    buyGift(emoji, price);
-                });
-            });
-        }
-
-        function buyGift(emoji, price) {
-            db.ref('users/' + myCode + '/stars').once('value').then(snap => {
-                const stars = snap.val() || 0;
-                if (stars < price) {
-                    alert('❌ Недостаточно звёзд! Нужно ' + price + ' ⭐');
-                    return;
-                }
-                if (!confirm(`Купить подарок ${emoji} за ${price} ⭐?`)) return;
-                db.ref('users/' + myCode + '/stars').set(stars - price);
-                const gift = { emoji, from: myCode, date: Date.now() };
-                db.ref('users/' + myCode + '/gifts').push(gift);
-                alert('✅ Подарок куплен! Он сохранён в твоём профиле.');
-                loadUserData();
-            });
-        }
-
-        // =========================================================
-        // 10. ТЕМА
+        // 8. ТЕМА
         // =========================================================
         let currentTheme = localStorage.getItem('theme') || 'dark';
         function applyTheme(theme) {
@@ -715,7 +545,7 @@
         applyTheme(currentTheme);
 
         // =========================================================
-        // 11. ОНЛАЙН СТАТУС
+        // 9. ОНЛАЙН СТАТУС
         // =========================================================
         function updateOnlineStatus() {
             if (!myCode) return;
@@ -725,6 +555,7 @@
                 db.ref('users/' + myCode + '/online').set(false);
             });
         }
+
         function listenOnlineStatus() {
             db.ref('users').on('value', function(snap) {
                 const users = snap.val() || {};
@@ -749,30 +580,20 @@
         }
 
         // =========================================================
-        // 12. БЛОКИРОВКА
+        // 10. БЛОКИРОВКА
         // =========================================================
         function toggleBlock(targetCode) {
             const blockedRef = db.ref('users/' + myCode + '/blocked/' + targetCode);
             if (blockedUsers[targetCode]) {
-                blockedRef.remove().then(() => {
-                    delete blockedUsers[targetCode];
-                    loadChats();
-                    alert('✅ Пользователь разблокирован!');
-                });
+                blockedRef.remove().then(() => { delete blockedUsers[targetCode]; loadChats(); alert('✅ Разблокирован!'); });
             } else {
-                blockedRef.set(true).then(() => {
-                    blockedUsers[targetCode] = true;
-                    loadChats();
-                    alert('🚫 Пользователь заблокирован!');
-                });
+                blockedRef.set(true).then(() => { blockedUsers[targetCode] = true; loadChats(); alert('🚫 Заблокирован!'); });
             }
         }
-        function isBlocked(code) {
-            return blockedUsers[code] === true;
-        }
+        function isBlocked(code) { return blockedUsers[code] === true; }
 
         // =========================================================
-        // 13. ТАБЫ
+        // 11. ТАБЫ
         // =========================================================
         document.querySelectorAll('#tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -782,16 +603,13 @@
                 document.querySelectorAll('#content > div').forEach(d => d.style.display = 'none');
                 document.getElementById('tab-' + tab).style.display = 'block';
                 if (tab === 'chats') loadChats();
-                if (tab === 'groups') loadGroups();
                 if (tab === 'contacts') loadContacts();
-                if (tab === 'shop') loadShop();
-                if (tab === 'tasks') loadTasks();
                 if (tab === 'settings') loadSettings();
             });
         });
 
         // =========================================================
-        // 14. ЧАТЫ
+        // 12. ЧАТЫ
         // =========================================================
         const chatList = document.getElementById('chatList');
         const chatView = document.getElementById('chatView');
@@ -807,7 +625,6 @@
         const videoBtn = document.getElementById('videoBtn');
         const muteChatBtn = document.getElementById('muteChatBtn');
         const chatSearch = document.getElementById('chatSearch');
-        const shareContactBtn = document.getElementById('shareContactBtn');
         const pinMessageDiv = document.getElementById('pinMessage');
 
         function loadChats() {
@@ -841,10 +658,10 @@
                     chatList.appendChild(div);
                 }
                 if (chatList.children.length === 0) {
-                    chatList.innerHTML = '<div style="color:#666;padding:20px;text-align:center;">Нет контактов. Добавь во вкладке "Контакты"</div>';
+                    chatList.innerHTML = '<div style="color:#666;padding:20px;text-align:center;">Нет контактов</div>';
                 }
                 listenOnlineStatus();
-            }).catch(err => console.error('Ошибка загрузки чатов:', err));
+            }).catch(err => console.error(err));
         }
 
         function openChat(type, id, name) {
@@ -854,11 +671,7 @@
             chatHeader.textContent = name;
             loadMessages(type, id);
             db.ref('chats/' + id + '/muted/' + myCode).once('value').then(snap => {
-                if (snap.val() === true) {
-                    muteChatBtn.textContent = '🔕';
-                } else {
-                    muteChatBtn.textContent = '🔔';
-                }
+                muteChatBtn.textContent = snap.val() === true ? '🔕' : '🔔';
             });
             replyTo = null;
             editingMessage = null;
@@ -871,55 +684,27 @@
         });
 
         // =========================================================
-        // 15. ОТКЛЮЧЕНИЕ УВЕДОМЛЕНИЙ
-        // =========================================================
-        muteChatBtn.addEventListener('click', function() {
-            if (!currentChat) return;
-            const chatId = currentChat.id;
-            db.ref('chats/' + chatId + '/muted/' + myCode).once('value').then(snap => {
-                const isMuted = snap.val() === true;
-                db.ref('chats/' + chatId + '/muted/' + myCode).set(!isMuted).then(() => {
-                    if (!isMuted) {
-                        muteChatBtn.textContent = '🔕';
-                        alert('🔕 Уведомления отключены');
-                    } else {
-                        muteChatBtn.textContent = '🔔';
-                        alert('🔔 Уведомления включены');
-                    }
-                });
-            });
-        });
-
-        // =========================================================
-        // 16. ОТПРАВКА СООБЩЕНИЙ
+        // 13. ОТПРАВКА СООБЩЕНИЙ
         // =========================================================
         sendBtn.addEventListener('click', sendPrivateMessage);
         msgInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendPrivateMessage();
-            }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendPrivateMessage(); }
         });
 
         async function sendPrivateMessage(text) {
             if (!currentChat || currentChat.type !== 'user') return;
             const messageText = text || msgInput.value.trim();
             if (!messageText) return;
-            if (!navigator.onLine) {
-                alert('Нет интернета! Сообщение не отправлено.');
-                return;
-            }
-            
+            if (!navigator.onLine) { alert('Нет интернета!'); return; }
             const targetCode = currentChat.id;
             const isContact = await db.ref('users/' + myCode + '/contacts/' + targetCode).once('value');
             if (!isContact.exists()) {
                 const targetPrivacy = await db.ref('users/' + targetCode + '/privacy/messages').once('value');
                 if (targetPrivacy.val() === false) {
-                    alert('❌ Этот пользователь не принимает сообщения от незнакомцев.');
+                    alert('❌ Пользователь не принимает сообщения от незнакомцев.');
                     return;
                 }
             }
-            
             const chatId = getChatId(myCode, targetCode);
             const ref = db.ref('chats/' + chatId).push();
             const msgData = {
@@ -942,11 +727,7 @@
                 replyTo = null;
             }
             if (editingMessage) {
-                await db.ref('chats/' + chatId + '/' + editingMessage).update({
-                    text: messageText,
-                    edited: true,
-                    editTime: Date.now()
-                });
+                await db.ref('chats/' + chatId + '/' + editingMessage).update({ text: messageText, edited: true, editTime: Date.now() });
                 editingMessage = null;
                 msgInput.value = '';
                 return;
@@ -954,19 +735,16 @@
             try {
                 await ref.set(msgData);
                 msgInput.value = '';
-                // Обновляем задания
                 updateTaskProgress('daily', 'd1', 1);
             } catch (err) {
-                alert('Ошибка отправки! Проверь интернет.');
+                alert('Ошибка отправки!');
             }
         }
 
-        function getChatId(code1, code2) {
-            return [code1, code2].sort().join('_');
-        }
+        function getChatId(code1, code2) { return [code1, code2].sort().join('_'); }
 
         // =========================================================
-        // 17. ЗАГРУЗКА СООБЩЕНИЙ
+        // 14. ЗАГРУЗКА СООБЩЕНИЙ
         // =========================================================
         function loadMessages(type, id) {
             if (type === 'user') {
@@ -985,16 +763,13 @@
         }
 
         // =========================================================
-        // 18. ПРИКРЕПЛЕНИЕ ФАЙЛОВ
+        // 15. ФАЙЛЫ
         // =========================================================
         attachBtn.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', async function(e) {
             const files = this.files;
             for (let file of files) {
-                if (!navigator.onLine) {
-                    alert('Нет интернета! Файл не загружен.');
-                    continue;
-                }
+                if (!navigator.onLine) { alert('Нет интернета!'); continue; }
                 try {
                     const url = await uploadFile(file);
                     if (url) {
@@ -1004,7 +779,7 @@
                         await sendPrivateMessageWithFile(url, type, file.name);
                     }
                 } catch (err) {
-                    alert('Ошибка загрузки файла: ' + err.message);
+                    alert('Ошибка загрузки файла!');
                 }
             }
             this.value = '';
@@ -1026,8 +801,15 @@
             });
         }
 
+        async function uploadFile(file) {
+            const path = 'files/' + Date.now() + '_' + file.name;
+            const ref = storage.ref(path);
+            await ref.put(file);
+            return await ref.getDownloadURL();
+        }
+
         // =========================================================
-        // 19. ГОЛОСОВЫЕ СООБЩЕНИЯ
+        // 16. ГОЛОСОВЫЕ
         // =========================================================
         recordBtn.addEventListener('click', async function() {
             if (isRecording) {
@@ -1041,14 +823,9 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
-                mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
-                };
+                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
                 mediaRecorder.onstop = async function() {
-                    if (!navigator.onLine) {
-                        alert('Нет интернета! Голосовое не отправлено.');
-                        return;
-                    }
+                    if (!navigator.onLine) { alert('Нет интернета!'); return; }
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const url = await uploadAudio(audioBlob);
                     if (url) {
@@ -1073,7 +850,7 @@
         }
 
         // =========================================================
-        // 20. ВИДЕО (КРУЖОЧКИ)
+        // 17. ВИДЕО (КРУЖОЧКИ)
         // =========================================================
         const videoPreview = document.getElementById('videoPreview');
         const previewVideo = document.getElementById('previewVideo');
@@ -1094,17 +871,13 @@
                 videoStream = stream;
                 videoRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
                 videoChunks = [];
-                videoRecorder.ondataavailable = event => {
-                    videoChunks.push(event.data);
-                };
+                videoRecorder.ondataavailable = event => videoChunks.push(event.data);
                 videoRecorder.onstop = function() {
                     const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
                     videoBlobUrl = URL.createObjectURL(videoBlob);
                     previewVideo.src = videoBlobUrl;
                     videoPreview.style.display = 'block';
-                    if (videoStream) {
-                        videoStream.getTracks().forEach(track => track.stop());
-                    }
+                    if (videoStream) { videoStream.getTracks().forEach(track => track.stop()); }
                 };
                 videoRecorder.start();
                 isVideoRecording = true;
@@ -1126,10 +899,7 @@
         sendVideoBtn.addEventListener('click', async function() {
             if (!videoBlobUrl) return;
             videoPreview.style.display = 'none';
-            if (!navigator.onLine) {
-                alert('Нет интернета! Видео не отправлено.');
-                return;
-            }
+            if (!navigator.onLine) { alert('Нет интернета!'); return; }
             try {
                 const response = await fetch(videoBlobUrl);
                 const blob = await response.blob();
@@ -1144,7 +914,7 @@
                 videoBlobUrl = null;
                 previewVideo.src = '';
             } catch (err) {
-                alert('Ошибка отправки видео: ' + err.message);
+                alert('Ошибка отправки видео!');
             }
         });
 
@@ -1162,19 +932,18 @@
         }
 
         // =========================================================
-        // 21. ЗВОНКИ
+        // 18. ЗВОНКИ
         // =========================================================
         callBtn.addEventListener('click', function() {
             if (!currentChat || currentChat.type !== 'user') return;
             const targetCode = currentChat.id;
             db.ref('users/' + targetCode + '/privacy/calls').once('value').then(snap => {
-                const callsPrivacy = snap.val() === true;
-                if (callsPrivacy) {
+                if (snap.val() === true) {
                     db.ref('users/' + myCode + '/contacts/' + targetCode).once('value').then(contactSnap => {
                         if (contactSnap.exists()) {
                             window.open('https://meet.jit.si/' + targetCode + '-' + myCode, '_blank');
                         } else {
-                            alert('❌ Этот пользователь принимает звонки только из контактов!');
+                            alert('❌ Звонки только из контактов!');
                         }
                     });
                 } else {
@@ -1186,7 +955,7 @@
         });
 
         // =========================================================
-        // 22. ГРУППЫ
+        // 19. ГРУППЫ
         // =========================================================
         const groupList = document.getElementById('groupList');
         const groupView = document.getElementById('groupView');
@@ -1203,7 +972,6 @@
         const groupRecordBtn = document.getElementById('groupRecordBtn');
         const groupVideoBtn = document.getElementById('groupVideoBtn');
         const muteGroupBtn = document.getElementById('muteGroupBtn');
-        const groupShareContactBtn = document.getElementById('groupShareContactBtn');
         const createChannelBtn = document.getElementById('createChannelBtn');
 
         function loadGroups() {
@@ -1216,10 +984,7 @@
                     div.className = 'contact-item';
                     db.ref('groups/' + groupId).once('value').then(gSnap => {
                         const gData = gSnap.val() || {};
-                        div.innerHTML = `
-                            <span>👥 ${gData.name || groupId}</span>
-                            <span class="group-member">${Object.keys(gData.members || {}).length} уч.</span>
-                        `;
+                        div.innerHTML = `<span>👥 ${gData.name || groupId}</span><span class="group-member">${Object.keys(gData.members || {}).length} уч.</span>`;
                     });
                     div.addEventListener('click', function() {
                         openGroup(groupId);
@@ -1227,9 +992,9 @@
                     groupList.appendChild(div);
                 }
                 if (Object.keys(groups).length === 0) {
-                    groupList.innerHTML = '<div style="color:#666;padding:20px;text-align:center;">Нет групп. Создай!</div>';
+                    groupList.innerHTML = '<div style="color:#666;padding:20px;text-align:center;">Нет групп</div>';
                 }
-            }).catch(err => console.error('Ошибка загрузки групп:', err));
+            });
         }
 
         function openGroup(groupId) {
@@ -1242,11 +1007,7 @@
             });
             loadGroupMessages(groupId);
             db.ref('groups/' + groupId + '/muted/' + myCode).once('value').then(snap => {
-                if (snap.val() === true) {
-                    muteGroupBtn.textContent = '🔕';
-                } else {
-                    muteGroupBtn.textContent = '🔔';
-                }
+                muteGroupBtn.textContent = snap.val() === true ? '🔕' : '🔔';
             });
         }
 
@@ -1254,23 +1015,6 @@
             groupView.classList.remove('active');
             groupList.style.display = 'block';
             currentChat = null;
-        });
-
-        muteGroupBtn.addEventListener('click', function() {
-            if (!currentChat || currentChat.type !== 'group') return;
-            const groupId = currentChat.id;
-            db.ref('groups/' + groupId + '/muted/' + myCode).once('value').then(snap => {
-                const isMuted = snap.val() === true;
-                db.ref('groups/' + groupId + '/muted/' + myCode).set(!isMuted).then(() => {
-                    if (!isMuted) {
-                        muteGroupBtn.textContent = '🔕';
-                        alert('🔕 Уведомления отключены');
-                    } else {
-                        muteGroupBtn.textContent = '🔔';
-                        alert('🔔 Уведомления включены');
-                    }
-                });
-            });
         });
 
         function loadGroupMessages(groupId) {
@@ -1290,20 +1034,14 @@
 
         groupSendBtn.addEventListener('click', sendGroupMessage);
         groupMsgInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendGroupMessage();
-            }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendGroupMessage(); }
         });
 
         async function sendGroupMessage(text) {
             if (!currentChat || currentChat.type !== 'group') return;
             const messageText = text || groupMsgInput.value.trim();
             if (!messageText) return;
-            if (!navigator.onLine) {
-                alert('Нет интернета! Сообщение не отправлено.');
-                return;
-            }
+            if (!navigator.onLine) { alert('Нет интернета!'); return; }
             const ref = db.ref('groups/' + currentChat.id + '/messages').push();
             const msgData = {
                 from: myCode,
@@ -1323,11 +1061,7 @@
                 replyTo = null;
             }
             if (editingMessage) {
-                await db.ref('groups/' + currentChat.id + '/' + editingMessage).update({
-                    text: messageText,
-                    edited: true,
-                    editTime: Date.now()
-                });
+                await db.ref('groups/' + currentChat.id + '/' + editingMessage).update({ text: messageText, edited: true, editTime: Date.now() });
                 editingMessage = null;
                 groupMsgInput.value = '';
                 return;
@@ -1337,7 +1071,7 @@
                 groupMsgInput.value = '';
                 updateTaskProgress('daily', 'd1', 1);
             } catch (err) {
-                alert('Ошибка отправки! Проверь интернет.');
+                alert('Ошибка отправки!');
             }
         }
 
@@ -1345,10 +1079,7 @@
         groupFileInput.addEventListener('change', async function(e) {
             const files = this.files;
             for (let file of files) {
-                if (!navigator.onLine) {
-                    alert('Нет интернета! Файл не загружен.');
-                    continue;
-                }
+                if (!navigator.onLine) { alert('Нет интернета!'); continue; }
                 try {
                     const url = await uploadFile(file);
                     if (url) {
@@ -1389,18 +1120,14 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
-                mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
-                };
+                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
                 mediaRecorder.onstop = async function() {
-                    if (!navigator.onLine) {
-                        alert('Нет интернета! Голосовое не отправлено.');
-                        return;
-                    }
+                    if (!navigator.onLine) { alert('Нет интернета!'); return; }
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const url = await uploadAudio(audioBlob);
                     if (url) {
                         await sendGroupMessageWithFile(url, 'audio', 'Голосовое');
+                        updateTaskProgress('daily', 'd2', 1);
                     }
                 };
                 mediaRecorder.start();
@@ -1428,30 +1155,20 @@
             const groupId = 'g_' + Date.now();
             const members = {};
             members[myCode] = true;
-
             db.ref('users/' + myCode + '/contacts').once('value').then(contactsSnap => {
                 const contacts = contactsSnap.val() || {};
-                let blocked = [];
                 const promises = [];
                 for (let code in contacts) {
                     if (isBlocked(code)) continue;
                     promises.push(
                         db.ref('users/' + code + '/privacy/groups').once('value').then(snap => {
-                            const privacyGroups = snap.val() !== false;
-                            if (!privacyGroups) {
-                                blocked.push(code);
-                            } else {
-                                members[code] = true;
-                            }
+                            if (snap.val() !== false) members[code] = true;
                         })
                     );
                 }
                 Promise.all(promises).then(() => {
-                    if (blocked.length > 0) {
-                        alert('❌ Некоторые контакты запретили добавление в группы: ' + blocked.join(', '));
-                    }
                     if (Object.keys(members).length < 2) {
-                        alert('❌ Нет контактов, разрешающих добавление в группы!');
+                        alert('❌ Нет контактов для группы!');
                         return;
                     }
                     db.ref('groups/' + groupId).set({
@@ -1473,7 +1190,7 @@
         });
 
         // =========================================================
-        // 23. КАНАЛЫ
+        // 20. КАНАЛЫ
         // =========================================================
         createChannelBtn.addEventListener('click', function() {
             const name = prompt('Введите название канала:');
@@ -1481,7 +1198,6 @@
             const channelId = 'c_' + Date.now();
             const members = {};
             members[myCode] = 'admin';
-
             db.ref('channels/' + channelId).set({
                 name: name,
                 admin: myCode,
@@ -1496,7 +1212,7 @@
         });
 
         // =========================================================
-        // 24. КОНТАКТЫ
+        // 21. КОНТАКТЫ
         // =========================================================
         const contactSearch = document.getElementById('contactSearch');
         const addContactBtn = document.getElementById('addContactBtn');
@@ -1517,40 +1233,28 @@
                         const isOnline = userData.online === true;
                         const privacy = userData.privacy || {};
                         let statusText = isOnline ? '🟢 Онлайн' : 'был(а) недавно';
-                        if (privacy.online === true && code !== myCode) {
-                            statusText = 'скрыт';
-                        }
-                        div.innerHTML = `
-                            ${avatarHtml} ${userData.username || code}
-                            <span class="last-seen">${statusText}</span>
-                        `;
+                        if (privacy.online === true && code !== myCode) statusText = 'скрыт';
+                        div.innerHTML = `${avatarHtml} ${userData.username || code} <span class="last-seen">${statusText}</span>`;
                     });
                     contactList.appendChild(div);
                 }
                 if (contactList.children.length === 0) {
                     contactList.innerHTML = '<div style="color:#666;padding:20px;text-align:center;">Нет контактов</div>';
                 }
-            }).catch(err => console.error('Ошибка загрузки контактов:', err));
+            });
         }
 
         addContactBtn.addEventListener('click', function() {
             const query = contactSearch.value.trim();
             if (!query) return alert('Введи код или username!');
             if (query === myCode) return alert('Это ты!');
-
             db.ref('users/' + query).once('value').then(snap => {
-                if (snap.exists()) {
-                    addContact(query);
-                    return;
-                }
+                if (snap.exists()) { addContact(query); return; }
                 db.ref('users').orderByChild('username').equalTo(query).once('value').then(snap => {
                     if (snap.exists()) {
                         let found = false;
                         snap.forEach(child => {
-                            if (child.key !== myCode) {
-                                addContact(child.key);
-                                found = true;
-                            }
+                            if (child.key !== myCode) { addContact(child.key); found = true; }
                         });
                         if (!found) alert('❌ Пользователь не найден!');
                     } else {
@@ -1569,203 +1273,120 @@
         }
 
         // =========================================================
-        // 25. ПЕРЕСЫЛКА С ВЫБОРОМ КОНТАКТА
+        // 22. НАСТРОЙКИ
         // =========================================================
-        function forwardMessage(chatId, messageKey, data) {
-            db.ref('users/' + myCode + '/contacts').once('value').then(snap => {
-                const contacts = snap.val() || {};
-                const contactList = Object.keys(contacts);
-                if (contactList.length === 0) {
-                    alert('❌ Нет контактов для пересылки!');
-                    return;
-                }
-                const modal = document.createElement('div');
-                modal.style.cssText = `
-                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                    background: rgba(0,0,0,0.8); display: flex; justify-content: center;
-                    align-items: center; z-index: 1001;
+        function loadSettings() {
+            const settingsList = document.getElementById('settingsList');
+            settingsList.innerHTML = `
+                <div class="settings-item" onclick="document.getElementById('profileBtn').click()">
+                    <span class="label"><span class="icon">👤</span> Аккаунт</span>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="settings-item" onclick="loadShop()">
+                    <span class="label"><span class="icon">🎁</span> Магазин</span>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="settings-item" onclick="loadTasks()">
+                    <span class="label"><span class="icon">📋</span> Задания</span>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="settings-item" onclick="document.getElementById('clearCacheBtnProfile').click()">
+                    <span class="label"><span class="icon">🗑️</span> Очистить кеш</span>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="settings-item" onclick="applyTheme(currentTheme === 'dark' ? 'light' : 'dark')">
+                    <span class="label"><span class="icon">🎨</span> Тема</span>
+                    <span class="value">${currentTheme === 'dark' ? 'Тёмная' : 'Светлая'}</span>
+                </div>
+                <div class="settings-item danger" onclick="if(confirm('Точно выйти?')){localStorage.removeItem('myCode');window.location.reload();}">
+                    <span class="label"><span class="icon">🚪</span> Выйти</span>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="settings-item" onclick="alert('Версия 3.0')">
+                    <span class="label"><span class="icon">ℹ️</span> О приложении</span>
+                    <span class="value">v3.0</span>
+                </div>
+                <div id="shopContainer" style="margin-top:12px;"></div>
+                <div id="tasksContainer" style="margin-top:12px;"></div>
+            `;
+            // Привязываем обработчики для магазина и заданий
+            document.getElementById('shopContainer').innerHTML = '';
+            document.getElementById('tasksContainer').innerHTML = '';
+        }
+
+        // =========================================================
+        // 23. МАГАЗИН
+        // =========================================================
+        function loadShop() {
+            const container = document.getElementById('shopContainer');
+            if (!container) return;
+            container.innerHTML = '<h3 style="color:#ffd200;margin-bottom:12px;">🎁 Магазин подарков</h3>';
+            GIFTS.forEach(gift => {
+                const div = document.createElement('div');
+                div.className = 'shop-item';
+                div.innerHTML = `
+                    <span class="shop-emoji">${gift.emoji}</span>
+                    <div class="shop-info">${gift.name}</div>
+                    <div style="color:#ffd200;">${gift.price} ⭐</div>
+                    <button class="buy-btn" data-emoji="${gift.emoji}" data-price="${gift.price}" style="background:#e94560;border:none;border-radius:12px;padding:6px 14px;color:#fff;cursor:pointer;">Купить</button>
                 `;
-                modal.innerHTML = `
-                    <div style="background: #1a1a2e; padding: 20px; border-radius: 16px; width: 90%; max-width: 350px; max-height: 80vh; overflow-y: auto;">
-                        <h3 style="color: #fff; margin-bottom: 12px;">📤 Переслать</h3>
-                        ${contactList.map(code => `
-                            <div class="contact-item" style="cursor:pointer; margin: 4px 0;" data-code="${code}">
-                                <span>${code}</span>
-                            </div>
-                        `).join('')}
-                        <button id="closeForwardModal" style="margin-top: 12px; padding: 8px 16px; border: none; border-radius: 12px; background: #e94560; color: #fff; cursor: pointer; width: 100%;">Отмена</button>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-
-                modal.querySelectorAll('.contact-item').forEach(item => {
-                    item.addEventListener('click', function() {
-                        const target = this.dataset.code;
-                        const chatIdTarget = getChatId(myCode, target);
-                        const ref = db.ref('chats/' + chatIdTarget).push();
-                        const msgData = {
-                            from: myCode,
-                            to: target,
-                            text: data.text || 'Пересланное сообщение',
-                            time: Date.now(),
-                            read: false,
-                            delivered: true,
-                            type: 'forwarded',
-                            forwardedFrom: data.from,
-                            originalText: data.text || 'Сообщение'
-                        };
-                        if (data.fileUrl) {
-                            msgData.fileUrl = data.fileUrl;
-                            msgData.type = data.type || 'file';
-                        }
-                        ref.set(msgData);
-                        alert('✅ Сообщение переслано!');
-                        modal.remove();
-                    });
-                });
-
-                modal.querySelector('#closeForwardModal').addEventListener('click', function() {
-                    modal.remove();
+                container.appendChild(div);
+                div.querySelector('.buy-btn').addEventListener('click', function() {
+                    const emoji = this.dataset.emoji;
+                    const price = parseInt(this.dataset.price);
+                    buyGift(emoji, price);
                 });
             });
         }
 
-        // =========================================================
-        // 26. ДЕЙСТВИЯ С СООБЩЕНИЯМИ
-        // =========================================================
-        function deleteForMe(chatId, messageKey) {
-            if (!confirm('Удалить сообщение только у себя?')) return;
-            getChatRef(chatId).child(messageKey).update({ deletedForMe: true });
-        }
-
-        function deleteForAll(chatId, messageKey) {
-            if (!confirm('Удалить сообщение для всех? Это действие нельзя отменить.')) return;
-            getChatRef(chatId).child(messageKey).remove();
-        }
-
-        function editMessage(chatId, messageKey, oldText) {
-            const newText = prompt('Редактировать сообщение:', oldText);
-            if (newText === null || newText.trim() === '') return;
-            getChatRef(chatId).child(messageKey).update({
-                text: newText.trim(),
-                edited: true,
-                editTime: Date.now()
-            });
-        }
-
-        function replyToMessageAction(chatId, messageKey, data) {
-            replyTo = messageKey;
-            msgInput.placeholder = 'Ответ на сообщение...';
-            msgInput.focus();
-            const msgDiv = document.querySelector(`.msg[data-key="${messageKey}"]`);
-            if (msgDiv) {
-                msgDiv.style.border = '2px solid #ffd200';
-                setTimeout(() => {
-                    msgDiv.style.border = 'none';
-                }, 3000);
-            }
-        }
-
-        function copyMessage(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('✅ Сообщение скопировано!');
-            }).catch(() => {
-                alert('❌ Не удалось скопировать');
-            });
-        }
-
-        function pinMessageAction(chatId, messageKey, data) {
-            getChatRef(chatId).child('pin').set({
-                key: messageKey,
-                text: data.text || 'Сообщение',
-                from: data.from,
-                time: Date.now()
-            });
-            alert('📌 Сообщение закреплено!');
-        }
-
-        function getChatRef(chatId) {
-            if (currentChat.type === 'user') {
-                return db.ref('chats/' + chatId);
-            } else {
-                return db.ref('groups/' + chatId);
-            }
-        }
-
-        // =========================================================
-        // 27. ПОДАРКИ ДРУЗЬЯМ
-        // =========================================================
-        function sendGiftToFriend(targetCode) {
+        function buyGift(emoji, price) {
             db.ref('users/' + myCode + '/stars').once('value').then(snap => {
                 const stars = snap.val() || 0;
-                const minPrice = Math.min(...GIFTS.map(g => g.price));
-                if (stars < minPrice) {
-                    alert('❌ Недостаточно звёзд! Нужно минимум ' + minPrice + ' ⭐');
+                if (stars < price) {
+                    alert('❌ Недостаточно звёзд! Нужно ' + price + ' ⭐');
                     return;
                 }
-                const modal = document.createElement('div');
-                modal.style.cssText = `
-                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                    background: rgba(0,0,0,0.8); display: flex; justify-content: center;
-                    align-items: center; z-index: 1001;
-                `;
-                modal.innerHTML = `
-                    <div style="background: #1a1a2e; padding: 20px; border-radius: 16px; width: 90%; max-width: 380px; text-align:center; max-height: 80vh; overflow-y: auto;">
-                        <h3 style="color: #fff; margin-bottom: 12px;">🎁 Выбери подарок для друга</h3>
-                        <div style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;">
-                            ${GIFTS.map(g => `
-                                <button class="gift-select-btn" data-emoji="${g.emoji}" data-price="${g.price}" style="font-size:28px; background:#1e2a4a; border:none; border-radius:12px; cursor:pointer; padding:8px; transition:transform .2s; min-width:60px; color:#fff; display:flex; flex-direction:column; align-items:center;">
-                                    ${g.emoji}
-                                    <span style="font-size:10px; color:#ffd200;">${g.price}⭐</span>
-                                </button>
-                            `).join('')}
-                        </div>
-                        <button id="closeGiftModal" style="margin-top: 12px; padding: 8px 16px; border: none; border-radius: 12px; background: #e94560; color: #fff; cursor: pointer; width: 100%;">Отмена</button>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-
-                modal.querySelectorAll('.gift-select-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const emoji = this.dataset.emoji;
-                        const price = parseInt(this.dataset.price);
-                        if (stars < price) {
-                            alert('❌ Недостаточно звёзд! Нужно ' + price + ' ⭐');
-                            return;
-                        }
-                        modal.remove();
-                        db.ref('users/' + myCode + '/stars').set(stars - price);
-                        const gift = { emoji, from: myCode, date: Date.now() };
-                        db.ref('users/' + targetCode + '/gifts').push(gift);
-                        db.ref('users/' + targetCode + '/stars').transaction(current => {
-                            return (current || 0) + 1;
-                        });
-                        sendNotification(targetCode, '🎁 Вы получили подарок от ' + myCode);
-                        alert('✅ Подарок отправлен!');
-                        loadUserData();
-                        updateTaskProgress('weekly', 'w5', 1);
-                    });
-                });
-
-                modal.querySelector('#closeGiftModal').addEventListener('click', function() {
-                    modal.remove();
-                });
+                if (!confirm(`Купить ${emoji} за ${price} ⭐?`)) return;
+                db.ref('users/' + myCode + '/stars').set(stars - price);
+                const gift = { emoji, from: myCode, date: Date.now() };
+                db.ref('users/' + myCode + '/gifts').push(gift);
+                alert('✅ Подарок куплен!');
+                loadUserData();
             });
         }
 
         // =========================================================
-        // 28. УВЕДОМЛЕНИЯ
+        // 24. ЗАДАНИЯ
         // =========================================================
-        function sendNotification(targetCode, message) {
-            db.ref('users/' + targetCode + '/fcmToken').once('value').then(snap => {
-                const token = snap.val();
-                if (!token) return;
-                console.log('📨 Уведомление для ' + targetCode + ': ' + message);
+        function loadTasks() {
+            const container = document.getElementById('tasksContainer');
+            if (!container) return;
+            container.innerHTML = '<h3 style="color:#ffd200;margin-bottom:12px;">📋 Ежедневные</h3>';
+            DAILY_TASKS.forEach(task => {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.innerHTML = `
+                    <div class="task-info">${task.name}</div>
+                    <div class="task-reward">+${task.reward} ⭐</div>
+                    <div class="task-status pending">⏳</div>
+                `;
+                container.appendChild(div);
+            });
+            container.innerHTML += '<h3 style="color:#ffd200;margin:12px 0;">📋 Недельные</h3>';
+            WEEKLY_TASKS.forEach(task => {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.innerHTML = `
+                    <div class="task-info">${task.name}</div>
+                    <div class="task-reward">+${task.reward} ⭐</div>
+                    <div class="task-status pending">⏳</div>
+                `;
+                container.appendChild(div);
             });
         }
 
         // =========================================================
-        // 29. РЕАКЦИИ
+        // 25. РЕАКЦИИ
         // =========================================================
         const reactionPanel = document.getElementById('reactionPanel');
         let selectedMessageKey = null;
@@ -1793,12 +1414,8 @@
                 showReactionPanel(touch.clientX, touch.clientY, key, chatId);
             }, 600);
         });
-        document.addEventListener('touchend', function() {
-            clearTimeout(longPressTimer);
-        });
-        document.addEventListener('touchmove', function() {
-            clearTimeout(longPressTimer);
-        });
+        document.addEventListener('touchend', function() { clearTimeout(longPressTimer); });
+        document.addEventListener('touchmove', function() { clearTimeout(longPressTimer); });
 
         function showReactionPanel(x, y, key, chatId) {
             selectedMessageKey = key;
@@ -1842,7 +1459,55 @@
         }
 
         // =========================================================
-        // 30. ОТРИСОВКА СООБЩЕНИЙ
+        // 26. ДЕЙСТВИЯ С СООБЩЕНИЯМИ
+        // =========================================================
+        function deleteForMe(chatId, messageKey) {
+            if (!confirm('Удалить у себя?')) return;
+            getChatRef(chatId).child(messageKey).update({ deletedForMe: true });
+        }
+
+        function deleteForAll(chatId, messageKey) {
+            if (!confirm('Удалить для всех?')) return;
+            getChatRef(chatId).child(messageKey).remove();
+        }
+
+        function editMessage(chatId, messageKey, oldText) {
+            const newText = prompt('Редактировать:', oldText);
+            if (newText === null || newText.trim() === '') return;
+            getChatRef(chatId).child(messageKey).update({ text: newText.trim(), edited: true, editTime: Date.now() });
+        }
+
+        function replyToMessageAction(chatId, messageKey, data) {
+            replyTo = messageKey;
+            msgInput.placeholder = 'Ответ...';
+            msgInput.focus();
+            const msgDiv = document.querySelector(`.msg[data-key="${messageKey}"]`);
+            if (msgDiv) {
+                msgDiv.style.border = '2px solid #ffd200';
+                setTimeout(() => { msgDiv.style.border = 'none'; }, 3000);
+            }
+        }
+
+        function copyMessage(text) {
+            navigator.clipboard.writeText(text).then(() => alert('✅ Скопировано!')).catch(() => alert('❌ Ошибка'));
+        }
+
+        function pinMessageAction(chatId, messageKey, data) {
+            getChatRef(chatId).child('pin').set({
+                key: messageKey,
+                text: data.text || 'Сообщение',
+                from: data.from,
+                time: Date.now()
+            });
+            alert('📌 Закреплено!');
+        }
+
+        function getChatRef(chatId) {
+            return currentChat.type === 'user' ? db.ref('chats/' + chatId) : db.ref('groups/' + chatId);
+        }
+
+        // =========================================================
+        // 27. ОТРИСОВКА СООБЩЕНИЙ
         // =========================================================
         function renderMessage(container, data, myCode) {
             if (data.deletedForMe) return;
@@ -1903,9 +1568,7 @@
                 forwarded.className = 'forwarded';
                 forwarded.textContent = '📩 Переслано от ' + (data.forwardedFrom || 'неизвестного');
                 div.appendChild(forwarded);
-                if (data.originalText) {
-                    data.text = data.originalText;
-                }
+                if (data.originalText) data.text = data.originalText;
             }
 
             if (data.replyTo && data.replyText) {
@@ -1939,7 +1602,6 @@
                         ${avatar ? `<img src="${avatar}" class="avatar-small" />` : '👤'}
                         <span class="contact-name">${data.contactName || data.contactCode}</span>
                         <span class="contact-code">${data.contactCode}</span>
-                        <button onclick="addContact('${data.contactCode}')" style="background:#4caf50;border:none;color:#fff;padding:2px 8px;border-radius:8px;cursor:pointer;">➕</button>
                     `;
                 });
                 div.appendChild(contactDiv);
@@ -1950,10 +1612,7 @@
                     const img = document.createElement('img');
                     img.src = data.fileUrl;
                     img.loading = 'lazy';
-                    img.style.cursor = 'pointer';
-                    img.onclick = function() {
-                        window.open(data.fileUrl, '_blank');
-                    };
+                    img.onclick = () => window.open(data.fileUrl, '_blank');
                     div.appendChild(img);
                 } else if (data.type === 'video') {
                     const video = document.createElement('video');
@@ -2059,63 +1718,7 @@
         }
 
         // =========================================================
-        // 31. ЗАГРУЗКА ФАЙЛОВ
-        // =========================================================
-        async function uploadFile(file) {
-            const path = 'files/' + Date.now() + '_' + file.name;
-            const ref = storage.ref(path);
-            await ref.put(file);
-            return await ref.getDownloadURL();
-        }
-
-        // =========================================================
-        // 32. НАСТРОЙКИ
-        // =========================================================
-        function loadSettings() {
-            const settingsList = document.getElementById('settingsList');
-            settingsList.innerHTML = `
-                <div class="settings-item" onclick="document.getElementById('profileBtn').click()">
-                    <span class="label"><span class="icon">👤</span> Аккаунт</span>
-                    <span class="arrow">›</span>
-                </div>
-                <div class="settings-item" onclick="alert('Конфиденциальность в настройках профиля')">
-                    <span class="label"><span class="icon">🔒</span> Конфиденциальность</span>
-                    <span class="arrow">›</span>
-                </div>
-                <div class="settings-item" onclick="alert('Уведомления в разработке')">
-                    <span class="label"><span class="icon">🔔</span> Уведомления</span>
-                    <span class="arrow">›</span>
-                </div>
-                <div class="settings-item" onclick="document.getElementById('clearCacheBtnProfile').click()">
-                    <span class="label"><span class="icon">🗑️</span> Очистить кеш</span>
-                    <span class="arrow">›</span>
-                </div>
-                <div class="settings-item" onclick="applyTheme(currentTheme === 'dark' ? 'light' : 'dark')">
-                    <span class="label"><span class="icon">🎨</span> Тема</span>
-                    <span class="value">${currentTheme === 'dark' ? 'Тёмная' : 'Светлая'}</span>
-                </div>
-                <div class="settings-item danger" onclick="if(confirm('Точно выйти?')){localStorage.removeItem('myCode');window.location.reload();}">
-                    <span class="label"><span class="icon">🚪</span> Выйти</span>
-                    <span class="arrow">›</span>
-                </div>
-                <div class="settings-item" onclick="alert('Версия 3.0')">
-                    <span class="label"><span class="icon">ℹ️</span> О приложении</span>
-                    <span class="value">v3.0</span>
-                </div>
-            `;
-        }
-
-        // =========================================================
-        // 33. ОБНОВЛЕНИЕ ЗАДАНИЙ
-        // =========================================================
-        function updateTaskProgress(type, taskId, amount) {
-            db.ref('users/' + myCode + '/tasks/' + type + '/' + taskId).transaction(current => {
-                return (current || 0) + amount;
-            });
-        }
-
-        // =========================================================
-        // 34. ПРОФИЛЬ (МОДАЛКА) — ОБРАБОТЧИКИ
+        // 28. ПРОФИЛЬ (МОДАЛКА)
         // =========================================================
         const profileModal = document.getElementById('profileModal');
         const profileBtn = document.getElementById('profileBtn');
@@ -2144,11 +1747,8 @@
                 profileUsername.value = data.username || '';
                 profileBio.value = data.bio || '';
                 profileCode.textContent = myCode;
-                if (data.avatar) {
-                    profileAvatar.src = data.avatar;
-                } else {
-                    profileAvatar.src = '';
-                }
+                if (data.avatar) profileAvatar.src = data.avatar;
+                else profileAvatar.src = '';
                 const privacy = data.privacy || { groups: true, calls: false, online: false, avatar: false, gifts: false, messages: true };
                 privacyGroups.checked = privacy.groups !== false;
                 privacyCalls.checked = privacy.calls === true;
@@ -2163,18 +1763,12 @@
         }
 
         profileBtn.addEventListener('click', openProfile);
-        closeProfileBtn.addEventListener('click', function() {
-            profileModal.classList.remove('active');
-        });
-        profileModal.addEventListener('click', function(e) {
-            if (e.target === profileModal) {
-                profileModal.classList.remove('active');
-            }
+        closeProfileBtn.addEventListener('click', () => profileModal.classList.remove('active'));
+        profileModal.addEventListener('click', e => {
+            if (e.target === profileModal) profileModal.classList.remove('active');
         });
 
-        avatarContainer.addEventListener('click', function() {
-            avatarInput.click();
-        });
+        avatarContainer.addEventListener('click', () => avatarInput.click());
         avatarInput.addEventListener('change', async function(e) {
             const file = this.files[0];
             if (!file) return;
@@ -2199,8 +1793,8 @@
         saveProfileBtn.addEventListener('click', function() {
             const username = profileUsername.value.trim();
             const bio = profileBio.value.trim();
-            if (!username) return alert('Введи username!');
-            if (username.length < 3) return alert('Username минимум 3 символа!');
+            if (!username) return alert('Введи имя!');
+            if (username.length < 3) return alert('Минимум 3 символа!');
             const privacy = {
                 groups: privacyGroups.checked,
                 calls: privacyCalls.checked,
@@ -2215,14 +1809,10 @@
                     if (child.key !== myCode) isTaken = true;
                 });
                 if (isTaken) {
-                    alert('❌ Username уже занят!');
+                    alert('❌ Имя уже занято!');
                     return;
                 }
-                db.ref('users/' + myCode).update({
-                    username: username,
-                    bio: bio,
-                    privacy: privacy
-                }).then(() => {
+                db.ref('users/' + myCode).update({ username, bio, privacy }).then(() => {
                     alert('✅ Профиль сохранён!');
                     loadUserData();
                 });
@@ -2232,13 +1822,13 @@
         changeCodeBtnProfile.addEventListener('click', function() {
             profileModal.classList.remove('active');
             const newCode = prompt('Введи новый код (минимум 3 символа):');
-            if (!newCode || newCode.length < 3) return alert('Код должен быть минимум 3 символа!');
-            if (newCode === myCode) return alert('Это твой текущий код!');
+            if (!newCode || newCode.length < 3) return alert('Минимум 3 символа!');
+            if (newCode === myCode) return alert('Это текущий код!');
             loader.style.display = 'block';
             db.ref('users/' + newCode).once('value').then(snap => {
                 if (snap.exists()) {
                     loader.style.display = 'none';
-                    alert('❌ Этот код уже занят!');
+                    alert('❌ Код занят!');
                     return;
                 }
                 db.ref('users/' + myCode).once('value').then(snap => {
@@ -2250,23 +1840,21 @@
                             saveMyCode(newCode);
                             loader.style.display = 'none';
                             document.getElementById('myCodeDisplay').innerHTML = 'Код: ' + myCode;
-                            alert('✅ Код успешно изменён на: ' + newCode);
+                            alert('✅ Код изменён!');
                         });
                     });
                 });
             }).catch(err => {
                 loader.style.display = 'none';
-                alert('Ошибка! Проверь интернет.');
+                alert('Ошибка!');
             });
         });
 
         clearCacheBtnProfile.addEventListener('click', function() {
-            if (confirm('🗑️ Очистить кеш? Это удалит временные файлы, но не сообщения.')) {
+            if (confirm('🗑️ Очистить кеш?')) {
                 if ('caches' in window) {
-                    caches.keys().then(function(names) {
-                        for (let name of names) {
-                            caches.delete(name);
-                        }
+                    caches.keys().then(names => {
+                        names.forEach(name => caches.delete(name));
                     });
                 }
                 const savedCode = localStorage.getItem('myCode');
@@ -2278,16 +1866,77 @@
         });
 
         logoutBtn.addEventListener('click', function() {
-            if (confirm('Точно выйти? Данные сохранятся.')) {
+            if (confirm('Точно выйти?')) {
                 localStorage.removeItem('myCode');
                 window.location.reload();
             }
         });
 
         // =========================================================
-        // 35. ИНИЦИАЛИЗАЦИЯ
+        // 29. ПЕРЕСЫЛКА
         // =========================================================
-        console.log('🔥 GURU 3.0 запущен! Код: ' + myCode);
+        function forwardMessage(chatId, messageKey, data) {
+            db.ref('users/' + myCode + '/contacts').once('value').then(snap => {
+                const contacts = snap.val() || {};
+                const contactList = Object.keys(contacts);
+                if (contactList.length === 0) { alert('Нет контактов!'); return; }
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background: rgba(0,0,0,0.8); display: flex; justify-content: center;
+                    align-items: center; z-index: 1001;
+                `;
+                modal.innerHTML = `
+                    <div style="background: #1a1a2e; padding: 20px; border-radius: 16px; width: 90%; max-width: 350px; max-height: 80vh; overflow-y: auto;">
+                        <h3 style="color: #fff; margin-bottom: 12px;">📤 Переслать</h3>
+                        ${contactList.map(code => `
+                            <div class="contact-item" style="cursor:pointer; margin: 4px 0;" data-code="${code}">
+                                <span>${code}</span>
+                            </div>
+                        `).join('')}
+                        <button id="closeForwardModal" style="margin-top: 12px; padding: 8px 16px; border: none; border-radius: 12px; background: #e94560; color: #fff; cursor: pointer; width: 100%;">Отмена</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                modal.querySelectorAll('.contact-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const target = this.dataset.code;
+                        const chatIdTarget = getChatId(myCode, target);
+                        const ref = db.ref('chats/' + chatIdTarget).push();
+                        const msgData = {
+                            from: myCode,
+                            to: target,
+                            text: data.text || 'Пересланное сообщение',
+                            time: Date.now(),
+                            read: false,
+                            delivered: true,
+                            type: 'forwarded',
+                            forwardedFrom: data.from,
+                            originalText: data.text || 'Сообщение'
+                        };
+                        if (data.fileUrl) {
+                            msgData.fileUrl = data.fileUrl;
+                            msgData.type = data.type || 'file';
+                        }
+                        ref.set(msgData);
+                        alert('✅ Переслано!');
+                        modal.remove();
+                    });
+                });
+                modal.querySelector('#closeForwardModal').addEventListener('click', () => modal.remove());
+            });
+        }
+
+        // =========================================================
+        // 30. АДМИН-КОМАНДА
+        // =========================================================
+        // Введи в любом чате: /give 100 — и получишь звёзды
+        // (работает только для твоего кода)
+
+        // =========================================================
+        // 31. ИНИЦИАЛИЗАЦИЯ
+        // =========================================================
+        console.log('🔥 GURU запущен! Код: ' + myCode);
     </script>
 </body>
 </html>
