@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-    <title>GURU</title>
+    <title>GURU 3.0</title>
     <link rel="manifest" href="/manifest.json" />
     <style>
         *{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0f0f1a;color:#fff;height:100vh;display:flex;flex-direction:column;padding:0;overflow:hidden;transition:background .3s,color .3s}body.light{background:#f0f2f5;color:#1a1a2e}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2a2a4a;border-radius:4px}body.light ::-webkit-scrollbar-thumb{background:#c0c0c0}
@@ -21,6 +21,8 @@
         #profileModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;z-index:1000;backdrop-filter:blur(4px)}#profileModal.active{display:flex}#profileModal .modal-content{background:#1a1a2e;padding:30px 20px;border-radius:24px;width:92%;max-width:380px;text-align:center;max-height:90vh;overflow-y:auto}body.light #profileModal .modal-content{background:#fff}#profileModal .modal-content h2{margin-bottom:18px;font-size:28px;font-weight:900;letter-spacing:2px}#profileModal .avatar-container{position:relative;width:90px;height:90px;margin:0 auto 16px;cursor:pointer}#profileModal .avatar-container img{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #e94560}#profileModal .avatar-container .edit-badge{position:absolute;bottom:0;right:0;background:#e94560;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px}#profileModal input[type=text],#profileModal input[type=password]{width:100%;padding:10px 16px;border-radius:24px;border:none;background:#0f0f1a;color:#fff;font-size:15px;margin:6px 0;outline:none}body.light #profileModal input{background:#f0f2f5;color:#1a1a2e}#profileModal .info-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;color:#aaa;border-bottom:1px solid #2a2a3a}#profileModal .info-row span:first-child{color:#666}#profileModal .info-row span:last-child{color:#fff}body.light #profileModal .info-row span:last-child{color:#1a1a2e}#profileModal .privacy-section{margin:12px 0;text-align:left}#profileModal .privacy-section h3{font-size:14px;color:#ffd200;margin-bottom:6px}body.light #profileModal .privacy-section h3{color:#0084ff}#profileModal .privacy-section label{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;color:#aaa;cursor:pointer}body.light #profileModal .privacy-section label{color:#333}#profileModal .privacy-section label input[type=checkbox]{width:18px;height:18px;accent-color:#e94560;cursor:pointer}#profileModal .btn-group{display:flex;flex-direction:column;gap:8px;margin-top:16px}#profileModal .btn-group button{padding:12px;border-radius:28px;border:none;font-size:15px;font-weight:600;cursor:pointer;transition:.2s}#profileModal .btn-group button:hover{opacity:.85}#profileModal .btn-group button:first-child{background:#e94560;color:#fff}#profileModal .btn-group button.secondary{background:#1e2a4a;color:#ffd200}body.light #profileModal .btn-group button.secondary{background:#e4e6eb;color:#1a1a2e}#profileModal .btn-group button.danger{background:#4a1a2a;color:#ff6b6b}
         .file-input-hidden{display:none}#loader{display:none;text-align:center;padding:20px;color:#888}.avatar-small{width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:6px}#videoPreview{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a2e;padding:10px;border-radius:16px;z-index:999;text-align:center;border:2px solid #e94560}#videoPreview video{width:150px;height:150px;border-radius:50%;object-fit:cover}#videoPreview .controls{display:flex;gap:10px;justify-content:center;margin-top:6px}#videoPreview .controls button{padding:4px 14px;border-radius:16px;border:none;font-size:12px;cursor:pointer}#videoPreview .controls .send{background:#4caf50;color:#fff}#videoPreview .controls .cancel{background:#e94560;color:#fff}.search-input{width:100%;padding:10px 14px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;font-size:14px;outline:none;margin-bottom:8px}body.light .search-input{background:#fff;color:#1a1a2e;box-shadow:0 1px 4px rgba(0,0,0,0.06)}.search-input::placeholder{color:#555}body.light .search-input::placeholder{color:#999}#pinMessage{background:#1a1a2e;border-radius:12px;padding:8px 12px;margin-bottom:8px;border-left:3px solid #ffd200;display:none;font-size:13px;color:#888}#pinMessage .pin-close{float:right;cursor:pointer;color:#ff6b6b;background:transparent;border:none;font-size:14px}body.light #pinMessage{background:#fff}#info{text-align:center;font-size:11px;color:#444;padding:4px 0}body.light #info{color:#999}
         .gift-emoji{font-size:60px;display:block;margin:0 auto}.gift-item{background:#1e2a4a;border-radius:12px;padding:12px;margin:6px 0;display:flex;align-items:center;gap:12px}body.light .gift-item{background:#e4e6eb}.gift-item .gift-info{flex:1}.gift-item .gift-from{font-size:12px;color:#888}.stars-display{font-size:18px;font-weight:700;color:#ffd200;margin-left:8px}
+        .shop-item{background:#1a1a2e;border-radius:12px;padding:12px;margin:6px 0;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.2s}.shop-item:hover{background:#24243a}body.light .shop-item{background:#fff}body.light .shop-item:hover{background:#f5f5f5}.shop-item .shop-emoji{font-size:40px}.shop-item .shop-info{flex:1}.shop-item .shop-price{color:#ffd200;font-weight:700}
+        .task-item{background:#1a1a2e;border-radius:12px;padding:12px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}body.light .task-item{background:#fff}.task-item .task-info{flex:1}.task-item .task-reward{color:#ffd200;font-weight:700}.task-item .task-status{font-size:12px}.task-item .task-status.done{color:#4caf50}.task-item .task-status.pending{color:#ff6b6b}
     </style>
 </head>
 <body>
@@ -50,6 +52,8 @@
             <button class="active" data-tab="chats">💬 Чаты</button>
             <button data-tab="groups">👥 Группы</button>
             <button data-tab="contacts">📇 Контакты</button>
+            <button data-tab="shop">🎁 Магазин</button>
+            <button data-tab="tasks">📋 Задания</button>
             <button data-tab="settings">⚙️ Настройки</button>
         </div>
 
@@ -118,6 +122,16 @@
                     <button id="addContactBtn" style="margin-top:8px;padding:10px 20px;border-radius:24px;border:none;background:#e94560;color:#fff;cursor:pointer;width:100%;">Добавить контакт</button>
                 </div>
                 <div id="contactList"></div>
+            </div>
+
+            <!-- Магазин -->
+            <div id="tab-shop" style="display:none;">
+                <div id="shopContainer"></div>
+            </div>
+
+            <!-- Задания -->
+            <div id="tab-tasks" style="display:none;">
+                <div id="tasksContainer"></div>
             </div>
 
             <!-- Настройки -->
@@ -215,7 +229,11 @@
         // 1. НАСТРОЙКИ FIREBASE
         // =========================================================
         const FIREBASE_URL = "https://guromessenger-ef076-default-rtdb.firebaseio.com/"; // ⚠️ ЗАМЕНИ НА СВОЮ ССЫЛКУ
-        const firebaseConfig = { databaseURL: FIREBASE_URL };
+        const STORAGE_BUCKET = "gs://guromessenger-ef076.firebasestorage.app"; // ⚠️ ЗАМЕНИ НА СВОЙ STORAGE
+        const firebaseConfig = { 
+            databaseURL: FIREBASE_URL,
+            storageBucket: STORAGE_BUCKET
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const storage = firebase.storage();
@@ -262,6 +280,20 @@
             { emoji: '📦', name: 'Посылка', price: 15 },
             { emoji: '💝', name: 'Сердце с лентой', price: 17 }
         ];
+        const DAILY_TASKS = [
+            { id: 'd1', name: 'Отправить 5 сообщений', target: 5, reward: 3 },
+            { id: 'd2', name: 'Отправить 1 голосовое', target: 1, reward: 2 },
+            { id: 'd3', name: 'Зайти в приложение', target: 1, reward: 1 },
+            { id: 'd4', name: 'Поставить 3 реакции', target: 3, reward: 2 },
+            { id: 'd5', name: 'Открыть чат с другом', target: 1, reward: 1 }
+        ];
+        const WEEKLY_TASKS = [
+            { id: 'w1', name: 'Отправить 30 сообщений', target: 30, reward: 10 },
+            { id: 'w2', name: 'Отправить 5 голосовых', target: 5, reward: 8 },
+            { id: 'w3', name: 'Добавить 2 контакта', target: 2, reward: 10 },
+            { id: 'w4', name: 'Создать группу или канал', target: 1, reward: 15 },
+            { id: 'w5', name: 'Отправить подарок', target: 1, reward: 8 }
+        ];
         const JACKPOT_COMMISSION = 0.13;
         const JACKPOT_INTERVAL_DAYS = 14;
 
@@ -302,6 +334,8 @@
             loadChats();
             loadGroups();
             loadContacts();
+            loadShop();
+            loadTasks();
             loadSettings();
             updateOnlineStatus();
             listenOnlineStatus();
@@ -356,16 +390,17 @@
                     groups: {},
                     channels: {},
                     blocked: {},
-                    stars: 5,
+                    stars: 10,
                     gifts: [],
                     fcmToken: '',
+                    tasks: { daily: {}, weekly: {} },
                     createdAt: Date.now(),
                     privacy: defaultPrivacy
                 }).then(() => {
                     myCode = newCode;
                     saveMyCode(newCode);
                     showAppScreen();
-                    alert('✅ Аккаунт создан!\nТвой код: ' + newCode + '\nUsername: ' + defaultUsername + '\n+5 звёзд за регистрацию!');
+                    alert('✅ Аккаунт создан!\nТвой код: ' + newCode + '\nUsername: ' + defaultUsername + '\n+10 звёзд за регистрацию!');
                 });
             }).catch(err => {
                 loader.style.display = 'none';
@@ -440,6 +475,7 @@
                 document.getElementById('profileBio').value = data.bio || '';
                 document.getElementById('profileStars').textContent = data.stars || 0;
                 renderGifts(data.gifts || []);
+                updateTasks(data.tasks || {});
             });
         }
 
@@ -460,20 +496,15 @@
                         <div>${g.from === myCode ? 'Куплен для себя' : 'Подарок от ' + (g.from || 'неизвестного')}</div>
                         <div class="gift-from">${g.date ? new Date(g.date).toLocaleDateString() : ''}</div>
                     </div>
-                    ${g.from === myCode || g.from ? `<button class="exchange-btn" data-index="${index}" style="background:#ffd200;border:none;border-radius:12px;padding:4px 12px;cursor:pointer;font-size:12px;color:#0f0f1a;">🔄 Обменять</button>` : ''}
+                    <button class="exchange-btn" data-index="${index}" style="background:#ffd200;border:none;border-radius:12px;padding:4px 12px;cursor:pointer;font-size:12px;color:#0f0f1a;">🔄 Обменять</button>
                 `;
                 container.appendChild(div);
-                if (g.from === myCode || g.from) {
-                    div.querySelector('.exchange-btn').addEventListener('click', function() {
-                        exchangeGift(index);
-                    });
-                }
+                div.querySelector('.exchange-btn').addEventListener('click', function() {
+                    exchangeGift(index);
+                });
             });
         }
 
-        // =========================================================
-        // 7. ОБМЕН ПОДАРКА НА ЗВЁЗДЫ (С КОМИССИЕЙ 13%)
-        // =========================================================
         function exchangeGift(index) {
             db.ref('users/' + myCode).once('value').then(snap => {
                 const data = snap.val() || {};
@@ -486,11 +517,8 @@
                 
                 if (!confirm(`Обменять подарок ${gift.emoji} на ${starsToAdd} звёзд? (Комиссия ${commission} ⭐ уйдёт в копилку)`)) return;
                 
-                // Удаляем подарок
                 gifts.splice(index, 1);
-                // Добавляем звёзды
                 const newStars = (data.stars || 0) + starsToAdd;
-                // Добавляем комиссию в копилку
                 db.ref('jackpot/amount').transaction(current => {
                     return (current || 0) + commission;
                 });
@@ -505,7 +533,7 @@
         }
 
         // =========================================================
-        // 8. КОПИЛКА
+        // 7. КОПИЛКА
         // =========================================================
         function loadJackpot() {
             db.ref('jackpot/amount').on('value', snap => {
@@ -517,16 +545,13 @@
                 const nextDraw = new Date(lastDraw + JACKPOT_INTERVAL_DAYS * 86400000);
                 document.getElementById('jackpotNextDraw').textContent = nextDraw.toLocaleDateString();
             });
-            // Проверяем, нужно ли провести розыгрыш
             checkJackpotDraw();
         }
 
         function checkJackpotDraw() {
             db.ref('jackpot/lastDraw').once('value').then(snap => {
                 const lastDraw = snap.val() || Date.now();
-                const now = Date.now();
-                if (now - lastDraw >= JACKPOT_INTERVAL_DAYS * 86400000) {
-                    // Время проводить розыгрыш
+                if (Date.now() - lastDraw >= JACKPOT_INTERVAL_DAYS * 86400000) {
                     performJackpotDraw();
                 }
             });
@@ -536,11 +561,9 @@
             db.ref('jackpot/amount').once('value').then(snap => {
                 const amount = snap.val() || 0;
                 if (amount < 10) {
-                    // Слишком мало для розыгрыша
                     db.ref('jackpot/lastDraw').set(Date.now());
                     return;
                 }
-                // Выбираем случайного активного пользователя
                 db.ref('users').once('value').then(snap => {
                     const users = snap.val() || {};
                     const activeUsers = [];
@@ -555,23 +578,123 @@
                         return;
                     }
                     const winner = activeUsers[Math.floor(Math.random() * activeUsers.length)];
-                    // Переводим сумму победителю
                     db.ref('users/' + winner + '/stars').transaction(current => {
                         return (current || 0) + amount;
                     });
-                    // Обнуляем копилку
                     db.ref('jackpot/amount').set(0);
                     db.ref('jackpot/lastDraw').set(Date.now());
                     db.ref('jackpot/lastWinner').set(winner);
                     db.ref('jackpot/lastAmount').set(amount);
-                    // Оповещаем всех (в чате или через уведомления)
                     alert(`🏆 Пользователь ${winner} выиграл ${amount} ⭐ в розыгрыше!`);
                 });
             });
         }
 
         // =========================================================
-        // 9. ТЕМА
+        // 8. ЗАДАНИЯ
+        // =========================================================
+        function updateTasks(tasksData) {
+            const daily = tasksData.daily || {};
+            const weekly = tasksData.weekly || {};
+            const today = new Date().toDateString();
+            const weekStart = getWeekStart();
+            
+            // Сбрасываем ежедневные задания, если новый день
+            if (daily.lastDate !== today) {
+                DAILY_TASKS.forEach(t => {
+                    daily[t.id] = 0;
+                });
+                daily.lastDate = today;
+                db.ref('users/' + myCode + '/tasks/daily').set(daily);
+            }
+            
+            // Сбрасываем недельные задания, если новая неделя
+            if (weekly.lastWeek !== weekStart) {
+                WEEKLY_TASKS.forEach(t => {
+                    weekly[t.id] = 0;
+                });
+                weekly.lastWeek = weekStart;
+                db.ref('users/' + myCode + '/tasks/weekly').set(weekly);
+            }
+        }
+
+        function getWeekStart() {
+            const d = new Date();
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(d.setDate(diff)).toDateString();
+        }
+
+        function loadTasks() {
+            const container = document.getElementById('tasksContainer');
+            container.innerHTML = '<h3 style="color:#ffd200;margin-bottom:12px;">📋 Ежедневные задания</h3>';
+            DAILY_TASKS.forEach(task => {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.innerHTML = `
+                    <div class="task-info">${task.name}</div>
+                    <div class="task-reward">+${task.reward} ⭐</div>
+                    <div class="task-status pending">⏳</div>
+                `;
+                container.appendChild(div);
+            });
+            container.innerHTML += '<h3 style="color:#ffd200;margin:12px 0;">📋 Недельные задания</h3>';
+            WEEKLY_TASKS.forEach(task => {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.innerHTML = `
+                    <div class="task-info">${task.name}</div>
+                    <div class="task-reward">+${task.reward} ⭐</div>
+                    <div class="task-status pending">⏳</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // =========================================================
+        // 9. МАГАЗИН
+        // =========================================================
+        function loadShop() {
+            const container = document.getElementById('shopContainer');
+            container.innerHTML = '<h3 style="color:#ffd200;margin-bottom:12px;">🎁 Магазин подарков</h3>';
+            GIFTS.forEach(gift => {
+                const div = document.createElement('div');
+                div.className = 'shop-item';
+                div.innerHTML = `
+                    <span class="shop-emoji">${gift.emoji}</span>
+                    <div class="shop-info">
+                        <div>${gift.name}</div>
+                        <div style="font-size:12px;color:#888;">${gift.price} ⭐</div>
+                    </div>
+                    <button class="buy-btn" data-emoji="${gift.emoji}" data-price="${gift.price}" style="background:#e94560;border:none;border-radius:12px;padding:6px 14px;color:#fff;cursor:pointer;">Купить</button>
+                `;
+                container.appendChild(div);
+                div.querySelector('.buy-btn').addEventListener('click', function() {
+                    const emoji = this.dataset.emoji;
+                    const price = parseInt(this.dataset.price);
+                    buyGift(emoji, price);
+                });
+            });
+        }
+
+        function buyGift(emoji, price) {
+            db.ref('users/' + myCode + '/stars').once('value').then(snap => {
+                const stars = snap.val() || 0;
+                if (stars < price) {
+                    alert('❌ Недостаточно звёзд! Нужно ' + price + ' ⭐');
+                    return;
+                }
+                if (!confirm(`Купить подарок ${emoji} за ${price} ⭐?`)) return;
+                db.ref('users/' + myCode + '/stars').set(stars - price);
+                const gift = { emoji, from: myCode, date: Date.now() };
+                db.ref('users/' + myCode + '/gifts').push(gift);
+                alert('✅ Подарок куплен! Он сохранён в твоём профиле.');
+                loadUserData();
+            });
+        }
+
+        // =========================================================
+        // 10. ТЕМА
         // =========================================================
         let currentTheme = localStorage.getItem('theme') || 'dark';
         function applyTheme(theme) {
@@ -592,7 +715,7 @@
         applyTheme(currentTheme);
 
         // =========================================================
-        // 10. ОНЛАЙН СТАТУС
+        // 11. ОНЛАЙН СТАТУС
         // =========================================================
         function updateOnlineStatus() {
             if (!myCode) return;
@@ -626,7 +749,7 @@
         }
 
         // =========================================================
-        // 11. БЛОКИРОВКА
+        // 12. БЛОКИРОВКА
         // =========================================================
         function toggleBlock(targetCode) {
             const blockedRef = db.ref('users/' + myCode + '/blocked/' + targetCode);
@@ -649,7 +772,7 @@
         }
 
         // =========================================================
-        // 12. ТАБЫ
+        // 13. ТАБЫ
         // =========================================================
         document.querySelectorAll('#tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -661,12 +784,14 @@
                 if (tab === 'chats') loadChats();
                 if (tab === 'groups') loadGroups();
                 if (tab === 'contacts') loadContacts();
+                if (tab === 'shop') loadShop();
+                if (tab === 'tasks') loadTasks();
                 if (tab === 'settings') loadSettings();
             });
         });
 
         // =========================================================
-        // 13. ЧАТЫ
+        // 14. ЧАТЫ
         // =========================================================
         const chatList = document.getElementById('chatList');
         const chatView = document.getElementById('chatView');
@@ -746,7 +871,7 @@
         });
 
         // =========================================================
-        // 14. ОТКЛЮЧЕНИЕ УВЕДОМЛЕНИЙ
+        // 15. ОТКЛЮЧЕНИЕ УВЕДОМЛЕНИЙ
         // =========================================================
         muteChatBtn.addEventListener('click', function() {
             if (!currentChat) return;
@@ -766,7 +891,7 @@
         });
 
         // =========================================================
-        // 15. ОТПРАВКА СООБЩЕНИЙ (С ПРОВЕРКОЙ НА НЕЗНАКОМЦЕВ)
+        // 16. ОТПРАВКА СООБЩЕНИЙ
         // =========================================================
         sendBtn.addEventListener('click', sendPrivateMessage);
         msgInput.addEventListener('keydown', function(e) {
@@ -785,7 +910,6 @@
                 return;
             }
             
-            // Проверка на незнакомца
             const targetCode = currentChat.id;
             const isContact = await db.ref('users/' + myCode + '/contacts/' + targetCode).once('value');
             if (!isContact.exists()) {
@@ -830,6 +954,8 @@
             try {
                 await ref.set(msgData);
                 msgInput.value = '';
+                // Обновляем задания
+                updateTaskProgress('daily', 'd1', 1);
             } catch (err) {
                 alert('Ошибка отправки! Проверь интернет.');
             }
@@ -840,7 +966,7 @@
         }
 
         // =========================================================
-        // 16. ЗАГРУЗКА СООБЩЕНИЙ
+        // 17. ЗАГРУЗКА СООБЩЕНИЙ
         // =========================================================
         function loadMessages(type, id) {
             if (type === 'user') {
@@ -859,7 +985,7 @@
         }
 
         // =========================================================
-        // 17. ПРИКРЕПЛЕНИЕ ФАЙЛОВ
+        // 18. ПРИКРЕПЛЕНИЕ ФАЙЛОВ
         // =========================================================
         attachBtn.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', async function(e) {
@@ -901,7 +1027,7 @@
         }
 
         // =========================================================
-        // 18. ГОЛОСОВЫЕ СООБЩЕНИЯ
+        // 19. ГОЛОСОВЫЕ СООБЩЕНИЯ
         // =========================================================
         recordBtn.addEventListener('click', async function() {
             if (isRecording) {
@@ -927,6 +1053,7 @@
                     const url = await uploadAudio(audioBlob);
                     if (url) {
                         await sendPrivateMessageWithFile(url, 'audio', 'Голосовое');
+                        updateTaskProgress('daily', 'd2', 1);
                     }
                 };
                 mediaRecorder.start();
@@ -946,7 +1073,7 @@
         }
 
         // =========================================================
-        // 19. ВИДЕО (КРУЖОЧКИ)
+        // 20. ВИДЕО (КРУЖОЧКИ)
         // =========================================================
         const videoPreview = document.getElementById('videoPreview');
         const previewVideo = document.getElementById('previewVideo');
@@ -1035,7 +1162,7 @@
         }
 
         // =========================================================
-        // 20. ЗВОНКИ
+        // 21. ЗВОНКИ
         // =========================================================
         callBtn.addEventListener('click', function() {
             if (!currentChat || currentChat.type !== 'user') return;
@@ -1059,7 +1186,7 @@
         });
 
         // =========================================================
-        // 21. ГРУППЫ
+        // 22. ГРУППЫ
         // =========================================================
         const groupList = document.getElementById('groupList');
         const groupView = document.getElementById('groupView');
@@ -1208,6 +1335,7 @@
             try {
                 await ref.set(msgData);
                 groupMsgInput.value = '';
+                updateTaskProgress('daily', 'd1', 1);
             } catch (err) {
                 alert('Ошибка отправки! Проверь интернет.');
             }
@@ -1338,13 +1466,14 @@
                         groupNameInput.value = '';
                         loadGroups();
                         alert('✅ Группа создана!');
+                        updateTaskProgress('weekly', 'w4', 1);
                     });
                 });
             });
         });
 
         // =========================================================
-        // 22. КАНАЛЫ
+        // 23. КАНАЛЫ
         // =========================================================
         createChannelBtn.addEventListener('click', function() {
             const name = prompt('Введите название канала:');
@@ -1362,11 +1491,12 @@
                 db.ref('users/' + myCode + '/channels/' + channelId).set(true);
                 alert('✅ Канал создан!');
                 loadGroups();
+                updateTaskProgress('weekly', 'w4', 1);
             });
         });
 
         // =========================================================
-        // 23. КОНТАКТЫ
+        // 24. КОНТАКТЫ
         // =========================================================
         const contactSearch = document.getElementById('contactSearch');
         const addContactBtn = document.getElementById('addContactBtn');
@@ -1435,10 +1565,11 @@
             contactSearch.value = '';
             loadContacts();
             alert('✅ Контакт добавлен!');
+            updateTaskProgress('weekly', 'w3', 1);
         }
 
         // =========================================================
-        // 24. ПЕРЕСЫЛКА С ВЫБОРОМ КОНТАКТА
+        // 25. ПЕРЕСЫЛКА С ВЫБОРОМ КОНТАКТА
         // =========================================================
         function forwardMessage(chatId, messageKey, data) {
             db.ref('users/' + myCode + '/contacts').once('value').then(snap => {
@@ -1500,7 +1631,7 @@
         }
 
         // =========================================================
-        // 25. ДЕЙСТВИЯ С СООБЩЕНИЯМИ (УДАЛЕНИЕ, РЕДАКТИРОВАНИЕ, ОТВЕТ, ЗАКРЕП)
+        // 26. ДЕЙСТВИЯ С СООБЩЕНИЯМИ
         // =========================================================
         function deleteForMe(chatId, messageKey) {
             if (!confirm('Удалить сообщение только у себя?')) return;
@@ -1562,9 +1693,9 @@
         }
 
         // =========================================================
-        // 26. ПОДАРКИ
+        // 27. ПОДАРКИ ДРУЗЬЯМ
         // =========================================================
-        function sendGift(targetCode) {
+        function sendGiftToFriend(targetCode) {
             db.ref('users/' + myCode + '/stars').once('value').then(snap => {
                 const stars = snap.val() || 0;
                 const minPrice = Math.min(...GIFTS.map(g => g.price));
@@ -1580,7 +1711,7 @@
                 `;
                 modal.innerHTML = `
                     <div style="background: #1a1a2e; padding: 20px; border-radius: 16px; width: 90%; max-width: 380px; text-align:center; max-height: 80vh; overflow-y: auto;">
-                        <h3 style="color: #fff; margin-bottom: 12px;">🎁 Выбери подарок</h3>
+                        <h3 style="color: #fff; margin-bottom: 12px;">🎁 Выбери подарок для друга</h3>
                         <div style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;">
                             ${GIFTS.map(g => `
                                 <button class="gift-select-btn" data-emoji="${g.emoji}" data-price="${g.price}" style="font-size:28px; background:#1e2a4a; border:none; border-radius:12px; cursor:pointer; padding:8px; transition:transform .2s; min-width:60px; color:#fff; display:flex; flex-direction:column; align-items:center;">
@@ -1595,12 +1726,6 @@
                 document.body.appendChild(modal);
 
                 modal.querySelectorAll('.gift-select-btn').forEach(btn => {
-                    btn.addEventListener('mouseover', function() {
-                        this.style.transform = 'scale(1.05)';
-                    });
-                    btn.addEventListener('mouseout', function() {
-                        this.style.transform = 'scale(1)';
-                    });
                     btn.addEventListener('click', function() {
                         const emoji = this.dataset.emoji;
                         const price = parseInt(this.dataset.price);
@@ -1618,6 +1743,7 @@
                         sendNotification(targetCode, '🎁 Вы получили подарок от ' + myCode);
                         alert('✅ Подарок отправлен!');
                         loadUserData();
+                        updateTaskProgress('weekly', 'w5', 1);
                     });
                 });
 
@@ -1628,7 +1754,7 @@
         }
 
         // =========================================================
-        // 27. УВЕДОМЛЕНИЯ
+        // 28. УВЕДОМЛЕНИЯ
         // =========================================================
         function sendNotification(targetCode, message) {
             db.ref('users/' + targetCode + '/fcmToken').once('value').then(snap => {
@@ -1639,7 +1765,7 @@
         }
 
         // =========================================================
-        // 28. РЕАКЦИИ
+        // 29. РЕАКЦИИ
         // =========================================================
         const reactionPanel = document.getElementById('reactionPanel');
         let selectedMessageKey = null;
@@ -1694,6 +1820,7 @@
                 reactionPanel.classList.remove('active');
                 selectedMessageKey = null;
                 selectedChatId = null;
+                updateTaskProgress('daily', 'd4', 1);
             });
         });
 
@@ -1715,7 +1842,7 @@
         }
 
         // =========================================================
-        // 29. ОТРИСОВКА СООБЩЕНИЙ
+        // 30. ОТРИСОВКА СООБЩЕНИЙ
         // =========================================================
         function renderMessage(container, data, myCode) {
             if (data.deletedForMe) return;
@@ -1932,7 +2059,7 @@
         }
 
         // =========================================================
-        // 30. ЗАГРУЗКА ФАЙЛОВ
+        // 31. ЗАГРУЗКА ФАЙЛОВ
         // =========================================================
         async function uploadFile(file) {
             const path = 'files/' + Date.now() + '_' + file.name;
@@ -1942,7 +2069,7 @@
         }
 
         // =========================================================
-        // 31. НАСТРОЙКИ
+        // 32. НАСТРОЙКИ
         // =========================================================
         function loadSettings() {
             const settingsList = document.getElementById('settingsList');
@@ -1951,7 +2078,7 @@
                     <span class="label"><span class="icon">👤</span> Аккаунт</span>
                     <span class="arrow">›</span>
                 </div>
-                <div class="settings-item" onclick="alert('Конфиденциальность в разработке')">
+                <div class="settings-item" onclick="alert('Конфиденциальность в настройках профиля')">
                     <span class="label"><span class="icon">🔒</span> Конфиденциальность</span>
                     <span class="arrow">›</span>
                 </div>
@@ -1979,7 +2106,16 @@
         }
 
         // =========================================================
-        // 32. ПРОФИЛЬ (МОДАЛКА) — ОБРАБОТЧИКИ
+        // 33. ОБНОВЛЕНИЕ ЗАДАНИЙ
+        // =========================================================
+        function updateTaskProgress(type, taskId, amount) {
+            db.ref('users/' + myCode + '/tasks/' + type + '/' + taskId).transaction(current => {
+                return (current || 0) + amount;
+            });
+        }
+
+        // =========================================================
+        // 34. ПРОФИЛЬ (МОДАЛКА) — ОБРАБОТЧИКИ
         // =========================================================
         const profileModal = document.getElementById('profileModal');
         const profileBtn = document.getElementById('profileBtn');
@@ -2054,7 +2190,7 @@
                 btn.innerHTML = `<img src="${url}" alt="avatar" />`;
                 alert('✅ Аватар обновлён!');
             } catch (err) {
-                alert('Ошибка загрузки аватарки!');
+                alert('Ошибка загрузки аватарки: ' + err.message);
             }
             loader.style.display = 'none';
             this.value = '';
@@ -2149,20 +2285,9 @@
         });
 
         // =========================================================
-        // 33. ДОБАВЛЯЕМ КНОПКУ ПОДАРКА В КОНТАКТЫ
+        // 35. ИНИЦИАЛИЗАЦИЯ
         // =========================================================
-        document.addEventListener('click', function(e) {
-            const target = e.target.closest('.send-gift-btn');
-            if (target) {
-                const code = target.dataset.code;
-                if (code) sendGift(code);
-            }
-        });
-
-        // =========================================================
-        // 34. ИНИЦИАЛИЗАЦИЯ
-        // =========================================================
-        console.log('🔥 GURU запущен! Код: ' + myCode);
+        console.log('🔥 GURU 3.0 запущен! Код: ' + myCode);
     </script>
 </body>
 </html>
