@@ -21,7 +21,9 @@
         #tabs button{flex:1;padding:8px;border:none;background:transparent;color:#888;font-size:14px;cursor:pointer;border-radius:8px}
         #tabs button.active{background:#1e2a4a;color:#fff}
         #content{flex:1;overflow-y:auto;padding:10px 0}
-        .contact{padding:12px 16px;background:#1a1a2e;margin:4px 0;border-radius:12px;cursor:pointer;display:flex;justify-content:space-between}
+        .contact{padding:12px 16px;background:#1a1a2e;margin:4px 0;border-radius:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+        .contact .block-btn{background:transparent;border:none;color:#ff6b6b;font-size:16px;cursor:pointer}
+        .contact .block-btn:hover{color:#ff4444}
         .chat-area{display:none;flex-direction:column;height:100%}
         .chat-area.active{display:flex}
         #messages{flex:1;overflow-y:auto;padding:10px 0;display:flex;flex-direction:column;gap:4px}
@@ -34,6 +36,8 @@
         .back-btn{background:transparent;color:#ffd200;border:none;font-size:16px;cursor:pointer;padding:4px 8px}
         #info{text-align:center;font-size:11px;color:#444;padding:4px 0}
         .nick{color:#ffd200;font-size:12px;margin-bottom:2px;display:block}
+        .blocked-msg{color:#ff6b6b;font-style:italic;text-align:center;padding:20px;font-size:14px}
+        .group-item{color:#ffd200}
         
         /* ===== НАСТРОЙКИ (МОДАЛКА) ===== */
         #settingsModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1000}
@@ -49,6 +53,22 @@
         .settings-item .delete-btn{color:#ff6b6b;font-size:16px;margin-left:8px;background:transparent;border:none;cursor:pointer}
         #closeSettings{width:100%;padding:12px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:16px;cursor:pointer;margin-top:12px}
         .account-item{display:flex;justify-content:space-between;align-items:center;width:100%}
+        .blocked-item{display:flex;justify-content:space-between;align-items:center;width:100%;padding:8px 0}
+        .blocked-item .unblock-btn{background:transparent;border:none;color:#4caf50;cursor:pointer;font-size:14px}
+        
+        /* ===== ВЫБОР УЧАСТНИКОВ ДЛЯ ГРУППЫ ===== */
+        #groupModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1001}
+        #groupModal.active{display:flex}
+        #groupModal .modal-content{background:#1a1a2e;padding:20px;border-radius:16px;width:90%;max-width:350px;max-height:80vh;overflow-y:auto}
+        #groupModal h2{color:#ffd200;margin-bottom:12px;text-align:center}
+        #groupModal input{padding:10px;border-radius:24px;border:none;background:#0f0f1a;color:#fff;font-size:16px;width:100%;margin-bottom:12px;outline:none}
+        #groupModal .contact-item{padding:10px;display:flex;align-items:center;gap:10px;cursor:pointer;border-radius:8px}
+        #groupModal .contact-item:hover{background:#2a2a4a}
+        #groupModal .contact-item input[type="checkbox"]{width:18px;height:18px;accent-color:#e94560}
+        #groupModal .create-btn{width:100%;padding:12px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:16px;cursor:pointer;margin-top:12px}
+        #groupModal .close-btn{width:100%;padding:8px;border-radius:24px;border:none;background:transparent;color:#888;font-size:14px;cursor:pointer;margin-top:6px}
+        .create-group-btn{background:#1e2a4a;border:none;border-radius:20px;padding:8px 16px;color:#ffd200;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;gap:4px;margin-bottom:8px}
+        .create-group-btn:hover{background:#2a2a4a}
     </style>
 </head>
 <body>
@@ -82,6 +102,7 @@
         <div id="content">
             <!-- Чаты -->
             <div id="tab-chats">
+                <button class="create-group-btn" id="createGroupBtn">👥 Создать группу</button>
                 <div id="chatList"></div>
                 <div id="chatView" class="chat-area">
                     <button class="back-btn" id="backToChats">← Назад</button>
@@ -111,14 +132,31 @@
     <div id="settingsModal">
         <div class="modal-content">
             <h2>⚙️ Настройки</h2>
-            <div id="accountsList">
-                <!-- Аккаунты будут добавляться сюда -->
-            </div>
+            <div id="accountsList"></div>
             <div class="settings-item" id="addAccountBtn">
                 <span class="label">➕ Добавить аккаунт</span>
                 <span class="add-btn">+</span>
             </div>
+            <div class="settings-item" id="showBlockedBtn">
+                <span class="label">🚫 Заблокированные</span>
+                <span class="value">→</span>
+            </div>
+            <div id="blockedListContainer" style="display:none;margin-top:8px;border-top:1px solid #2a2a3a;padding-top:8px;">
+                <div id="blockedList"></div>
+            </div>
             <button id="closeSettings">✖️ Закрыть</button>
+        </div>
+    </div>
+
+    <!-- ===== ГРУППА (МОДАЛКА ВЫБОРА УЧАСТНИКОВ) ===== -->
+    <div id="groupModal">
+        <div class="modal-content">
+            <h2>👥 Создать группу</h2>
+            <input id="groupNameInput" placeholder="Название группы" />
+            <div style="margin-bottom:8px;color:#888;font-size:13px;">Выбери участников:</div>
+            <div id="groupMembersList"></div>
+            <button class="create-btn" id="confirmGroupBtn">✅ Создать</button>
+            <button class="close-btn" id="closeGroupModal">✖️ Отмена</button>
         </div>
     </div>
 
@@ -140,6 +178,9 @@
         let currentChat = null;
         let accounts = [];
         let activeAccountIndex = 0;
+        let blockedUsers = {};
+        let groups = {};
+        let contactsList = [];
 
         // =========================================================
         // 3. РАБОТА С АККАУНТАМИ
@@ -181,6 +222,7 @@
             myName = acc.name;
             saveActiveAccount(index);
             document.getElementById('userName').textContent = myName;
+            loadBlocked();
             loadChats();
             loadContacts();
             renderAccounts();
@@ -207,13 +249,100 @@
             myName = acc.name;
             saveActiveAccount(activeAccountIndex);
             document.getElementById('userName').textContent = myName;
+            loadBlocked();
             loadChats();
             loadContacts();
             renderAccounts();
         }
 
         // =========================================================
-        // 4. АВТОРИЗАЦИЯ
+        // 4. БЛОКИРОВКА
+        // =========================================================
+        function loadBlocked() {
+            if (!myCode) return;
+            db.ref('users/' + myCode + '/blocked').once('value').then(snap => {
+                blockedUsers = snap.val() || {};
+                renderBlockedList();
+            });
+        }
+
+        function toggleBlock(targetCode) {
+            if (blockedUsers[targetCode]) {
+                db.ref('users/' + myCode + '/blocked/' + targetCode).remove().then(() => {
+                    delete blockedUsers[targetCode];
+                    loadBlocked();
+                    loadChats();
+                    alert('✅ Пользователь разблокирован!');
+                });
+            } else {
+                db.ref('users/' + myCode + '/blocked/' + targetCode).set(true).then(() => {
+                    blockedUsers[targetCode] = true;
+                    loadBlocked();
+                    loadChats();
+                    alert('🚫 Пользователь заблокирован!');
+                });
+            }
+        }
+
+        function isBlocked(code) {
+            return blockedUsers[code] === true;
+        }
+
+        function renderBlockedList() {
+            const container = document.getElementById('blockedList');
+            container.innerHTML = '';
+            const keys = Object.keys(blockedUsers);
+            if (keys.length === 0) {
+                container.innerHTML = '<div style="color:#888;font-size:13px;padding:8px 0;">Нет заблокированных</div>';
+                return;
+            }
+            keys.forEach(code => {
+                const div = document.createElement('div');
+                div.className = 'blocked-item';
+                db.ref('users/' + code + '/username').once('value').then(snap => {
+                    const name = snap.val() || code;
+                    div.innerHTML = `
+                        <span>${name}</span>
+                        <button class="unblock-btn" data-code="${code}">✅ Разблокировать</button>
+                    `;
+                    div.querySelector('.unblock-btn').addEventListener('click', function() {
+                        toggleBlock(code);
+                    });
+                });
+                container.appendChild(div);
+            });
+        }
+
+        // =========================================================
+        // 5. ГРУППЫ
+        // =========================================================
+        function loadGroups() {
+            if (!myCode) return;
+            db.ref('users/' + myCode + '/groups').once('value').then(snap => {
+                groups = snap.val() || {};
+            });
+        }
+
+        function createGroup(name, members) {
+            const groupId = 'g_' + Date.now();
+            const groupData = {
+                name: name,
+                members: members,
+                admin: myCode,
+                createdAt: Date.now()
+            };
+            db.ref('groups/' + groupId).set(groupData).then(() => {
+                // Добавляем группу всем участникам
+                members.forEach(code => {
+                    db.ref('users/' + code + '/groups/' + groupId).set(true);
+                });
+                loadChats();
+                alert('✅ Группа создана!');
+            });
+        }
+
+        // =========================================================
+        // 6. АВТОРИЗАЦИЯ
         // =========================================================
         const auth = document.getElementById('auth');
         const app = document.getElementById('app');
@@ -234,6 +363,8 @@
                 myCode = acc.code;
                 myName = acc.name;
                 document.getElementById('userName').textContent = myName;
+                loadBlocked();
+                loadGroups();
                 loadChats();
                 loadContacts();
                 renderAccounts();
@@ -248,7 +379,6 @@
             db.ref('users/' + code).once('value').then(snap => {
                 if (snap.exists()) {
                     const data = snap.val();
-                    // Проверяем, есть ли уже такой аккаунт
                     const exists = accounts.some(a => a.code === code);
                     if (exists) {
                         const idx = accounts.findIndex(a => a.code === code);
@@ -260,7 +390,19 @@
                         showApp();
                     }
                 } else {
-                    alert('❌ Аккаунт не найден!');
+                    db.ref('users/' + code).set({
+                        code: code,
+                        username: name,
+                        contacts: {},
+                        blocked: {},
+                        groups: {},
+                        createdAt: Date.now()
+                    }).then(() => {
+                        addAccount(code, name);
+                        setCurrentAccount(accounts.length - 1);
+                        showApp();
+                        alert('✅ Аккаунт создан!');
+                    });
                 }
             }).catch(() => alert('Ошибка соединения!'));
         });
@@ -280,6 +422,8 @@
                     code: newCode,
                     username: newName,
                     contacts: {},
+                    blocked: {},
+                    groups: {},
                     createdAt: Date.now()
                 }).then(() => {
                     addAccount(newCode, newName);
@@ -290,7 +434,6 @@
             }).catch(() => alert('Ошибка соединения!'));
         });
 
-        // Восстановление аккаунтов
         if (loadAccounts() && loadActiveAccount()) {
             const acc = getCurrentAccount();
             if (acc) {
@@ -305,7 +448,7 @@
         }
 
         // =========================================================
-        // 5. НАСТРОЙКИ (АККАУНТЫ)
+        // 7. НАСТРОЙКИ
         // =========================================================
         const settingsModal = document.getElementById('settingsModal');
         const settingsBtn = document.getElementById('settingsBtn');
@@ -314,6 +457,8 @@
 
         settingsBtn.addEventListener('click', function() {
             renderAccounts();
+            renderBlockedList();
+            document.getElementById('blockedListContainer').style.display = 'none';
             settingsModal.classList.add('active');
         });
 
@@ -365,25 +510,101 @@
         document.getElementById('addAccountBtn').addEventListener('click', function() {
             const code = prompt('Введи код нового аккаунта:');
             if (!code) return;
+            const name = prompt('Введи имя для нового аккаунта:');
+            if (!name) return;
             db.ref('users/' + code).once('value').then(snap => {
-                if (!snap.exists()) {
-                    alert('❌ Аккаунт не найден!');
-                    return;
+                if (snap.exists()) {
+                    const data = snap.val();
+                    if (accounts.some(a => a.code === code)) {
+                        alert('❌ Этот аккаунт уже добавлен!');
+                        return;
+                    }
+                    addAccount(code, data.username || name);
+                    alert('✅ Аккаунт добавлен!');
+                } else {
+                    db.ref('users/' + code).set({
+                        code: code,
+                        username: name,
+                        contacts: {},
+                        blocked: {},
+                        groups: {},
+                        createdAt: Date.now()
+                    }).then(() => {
+                        if (accounts.some(a => a.code === code)) {
+                            alert('❌ Этот аккаунт уже добавлен!');
+                            return;
+                        }
+                        addAccount(code, name);
+                        alert('✅ Новый аккаунт создан и добавлен!');
+                    });
                 }
-                const data = snap.val();
-                const name = data.username || 'Аккаунт';
-                // Проверяем, не добавлен ли уже
-                if (accounts.some(a => a.code === code)) {
-                    alert('❌ Этот аккаунт уже добавлен!');
-                    return;
-                }
-                addAccount(code, name);
-                alert('✅ Аккаунт добавлен!');
             });
         });
 
+        let blockedVisible = false;
+        document.getElementById('showBlockedBtn').addEventListener('click', function() {
+            blockedVisible = !blockedVisible;
+            document.getElementById('blockedListContainer').style.display = blockedVisible ? 'block' : 'none';
+            if (blockedVisible) renderBlockedList();
+        });
+
         // =========================================================
-        // 6. ЧАТЫ
+        // 8. ГРУППЫ (СОЗДАНИЕ)
+        // =========================================================
+        const groupModal = document.getElementById('groupModal');
+        const createGroupBtn = document.getElementById('createGroupBtn');
+        const closeGroupModal = document.getElementById('closeGroupModal');
+        const groupNameInput = document.getElementById('groupNameInput');
+        const groupMembersList = document.getElementById('groupMembersList');
+        const confirmGroupBtn = document.getElementById('confirmGroupBtn');
+
+        createGroupBtn.addEventListener('click', function() {
+            groupNameInput.value = '';
+            groupMembersList.innerHTML = '';
+            // Загружаем контакты
+            db.ref('users/' + myCode + '/contacts').once('value').then(snap => {
+                const contacts = snap.val() || {};
+                let hasContacts = false;
+                for (let code in contacts) {
+                    if (isBlocked(code)) continue;
+                    hasContacts = true;
+                    const div = document.createElement('div');
+                    div.className = 'contact-item';
+                    db.ref('users/' + code + '/username').once('value').then(snap => {
+                        const name = snap.val() || code;
+                        div.innerHTML = `
+                            <input type="checkbox" data-code="${code}" />
+                            <span>${name}</span>
+                        `;
+                    });
+                    groupMembersList.appendChild(div);
+                }
+                if (!hasContacts) {
+                    groupMembersList.innerHTML = '<div style="color:#888;padding:8px;">Нет контактов для добавления</div>';
+                }
+                groupModal.classList.add('active');
+            });
+        });
+
+        closeGroupModal.addEventListener('click', function() {
+            groupModal.classList.remove('active');
+        });
+
+        confirmGroupBtn.addEventListener('click', function() {
+            const name = groupNameInput.value.trim();
+            if (!name) return alert('Введи название группы!');
+            const checkboxes = groupMembersList.querySelectorAll('input[type="checkbox"]:checked');
+            if (checkboxes.length === 0) return alert('Выбери хотя бы одного участника!');
+            const members = [myCode];
+            checkboxes.forEach(cb => {
+                members.push(cb.dataset.code);
+            });
+            createGroup(name, members);
+            groupModal.classList.remove('active');
+        });
+
+        // =========================================================
+        // 9. ЧАТЫ (ЛИЧНЫЕ + ГРУППОВЫЕ)
         // =========================================================
         const chatList = document.getElementById('chatList');
         const chatView = document.getElementById('chatView');
@@ -395,35 +616,73 @@
 
         function loadChats() {
             if (!myCode) return;
+            chatList.innerHTML = '';
+            // Личные чаты
             db.ref('users/' + myCode + '/contacts').once('value').then(snap => {
                 const contacts = snap.val() || {};
-                chatList.innerHTML = '';
                 for (let code in contacts) {
+                    if (isBlocked(code)) continue;
                     const div = document.createElement('div');
                     div.className = 'contact';
                     db.ref('users/' + code + '/username').once('value').then(snap => {
                         const name = snap.val() || code;
-                        div.textContent = name;
+                        div.innerHTML = `
+                            <span>💬 ${name}</span>
+                            <button class="block-btn" data-code="${code}">🚫</button>
+                        `;
+                        div.querySelector('.block-btn').addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            toggleBlock(code);
+                        });
                     });
                     div.addEventListener('click', function() {
                         openChat('user', code);
                     });
                     chatList.appendChild(div);
                 }
-                if (Object.keys(contacts).length === 0) {
-                    chatList.innerHTML = '<div style="color:#666;padding:20px;text-align:center;">Нет контактов</div>';
-                }
+                // Группы
+                db.ref('users/' + myCode + '/groups').once('value').then(snap => {
+                    const groupsData = snap.val() || {};
+                    for (let groupId in groupsData) {
+                        const div = document.createElement('div');
+                        div.className = 'contact';
+                        div.style.color = '#ffd200';
+                        db.ref('groups/' + groupId + '/name').once('value').then(snap => {
+                            const name = snap.val() || groupId;
+                            div.innerHTML = `
+                                <span>👥 ${name}</span>
+                            `;
+                        });
+                        div.addEventListener('click', function() {
+                            openChat('group', groupId);
+                        });
+                        chatList.appendChild(div);
+                    }
+                    if (chatList.children.length === 0) {
+                        chatList.innerHTML = '<div style="color:#666;padding:20px;text-align:center;">Нет чатов</div>';
+                    }
+                });
             });
         }
 
         function openChat(type, id) {
+            if (type === 'user' && isBlocked(id)) {
+                alert('🚫 Этот пользователь заблокирован!');
+                return;
+            }
             currentChat = { type, id };
             chatView.classList.add('active');
             chatList.style.display = 'none';
-            db.ref('users/' + id + '/username').once('value').then(snap => {
-                chatHeader.textContent = snap.val() || id;
-            });
-            loadMessages(id);
+            if (type === 'user') {
+                db.ref('users/' + id + '/username').once('value').then(snap => {
+                    chatHeader.textContent = snap.val() || id;
+                });
+            } else {
+                db.ref('groups/' + id + '/name').once('value').then(snap => {
+                    chatHeader.textContent = '👥 ' + (snap.val() || id);
+                });
+            }
+            loadMessages(type, id);
         }
 
         backToChats.addEventListener('click', function() {
@@ -439,12 +698,17 @@
 
         function sendMessage() {
             if (!currentChat) return;
+            if (currentChat.type === 'user' && isBlocked(currentChat.id)) {
+                alert('🚫 Вы не можете отправлять сообщения заблокированному пользователю!');
+                return;
+            }
             const text = msgInput.value.trim();
             if (!text) return;
-            const chatId = getChatId(myCode, currentChat.id);
-            db.ref('chats/' + chatId).push({
+            const ref = currentChat.type === 'user' 
+                ? db.ref('chats/' + getChatId(myCode, currentChat.id))
+                : db.ref('groups/' + currentChat.id + '/messages');
+            ref.push({
                 from: myCode,
-                to: currentChat.id,
                 text: text,
                 time: Date.now()
             });
@@ -455,11 +719,14 @@
             return [code1, code2].sort().join('_');
         }
 
-        function loadMessages(id) {
-            const chatId = getChatId(myCode, id);
+        function loadMessages(type, id) {
             messages.innerHTML = '';
-            db.ref('chats/' + chatId).orderByChild('time').on('child_added', function(snap) {
+            const ref = type === 'user' 
+                ? db.ref('chats/' + getChatId(myCode, id))
+                : db.ref('groups/' + id + '/messages');
+            ref.orderByChild('time').on('child_added', function(snap) {
                 const data = snap.val();
+                if (type === 'user' && isBlocked(data.from)) return;
                 const div = document.createElement('div');
                 div.className = 'msg';
                 if (data.from === myCode) div.classList.add('my');
@@ -484,7 +751,7 @@
         }
 
         // =========================================================
-        // 7. КОНТАКТЫ (ДОБАВЛЕНИЕ ПО НИКУ)
+        // 10. КОНТАКТЫ
         // =========================================================
         const contactSearch = document.getElementById('contactSearch');
         const addContactBtn = document.getElementById('addContactBtn');
@@ -496,6 +763,7 @@
                 const contacts = snap.val() || {};
                 contactList.innerHTML = '';
                 for (let code in contacts) {
+                    if (isBlocked(code)) continue;
                     const div = document.createElement('div');
                     div.className = 'contact';
                     db.ref('users/' + code + '/username').once('value').then(snap => {
@@ -517,7 +785,7 @@
                     let found = false;
                     snap.forEach(child => {
                         const code = child.key;
-                        if (code !== myCode) {
+                        if (code !== myCode && !isBlocked(code)) {
                             db.ref('users/' + myCode + '/contacts/' + code).set(true);
                             found = true;
                         }
@@ -527,7 +795,7 @@
                         loadContacts();
                         alert('✅ Контакт добавлен!');
                     } else {
-                        alert('❌ Это ты!');
+                        alert('❌ Это ты или пользователь заблокирован!');
                     }
                 } else {
                     alert('❌ Пользователь с таким ником не найден!');
@@ -536,7 +804,7 @@
         });
 
         // =========================================================
-        // 8. ТАБЫ
+        // 11. ТАБЫ
         // =========================================================
         document.querySelectorAll('#tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -551,7 +819,7 @@
         });
 
         // =========================================================
-        // 9. ИНИЦИАЛИЗАЦИЯ
+        // 12. ИНИЦИАЛИЗАЦИЯ
         // =========================================================
         console.log('🔥 GURU запущен! Код: ' + myCode + ', Имя: ' + myName);
         console.log('📱 Аккаунтов: ' + accounts.length);
