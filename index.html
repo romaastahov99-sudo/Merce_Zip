@@ -12,9 +12,10 @@
         #auth input{padding:12px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;font-size:18px;text-align:center;width:80%;max-width:300px;margin:8px 0}
         #auth button{padding:12px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:18px;cursor:pointer;width:80%;max-width:300px;margin:4px 0}
         #app{display:none;flex-direction:column;height:100vh}
-        #header{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #2a2a3a}
+        #header{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #2a2a3a;flex-wrap:wrap;gap:4px}
         #header h1{background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:22px}
-        #userName{color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px}
+        #userName{color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px;cursor:pointer}
+        #userName:hover{background:#2a2a4a}
         #tabs{display:flex;gap:4px;padding:8px 0;border-bottom:1px solid #2a2a3a}
         #tabs button{flex:1;padding:8px;border:none;background:transparent;color:#888;font-size:14px;cursor:pointer;border-radius:8px}
         #tabs button.active{background:#1e2a4a;color:#fff}
@@ -32,6 +33,11 @@
         .back-btn{background:transparent;color:#ffd200;border:none;font-size:16px;cursor:pointer;padding:4px 8px}
         #info{text-align:center;font-size:11px;color:#444;padding:4px 0}
         .nick{color:#ffd200;font-size:12px;margin-bottom:2px;display:block}
+        #accountsMenu{display:none;position:absolute;top:50px;right:10px;background:#1a1a2e;border-radius:12px;padding:8px;min-width:150px;border:1px solid #2a2a3a;z-index:100}
+        #accountsMenu button{display:block;width:100%;padding:8px 12px;background:transparent;border:none;color:#fff;font-size:14px;text-align:left;cursor:pointer;border-radius:6px}
+        #accountsMenu button:hover{background:#2a2a4a}
+        #accountsMenu button.active{color:#ffd200}
+        .account-badge{font-size:10px;color:#888;margin-left:4px}
     </style>
 </head>
 <body>
@@ -51,7 +57,14 @@
     <div id="app">
         <div id="header">
             <h1>GURU</h1>
-            <span id="userName" style="color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px;">----</span>
+            <div style="display:flex;align-items:center;gap:8px;position:relative;">
+                <span id="userName" style="color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px;cursor:pointer;">----</span>
+                <button id="accountsBtn" style="background:transparent;border:none;color:#888;font-size:18px;cursor:pointer;">▼</button>
+                <div id="accountsMenu">
+                    <button class="active" data-account="main">👤 Основной</button>
+                    <button data-account="second">➕ Второй</button>
+                </div>
+            </div>
         </div>
 
         <div id="tabs">
@@ -76,9 +89,9 @@
 
             <!-- Контакты -->
             <div id="tab-contacts" style="display:none;">
-                <div style="padding:10px 0;">
-                    <input id="contactSearch" placeholder="Поиск по коду..." style="width:100%;padding:10px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;outline:none;" />
-                    <button id="addContactBtn" style="margin-top:8px;padding:10px 20px;border-radius:24px;border:none;background:#e94560;color:#fff;cursor:pointer;width:100%;">Добавить</button>
+                <div style="padding:10px 0;display:flex;gap:8px;flex-wrap:wrap;">
+                    <input id="contactSearch" placeholder="Поиск по нику..." style="flex:1;padding:10px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;outline:none;min-width:100px;" />
+                    <button id="addContactBtn" style="padding:10px 20px;border-radius:24px;border:none;background:#e94560;color:#fff;cursor:pointer;">➕ Добавить</button>
                 </div>
                 <div id="contactList"></div>
             </div>
@@ -103,9 +116,10 @@
         let myCode = null;
         let myName = null;
         let currentChat = null;
+        let currentAccount = 'main';
 
         // =========================================================
-        // 3. АВТОРИЗАЦИЯ
+        // 3. РАБОТА С АККАУНТАМИ
         // =========================================================
         function loadMyCode() {
             const saved = localStorage.getItem('myCode');
@@ -125,7 +139,19 @@
             localStorage.setItem('myName', name);
             myName = name;
         }
+        function loadAccount() {
+            const saved = localStorage.getItem('currentAccount');
+            if (saved) { currentAccount = saved; return true; }
+            return false;
+        }
+        function saveAccount(account) {
+            localStorage.setItem('currentAccount', account);
+            currentAccount = account;
+        }
 
+        // =========================================================
+        // 4. АВТОРИЗАЦИЯ
+        // =========================================================
         const auth = document.getElementById('auth');
         const app = document.getElementById('app');
         const codeInput = document.getElementById('codeInput');
@@ -207,7 +233,70 @@
         }
 
         // =========================================================
-        // 4. ЧАТЫ
+        // 5. ПЕРЕКЛЮЧЕНИЕ АККАУНТОВ
+        // =========================================================
+        const accountsBtn = document.getElementById('accountsBtn');
+        const accountsMenu = document.getElementById('accountsMenu');
+
+        accountsBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            accountsMenu.style.display = accountsMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', function() {
+            accountsMenu.style.display = 'none';
+        });
+
+        document.querySelectorAll('#accountsMenu button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const account = this.dataset.account;
+                document.querySelectorAll('#accountsMenu button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                if (account === 'second') {
+                    // Переключаем на второй аккаунт (можно привязать к другому коду)
+                    const secondCode = prompt('Введи код второго аккаунта:');
+                    if (secondCode) {
+                        db.ref('users/' + secondCode).once('value').then(snap => {
+                            if (snap.exists()) {
+                                const data = snap.val();
+                                myCode = secondCode;
+                                myName = data.username || 'Второй';
+                                saveMyCode(myCode);
+                                saveMyName(myName);
+                                saveAccount(account);
+                                showApp();
+                                alert('✅ Переключено на ' + myName);
+                            } else {
+                                alert('❌ Аккаунт не найден!');
+                            }
+                        });
+                    }
+                } else {
+                    // Возврат на основной аккаунт
+                    const mainCode = prompt('Введи код основного аккаунта:');
+                    if (mainCode) {
+                        db.ref('users/' + mainCode).once('value').then(snap => {
+                            if (snap.exists()) {
+                                const data = snap.val();
+                                myCode = mainCode;
+                                myName = data.username || 'Основной';
+                                saveMyCode(myCode);
+                                saveMyName(myName);
+                                saveAccount(account);
+                                showApp();
+                                alert('✅ Переключено на ' + myName);
+                            } else {
+                                alert('❌ Аккаунт не найден!');
+                            }
+                        });
+                    }
+                }
+                accountsMenu.style.display = 'none';
+            });
+        });
+
+        // =========================================================
+        // 6. ЧАТЫ
         // =========================================================
         const chatList = document.getElementById('chatList');
         const chatView = document.getElementById('chatView');
@@ -287,7 +376,6 @@
                 const div = document.createElement('div');
                 div.className = 'msg';
                 if (data.from === myCode) div.classList.add('my');
-                // Показываем ник отправителя
                 db.ref('users/' + data.from + '/username').once('value').then(snap => {
                     const name = snap.val() || data.from;
                     const nickSpan = document.createElement('span');
@@ -309,7 +397,7 @@
         }
 
         // =========================================================
-        // 5. КОНТАКТЫ
+        // 7. КОНТАКТЫ (ДОБАВЛЕНИЕ ПО НИКУ)
         // =========================================================
         const contactSearch = document.getElementById('contactSearch');
         const addContactBtn = document.getElementById('addContactBtn');
@@ -336,22 +424,33 @@
 
         addContactBtn.addEventListener('click', function() {
             const query = contactSearch.value.trim();
-            if (!query) return alert('Введи код!');
-            if (query === myCode) return alert('Это ты!');
-            db.ref('users/' + query).once('value').then(snap => {
+            if (!query) return alert('Введи ник!');
+            // Ищем пользователя по username
+            db.ref('users').orderByChild('username').equalTo(query).once('value').then(snap => {
                 if (snap.exists()) {
-                    db.ref('users/' + myCode + '/contacts/' + query).set(true);
-                    contactSearch.value = '';
-                    loadContacts();
-                    alert('✅ Контакт добавлен!');
+                    let found = false;
+                    snap.forEach(child => {
+                        const code = child.key;
+                        if (code !== myCode) {
+                            db.ref('users/' + myCode + '/contacts/' + code).set(true);
+                            found = true;
+                        }
+                    });
+                    if (found) {
+                        contactSearch.value = '';
+                        loadContacts();
+                        alert('✅ Контакт добавлен!');
+                    } else {
+                        alert('❌ Это ты!');
+                    }
                 } else {
-                    alert('❌ Пользователь не найден!');
+                    alert('❌ Пользователь с таким ником не найден!');
                 }
             });
         });
 
         // =========================================================
-        // 6. ТАБЫ
+        // 8. ТАБЫ
         // =========================================================
         document.querySelectorAll('#tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -366,7 +465,7 @@
         });
 
         // =========================================================
-        // 7. ИНИЦИАЛИЗАЦИЯ
+        // 9. ИНИЦИАЛИЗАЦИЯ
         // =========================================================
         console.log('🔥 GURU запущен! Код: ' + myCode + ', Имя: ' + myName);
     </script>
