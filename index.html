@@ -14,32 +14,35 @@
         #app{display:none;flex-direction:column;height:100vh}
         #header{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #2a2a3a;flex-wrap:wrap;gap:4px}
         #header h1{background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:22px}
-        #headerRight{display:flex;align-items:center;gap:6px}
+        #headerRight{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
         #userName{color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px;cursor:pointer}
+        #starsDisplay{color:#ffd200;font-weight:bold;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px}
         #settingsBtn{background:transparent;border:none;color:#888;font-size:20px;cursor:pointer}
         #tabs{display:flex;gap:4px;padding:8px 0;border-bottom:1px solid #2a2a3a}
         #tabs button{flex:1;padding:8px;border:none;background:transparent;color:#888;font-size:14px;cursor:pointer;border-radius:8px}
         #tabs button.active{background:#1e2a4a;color:#fff}
         #content{flex:1;overflow-y:auto;padding:10px 0}
         .contact{padding:12px 16px;background:#1a1a2e;margin:4px 0;border-radius:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-        .contact .block-btn{background:transparent;border:none;color:#ff6b6b;font-size:16px;cursor:pointer}
-        .contact .block-btn:hover{color:#ff4444}
+        .contact .nick{color:#ffd200;font-size:12px}
         .chat-area{display:none;flex-direction:column;height:100%}
         .chat-area.active{display:flex}
         #messages{flex:1;overflow-y:auto;padding:10px 0;display:flex;flex-direction:column;gap:4px}
         .msg{padding:8px 14px;border-radius:16px;max-width:70%;word-wrap:break-word;background:#1e2a4a;align-self:flex-start;border-bottom-left-radius:4px}
         .msg.my{background:#0084ff;align-self:flex-end;border-bottom-right-radius:4px;border-bottom-left-radius:16px}
         .msg .time{font-size:9px;color:#aaa;margin-left:8px}
+        .msg .nick{color:#ffd200;font-size:11px;display:block;margin-bottom:2px}
         #bottom{display:flex;gap:8px;padding:10px 0}
         #bottom input{flex:1;padding:12px 16px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;font-size:16px;outline:none}
         #bottom button{padding:12px 20px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:16px;cursor:pointer}
         .back-btn{background:transparent;color:#ffd200;border:none;font-size:16px;cursor:pointer;padding:4px 8px}
         #info{text-align:center;font-size:11px;color:#444;padding:4px 0}
-        .nick{color:#ffd200;font-size:12px;margin-bottom:2px;display:block}
-        .blocked-msg{color:#ff6b6b;font-style:italic;text-align:center;padding:20px;font-size:14px}
-        .group-item{color:#ffd200}
-        
-        /* ===== НАСТРОЙКИ (МОДАЛКА) ===== */
+        .create-btn{background:#1e2a4a;border:none;border-radius:20px;padding:8px 16px;color:#ffd200;cursor:pointer;font-size:14px;margin-bottom:8px;display:inline-flex;align-items:center;gap:4px}
+        .create-btn:hover{background:#2a2a4a}
+        .gift-item{display:inline-block;font-size:32px;margin:4px;cursor:default;transition:transform .2s}
+        .gift-item:hover{transform:scale(1.1)}
+        .no-gifts{color:#888;font-size:14px;padding:8px 0}
+        .gift-price{font-size:11px;color:#888;display:block}
+
         #settingsModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1000}
         #settingsModal.active{display:flex}
         #settingsModal .modal-content{background:#1a1a2e;padding:20px;border-radius:16px;width:90%;max-width:350px;max-height:80vh;overflow-y:auto}
@@ -50,25 +53,43 @@
         .settings-item .value{color:#888;font-size:13px}
         .settings-item .active-account{color:#ffd200}
         .settings-item .add-btn{color:#4caf50;font-size:20px}
-        .settings-item .delete-btn{color:#ff6b6b;font-size:16px;margin-left:8px;background:transparent;border:none;cursor:pointer}
+        .settings-item .delete-btn{color:#ff6b6b;font-size:16px;background:transparent;border:none;cursor:pointer;margin-left:8px}
         #closeSettings{width:100%;padding:12px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:16px;cursor:pointer;margin-top:12px}
         .account-item{display:flex;justify-content:space-between;align-items:center;width:100%}
-        .blocked-item{display:flex;justify-content:space-between;align-items:center;width:100%;padding:8px 0}
-        .blocked-item .unblock-btn{background:transparent;border:none;color:#4caf50;cursor:pointer;font-size:14px}
-        
-        /* ===== ВЫБОР УЧАСТНИКОВ ДЛЯ ГРУППЫ ===== */
+        .stars-display{color:#ffd200;font-weight:bold;font-size:16px}
+        .jackpot-display{color:#4caf50;font-weight:bold;font-size:14px}
+
         #groupModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1001}
         #groupModal.active{display:flex}
         #groupModal .modal-content{background:#1a1a2e;padding:20px;border-radius:16px;width:90%;max-width:350px;max-height:80vh;overflow-y:auto}
         #groupModal h2{color:#ffd200;margin-bottom:12px;text-align:center}
         #groupModal input{padding:10px;border-radius:24px;border:none;background:#0f0f1a;color:#fff;font-size:16px;width:100%;margin-bottom:12px;outline:none}
-        #groupModal .contact-item{padding:10px;display:flex;align-items:center;gap:10px;cursor:pointer;border-radius:8px}
+        #groupModal .contact-item{padding:8px 10px;display:flex;align-items:center;gap:10px;cursor:pointer;border-radius:8px}
         #groupModal .contact-item:hover{background:#2a2a4a}
         #groupModal .contact-item input[type="checkbox"]{width:18px;height:18px;accent-color:#e94560}
         #groupModal .create-btn{width:100%;padding:12px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:16px;cursor:pointer;margin-top:12px}
         #groupModal .close-btn{width:100%;padding:8px;border-radius:24px;border:none;background:transparent;color:#888;font-size:14px;cursor:pointer;margin-top:6px}
-        .create-group-btn{background:#1e2a4a;border:none;border-radius:20px;padding:8px 16px;color:#ffd200;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;gap:4px;margin-bottom:8px}
-        .create-group-btn:hover{background:#2a2a4a}
+
+        #giftModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1002}
+        #giftModal.active{display:flex}
+        #giftModal .modal-content{background:#1a1a2e;padding:20px;border-radius:16px;width:90%;max-width:350px;text-align:center;max-height:80vh;overflow-y:auto}
+        #giftModal h2{color:#ffd200;margin-bottom:12px}
+        #giftModal .gift-list{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:8px 0}
+        #giftModal .gift-item{font-size:40px;cursor:default}
+        #giftModal .close-btn{width:100%;padding:8px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:14px;cursor:pointer;margin-top:12px}
+
+        #shopModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1003}
+        #shopModal.active{display:flex}
+        #shopModal .modal-content{background:#1a1a2e;padding:20px;border-radius:16px;width:90%;max-width:350px;text-align:center;max-height:80vh;overflow-y:auto}
+        #shopModal h2{color:#ffd200;margin-bottom:12px}
+        #shopModal .shop-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#1a1a2e;margin:4px 0;border-radius:12px}
+        #shopModal .shop-item:hover{background:#2a2a4a}
+        #shopModal .shop-item .emoji{font-size:28px}
+        #shopModal .shop-item .info{flex:1;text-align:left;padding-left:12px}
+        #shopModal .shop-item .price{color:#ffd200;font-weight:bold}
+        #shopModal .shop-item .buy-btn{background:#e94560;border:none;border-radius:16px;padding:4px 12px;color:#fff;cursor:pointer;font-size:13px}
+        #shopModal .shop-item .buy-btn:hover{opacity:.85}
+        #shopModal .close-btn{width:100%;padding:8px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:14px;cursor:pointer;margin-top:12px}
     </style>
 </head>
 <body>
@@ -78,10 +99,10 @@
         <h1>GURU</h1>
         <div style="color:#888;font-size:13px;margin-bottom:20px;">твой приватный мир</div>
         <input id="codeInput" placeholder="Код" />
-        <input id="nameInput" placeholder="Твоё имя" />
+        <input id="usernameInput" placeholder="Username (уникальное)" />
         <button id="loginBtn">Войти</button>
         <button id="newCodeBtn" style="background:#1e2a4a;">Создать аккаунт</button>
-        <div style="color:#666;font-size:12px;margin-top:20px;text-align:center;">💡 Придумай код и имя, которые не забудешь!</div>
+        <div style="color:#666;font-size:12px;margin-top:20px;text-align:center;">💡 Придумай код и username, которые не забудешь!</div>
     </div>
 
     <!-- ===== ОСНОВНОЙ ЭКРАН ===== -->
@@ -90,6 +111,7 @@
             <h1>GURU</h1>
             <div id="headerRight">
                 <span id="userName" style="color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px;cursor:pointer;">----</span>
+                <span id="starsDisplay" style="color:#ffd200;font-weight:bold;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px;">⭐ 0</span>
                 <button id="settingsBtn">⚙️</button>
             </div>
         </div>
@@ -102,7 +124,7 @@
         <div id="content">
             <!-- Чаты -->
             <div id="tab-chats">
-                <button class="create-group-btn" id="createGroupBtn">👥 Создать группу</button>
+                <button class="create-btn" id="createGroupBtn">👥 Создать группу</button>
                 <div id="chatList"></div>
                 <div id="chatView" class="chat-area">
                     <button class="back-btn" id="backToChats">← Назад</button>
@@ -118,7 +140,7 @@
             <!-- Контакты -->
             <div id="tab-contacts" style="display:none;">
                 <div style="padding:10px 0;display:flex;gap:8px;flex-wrap:wrap;">
-                    <input id="contactSearch" placeholder="Поиск по нику..." style="flex:1;padding:10px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;outline:none;min-width:100px;" />
+                    <input id="contactSearch" placeholder="Поиск по username..." style="flex:1;padding:10px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;outline:none;min-width:100px;" />
                     <button id="addContactBtn" style="padding:10px 20px;border-radius:24px;border:none;background:#e94560;color:#fff;cursor:pointer;">➕ Добавить</button>
                 </div>
                 <div id="contactList"></div>
@@ -128,27 +150,44 @@
         <div id="info">👀 Жёлтые галочки — прочитано</div>
     </div>
 
-    <!-- ===== НАСТРОЙКИ (МОДАЛКА) ===== -->
+    <!-- ===== НАСТРОЙКИ ===== -->
     <div id="settingsModal">
         <div class="modal-content">
             <h2>⚙️ Настройки</h2>
+            <div class="settings-item" style="border-bottom:2px solid #ffd200;">
+                <span class="label">⭐ Звёзды</span>
+                <span class="stars-display" id="settingsStars">0</span>
+            </div>
+            <div class="settings-item" style="border-bottom:2px solid #4caf50;">
+                <span class="label">🏆 Копилка</span>
+                <span class="jackpot-display" id="settingsJackpot">0 ⭐</span>
+            </div>
+            <div class="settings-item" style="border-bottom:2px solid #4caf50;">
+                <span class="label">🎁 Следующий розыгрыш</span>
+                <span class="value" id="settingsNextDraw">--</span>
+            </div>
+            <div class="settings-item" style="border-bottom:2px solid #ffd200;">
+                <span class="label">🛍️ Магазин подарков</span>
+                <span class="value">→</span>
+            </div>
             <div id="accountsList"></div>
             <div class="settings-item" id="addAccountBtn">
                 <span class="label">➕ Добавить аккаунт</span>
                 <span class="add-btn">+</span>
             </div>
-            <div class="settings-item" id="showBlockedBtn">
-                <span class="label">🚫 Заблокированные</span>
+            <div class="settings-item" id="showGiftsBtn">
+                <span class="label">🎁 Моя коллекция</span>
                 <span class="value">→</span>
             </div>
-            <div id="blockedListContainer" style="display:none;margin-top:8px;border-top:1px solid #2a2a3a;padding-top:8px;">
-                <div id="blockedList"></div>
+            <div class="settings-item" id="showRareGiftsBtn">
+                <span class="label">👑 Редкие подарки</span>
+                <span class="value">→</span>
             </div>
             <button id="closeSettings">✖️ Закрыть</button>
         </div>
     </div>
 
-    <!-- ===== ГРУППА (МОДАЛКА ВЫБОРА УЧАСТНИКОВ) ===== -->
+    <!-- ===== ГРУППА ===== -->
     <div id="groupModal">
         <div class="modal-content">
             <h2>👥 Создать группу</h2>
@@ -157,6 +196,37 @@
             <div id="groupMembersList"></div>
             <button class="create-btn" id="confirmGroupBtn">✅ Создать</button>
             <button class="close-btn" id="closeGroupModal">✖️ Отмена</button>
+        </div>
+    </div>
+
+    <!-- ===== КОЛЛЕКЦИЯ ПОДАРКОВ ===== -->
+    <div id="giftModal">
+        <div class="modal-content">
+            <h2>🎁 Моя коллекция</h2>
+            <div id="giftListContainer">
+                <div class="no-gifts">У вас нет подарков</div>
+            </div>
+            <button class="close-btn" id="closeGiftModal">✖️ Закрыть</button>
+        </div>
+    </div>
+
+    <!-- ===== РЕДКИЕ ПОДАРКИ ===== -->
+    <div id="rareGiftModal">
+        <div class="modal-content">
+            <h2>👑 Редкие подарки</h2>
+            <div id="rareGiftContainer">
+                <div class="no-gifts">Редких подарков пока нет</div>
+            </div>
+            <button class="close-btn" id="closeRareGiftModal">✖️ Закрыть</button>
+        </div>
+    </div>
+
+    <!-- ===== МАГАЗИН ПОДАРКОВ ===== -->
+    <div id="shopModal">
+        <div class="modal-content">
+            <h2>🛍️ Магазин подарков</h2>
+            <div id="shopContainer"></div>
+            <button class="close-btn" id="closeShopModal">✖️ Закрыть</button>
         </div>
     </div>
 
@@ -174,13 +244,43 @@
         // 2. ПЕРЕМЕННЫЕ
         // =========================================================
         let myCode = null;
-        let myName = null;
+        let myUsername = null;
         let currentChat = null;
         let accounts = [];
         let activeAccountIndex = 0;
-        let blockedUsers = {};
-        let groups = {};
-        let contactsList = [];
+        let currentUserData = {};
+        const GIFTS = [
+            { emoji: '🎁', name: 'Подарок', price: 5 },
+            { emoji: '🌹', name: 'Роза', price: 8 },
+            { emoji: '🍫', name: 'Шоколадка', price: 6 },
+            { emoji: '🧸', name: 'Мишка', price: 10 },
+            { emoji: '🎂', name: 'Торт', price: 12 },
+            { emoji: '💐', name: 'Букет', price: 8 },
+            { emoji: '🎀', name: 'Бантик', price: 5 },
+            { emoji: '💎', name: 'Алмаз', price: 30 },
+            { emoji: '🧧', name: 'Красный конверт', price: 10 },
+            { emoji: '📿', name: 'Бусы', price: 7 },
+            { emoji: '🥂', name: 'Бокалы', price: 15 },
+            { emoji: '🍾', name: 'Шампанское', price: 18 },
+            { emoji: '🕯️', name: 'Свеча', price: 4 },
+            { emoji: '🌸', name: 'Сакура', price: 6 },
+            { emoji: '🌻', name: 'Подсолнух', price: 6 },
+            { emoji: '🌷', name: 'Тюльпан', price: 6 },
+            { emoji: '🌼', name: 'Ромашка', price: 5 },
+            { emoji: '🍷', name: 'Бокал вина', price: 15 },
+            { emoji: '🍸', name: 'Коктейль', price: 15 },
+            { emoji: '🎆', name: 'Фейерверк', price: 20 },
+            { emoji: '🎇', name: 'Салют', price: 20 },
+            { emoji: '🎐', name: 'Колокольчик', price: 6 },
+            { emoji: '📦', name: 'Посылка', price: 8 },
+            { emoji: '💝', name: 'Сердце с лентой', price: 10 }
+        ];
+        const RARE_GIFTS = [
+            { emoji: '👑', name: 'Корона', price: 50 },
+            { emoji: '🏆', name: 'Кубок', price: 50 },
+            { emoji: '💎', name: 'Бриллиант', price: 50 },
+            { emoji: '⭐', name: 'Золотая звезда', price: 50 }
+        ];
 
         // =========================================================
         // 3. РАБОТА С АККАУНТАМИ
@@ -219,17 +319,22 @@
             activeAccountIndex = index;
             const acc = accounts[index];
             myCode = acc.code;
-            myName = acc.name;
+            myUsername = acc.username;
             saveActiveAccount(index);
-            document.getElementById('userName').textContent = myName;
-            loadBlocked();
+            document.getElementById('userName').textContent = '@' + myUsername;
+            loadUserData();
             loadChats();
             loadContacts();
             renderAccounts();
+            loadShop();
         }
 
-        function addAccount(code, name) {
-            accounts.push({ code, name });
+        function addAccount(code, username) {
+            if (accounts.some(a => a.code === code)) {
+                alert('❌ Этот аккаунт уже добавлен!');
+                return;
+            }
+            accounts.push({ code, username });
             saveAccounts();
             renderAccounts();
         }
@@ -246,108 +351,23 @@
             }
             const acc = accounts[activeAccountIndex];
             myCode = acc.code;
-            myName = acc.name;
+            myUsername = acc.username;
             saveActiveAccount(activeAccountIndex);
-            document.getElementById('userName').textContent = myName;
-            loadBlocked();
+            document.getElementById('userName').textContent = '@' + myUsername;
+            loadUserData();
             loadChats();
             loadContacts();
             renderAccounts();
+            loadShop();
         }
 
         // =========================================================
-        // 4. БЛОКИРОВКА
-        // =========================================================
-        function loadBlocked() {
-            if (!myCode) return;
-            db.ref('users/' + myCode + '/blocked').once('value').then(snap => {
-                blockedUsers = snap.val() || {};
-                renderBlockedList();
-            });
-        }
-
-        function toggleBlock(targetCode) {
-            if (blockedUsers[targetCode]) {
-                db.ref('users/' + myCode + '/blocked/' + targetCode).remove().then(() => {
-                    delete blockedUsers[targetCode];
-                    loadBlocked();
-                    loadChats();
-                    alert('✅ Пользователь разблокирован!');
-                });
-            } else {
-                db.ref('users/' + myCode + '/blocked/' + targetCode).set(true).then(() => {
-                    blockedUsers[targetCode] = true;
-                    loadBlocked();
-                    loadChats();
-                    alert('🚫 Пользователь заблокирован!');
-                });
-            }
-        }
-
-        function isBlocked(code) {
-            return blockedUsers[code] === true;
-        }
-
-        function renderBlockedList() {
-            const container = document.getElementById('blockedList');
-            container.innerHTML = '';
-            const keys = Object.keys(blockedUsers);
-            if (keys.length === 0) {
-                container.innerHTML = '<div style="color:#888;font-size:13px;padding:8px 0;">Нет заблокированных</div>';
-                return;
-            }
-            keys.forEach(code => {
-                const div = document.createElement('div');
-                div.className = 'blocked-item';
-                db.ref('users/' + code + '/username').once('value').then(snap => {
-                    const name = snap.val() || code;
-                    div.innerHTML = `
-                        <span>${name}</span>
-                        <button class="unblock-btn" data-code="${code}">✅ Разблокировать</button>
-                    `;
-                    div.querySelector('.unblock-btn').addEventListener('click', function() {
-                        toggleBlock(code);
-                    });
-                });
-                container.appendChild(div);
-            });
-        }
-
-        // =========================================================
-        // 5. ГРУППЫ
-        // =========================================================
-        function loadGroups() {
-            if (!myCode) return;
-            db.ref('users/' + myCode + '/groups').once('value').then(snap => {
-                groups = snap.val() || {};
-            });
-        }
-
-        function createGroup(name, members) {
-            const groupId = 'g_' + Date.now();
-            const groupData = {
-                name: name,
-                members: members,
-                admin: myCode,
-                createdAt: Date.now()
-            };
-            db.ref('groups/' + groupId).set(groupData).then(() => {
-                // Добавляем группу всем участникам
-                members.forEach(code => {
-                    db.ref('users/' + code + '/groups/' + groupId).set(true);
-                });
-                loadChats();
-                alert('✅ Группа создана!');
-            });
-        }
-
-        // =========================================================
-        // 6. АВТОРИЗАЦИЯ
+        // 4. АВТОРИЗАЦИЯ
         // =========================================================
         const auth = document.getElementById('auth');
         const app = document.getElementById('app');
         const codeInput = document.getElementById('codeInput');
-        const nameInput = document.getElementById('nameInput');
+        const usernameInput = document.getElementById('usernameInput');
         const loginBtn = document.getElementById('loginBtn');
         const newCodeBtn = document.getElementById('newCodeBtn');
 
@@ -361,47 +381,57 @@
             const acc = getCurrentAccount();
             if (acc) {
                 myCode = acc.code;
-                myName = acc.name;
-                document.getElementById('userName').textContent = myName;
-                loadBlocked();
-                loadGroups();
+                myUsername = acc.username;
+                document.getElementById('userName').textContent = '@' + myUsername;
+                loadUserData();
                 loadChats();
                 loadContacts();
                 renderAccounts();
+                loadShop();
+                checkJackpot();
+                checkRareGift();
             }
         }
 
         loginBtn.addEventListener('click', function() {
             const code = codeInput.value.trim();
-            const name = nameInput.value.trim();
+            const username = usernameInput.value.trim();
             if (!code) return alert('Введи код!');
-            if (!name) return alert('Введи имя!');
+            if (!username) return alert('Введи username!');
             db.ref('users/' + code).once('value').then(snap => {
                 if (snap.exists()) {
                     const data = snap.val();
-                    const exists = accounts.some(a => a.code === code);
-                    if (exists) {
-                        const idx = accounts.findIndex(a => a.code === code);
-                        setCurrentAccount(idx);
-                        showApp();
-                    } else {
-                        addAccount(code, data.username || name);
-                        setCurrentAccount(accounts.length - 1);
-                        showApp();
+                    if (!accounts.some(a => a.code === code)) {
+                        addAccount(code, data.username || username);
                     }
+                    const idx = accounts.findIndex(a => a.code === code);
+                    setCurrentAccount(idx);
+                    showApp();
                 } else {
-                    db.ref('users/' + code).set({
-                        code: code,
-                        username: name,
-                        contacts: {},
-                        blocked: {},
-                        groups: {},
-                        createdAt: Date.now()
-                    }).then(() => {
-                        addAccount(code, name);
-                        setCurrentAccount(accounts.length - 1);
-                        showApp();
-                        alert('✅ Аккаунт создан!');
+                    // Проверяем, что username уникален
+                    db.ref('users').orderByChild('username').equalTo(username).once('value').then(snap => {
+                        if (snap.exists()) {
+                            alert('❌ Этот username уже занят!');
+                            return;
+                        }
+                        db.ref('users/' + code).set({
+                            code: code,
+                            username: username,
+                            contacts: {},
+                            groups: {},
+                            gifts: [],
+                            rareGifts: [],
+                            stars: 10,
+                            createdAt: Date.now()
+                        }).then(() => {
+                            if (!accounts.some(a => a.code === code)) {
+                                addAccount(code, username);
+                            }
+                            const idx = accounts.findIndex(a => a.code === code);
+                            setCurrentAccount(idx);
+                            showApp();
+                            alert('✅ Аккаунт создан! +10 звёзд');
+                        });
                     });
                 }
             }).catch(() => alert('Ошибка соединения!'));
@@ -409,27 +439,38 @@
 
         newCodeBtn.addEventListener('click', function() {
             const newCode = codeInput.value.trim();
-            const newName = nameInput.value.trim();
+            const newUsername = usernameInput.value.trim();
             if (!newCode) return alert('Придумай код!');
             if (newCode.length < 3) return alert('Код минимум 3 символа!');
-            if (!newName) return alert('Придумай имя!');
+            if (!newUsername) return alert('Придумай username!');
             db.ref('users/' + newCode).once('value').then(snap => {
                 if (snap.exists()) {
                     alert('❌ Код занят!');
                     return;
                 }
-                db.ref('users/' + newCode).set({
-                    code: newCode,
-                    username: newName,
-                    contacts: {},
-                    blocked: {},
-                    groups: {},
-                    createdAt: Date.now()
-                }).then(() => {
-                    addAccount(newCode, newName);
-                    setCurrentAccount(accounts.length - 1);
-                    showApp();
-                    alert('✅ Аккаунт создан!');
+                db.ref('users').orderByChild('username').equalTo(newUsername).once('value').then(snap => {
+                    if (snap.exists()) {
+                        alert('❌ Этот username уже занят!');
+                        return;
+                    }
+                    db.ref('users/' + newCode).set({
+                        code: newCode,
+                        username: newUsername,
+                        contacts: {},
+                        groups: {},
+                        gifts: [],
+                        rareGifts: [],
+                        stars: 10,
+                        createdAt: Date.now()
+                    }).then(() => {
+                        if (!accounts.some(a => a.code === newCode)) {
+                            addAccount(newCode, newUsername);
+                        }
+                        const idx = accounts.findIndex(a => a.code === newCode);
+                        setCurrentAccount(idx);
+                        showApp();
+                        alert('✅ Аккаунт создан! +10 звёзд');
+                    });
                 });
             }).catch(() => alert('Ошибка соединения!'));
         });
@@ -438,7 +479,7 @@
             const acc = getCurrentAccount();
             if (acc) {
                 myCode = acc.code;
-                myName = acc.name;
+                myUsername = acc.username;
                 showApp();
             } else {
                 showAuth();
@@ -448,7 +489,99 @@
         }
 
         // =========================================================
-        // 7. НАСТРОЙКИ
+        // 5. ДАННЫЕ ПОЛЬЗОВАТЕЛЯ (ЗВЁЗДЫ, ПОДАРКИ)
+        // =========================================================
+        function loadUserData() {
+            if (!myCode) return;
+            db.ref('users/' + myCode).once('value').then(snap => {
+                const data = snap.val() || {};
+                currentUserData = data;
+                document.getElementById('starsDisplay').textContent = '⭐ ' + (data.stars || 0);
+                document.getElementById('settingsStars').textContent = data.stars || 0;
+                // Обновляем копилку
+                db.ref('jackpot/amount').once('value').then(s => {
+                    document.getElementById('settingsJackpot').textContent = (s.val() || 0) + ' ⭐';
+                });
+                db.ref('jackpot/lastDraw').once('value').then(s => {
+                    const lastDraw = s.val() || Date.now();
+                    const nextDraw = new Date(lastDraw + 2 * 86400000);
+                    document.getElementById('settingsNextDraw').textContent = nextDraw.toLocaleDateString();
+                });
+            });
+        }
+
+        // =========================================================
+        // 6. КОПИЛКА И РОЗЫГРЫШ
+        // =========================================================
+        function checkJackpot() {
+            db.ref('jackpot/lastDraw').once('value').then(snap => {
+                const lastDraw = snap.val() || Date.now();
+                if (Date.now() - lastDraw >= 2 * 86400000) {
+                    performJackpotDraw();
+                }
+            });
+        }
+
+        function performJackpotDraw() {
+            db.ref('jackpot/amount').once('value').then(snap => {
+                const jackpot = snap.val() || 0;
+                if (jackpot < 10) {
+                    db.ref('jackpot/lastDraw').set(Date.now());
+                    return;
+                }
+                // Выбираем случайного активного пользователя
+                db.ref('users').once('value').then(snap => {
+                    const users = snap.val() || {};
+                    const activeUsers = [];
+                    for (let code in users) {
+                        if (users[code].createdAt) {
+                            activeUsers.push(code);
+                        }
+                    }
+                    if (activeUsers.length === 0) {
+                        db.ref('jackpot/lastDraw').set(Date.now());
+                        return;
+                    }
+                    const winner = activeUsers[Math.floor(Math.random() * activeUsers.length)];
+                    const winAmount = Math.floor(Math.random() * 141) + 10; // от 10 до 150
+                    db.ref('users/' + winner + '/stars').transaction(current => {
+                        return (current || 0) + winAmount;
+                    });
+                    db.ref('jackpot/amount').set(0);
+                    db.ref('jackpot/lastDraw').set(Date.now());
+                    db.ref('jackpot/lastWinner').set(winner);
+                    db.ref('jackpot/lastAmount').set(winAmount);
+                    // Получаем username победителя
+                    db.ref('users/' + winner + '/username').once('value').then(s => {
+                        const winnerName = s.val() || winner;
+                        alert('🏆 @' + winnerName + ' выиграл ' + winAmount + ' ⭐ в розыгрыше!');
+                    });
+                });
+            });
+        }
+
+        // =========================================================
+        // 7. РЕДКИЕ ПОДАРКИ (РАЗ В НЕДЕЛЮ)
+        // =========================================================
+        function checkRareGift() {
+            db.ref('jackpot/lastRareGift').once('value').then(snap => {
+                const lastRare = snap.val() || 0;
+                if (Date.now() - lastRare >= 7 * 86400000) {
+                    // Добавляем редкий подарок в копилку
+                    const rareGift = RARE_GIFTS[Math.floor(Math.random() * RARE_GIFTS.length)];
+                    db.ref('jackpot/rareGift').set({
+                        emoji: rareGift.emoji,
+                        name: rareGift.name,
+                        addedAt: Date.now()
+                    });
+                    db.ref('jackpot/lastRareGift').set(Date.now());
+                    alert('👑 В копилку добавлен редкий подарок: ' + rareGift.emoji + ' ' + rareGift.name + '!');
+                }
+            });
+        }
+
+        // =========================================================
+        // 8. НАСТРОЙКИ
         // =========================================================
         const settingsModal = document.getElementById('settingsModal');
         const settingsBtn = document.getElementById('settingsBtn');
@@ -456,9 +589,8 @@
         const accountsList = document.getElementById('accountsList');
 
         settingsBtn.addEventListener('click', function() {
+            loadUserData();
             renderAccounts();
-            renderBlockedList();
-            document.getElementById('blockedListContainer').style.display = 'none';
             settingsModal.classList.add('active');
         });
 
@@ -481,7 +613,7 @@
                 div.innerHTML = `
                     <div class="account-item">
                         <span class="label ${isActive ? 'active-account' : ''}">
-                            ${isActive ? '⭐ ' : ''}${acc.name}
+                            ${isActive ? '⭐ ' : ''}@${acc.username}
                             <span style="font-size:10px;color:#888;">(${acc.code})</span>
                         </span>
                         <div>
@@ -510,8 +642,8 @@
         document.getElementById('addAccountBtn').addEventListener('click', function() {
             const code = prompt('Введи код нового аккаунта:');
             if (!code) return;
-            const name = prompt('Введи имя для нового аккаунта:');
-            if (!name) return;
+            const username = prompt('Введи username для нового аккаунта:');
+            if (!username) return;
             db.ref('users/' + code).once('value').then(snap => {
                 if (snap.exists()) {
                     const data = snap.val();
@@ -519,37 +651,172 @@
                         alert('❌ Этот аккаунт уже добавлен!');
                         return;
                     }
-                    addAccount(code, data.username || name);
+                    addAccount(code, data.username || username);
                     alert('✅ Аккаунт добавлен!');
                 } else {
-                    db.ref('users/' + code).set({
-                        code: code,
-                        username: name,
-                        contacts: {},
-                        blocked: {},
-                        groups: {},
-                        createdAt: Date.now()
-                    }).then(() => {
-                        if (accounts.some(a => a.code === code)) {
-                            alert('❌ Этот аккаунт уже добавлен!');
+                    db.ref('users').orderByChild('username').equalTo(username).once('value').then(snap => {
+                        if (snap.exists()) {
+                            alert('❌ Этот username уже занят!');
                             return;
                         }
-                        addAccount(code, name);
-                        alert('✅ Новый аккаунт создан и добавлен!');
+                        db.ref('users/' + code).set({
+                            code: code,
+                            username: username,
+                            contacts: {},
+                            groups: {},
+                            gifts: [],
+                            rareGifts: [],
+                            stars: 10,
+                            createdAt: Date.now()
+                        }).then(() => {
+                            if (accounts.some(a => a.code === code)) {
+                                alert('❌ Этот аккаунт уже добавлен!');
+                                return;
+                            }
+                            addAccount(code, username);
+                            alert('✅ Новый аккаунт создан и добавлен! +10 звёзд');
+                        });
                     });
                 }
             });
         });
 
-        let blockedVisible = false;
-        document.getElementById('showBlockedBtn').addEventListener('click', function() {
-            blockedVisible = !blockedVisible;
-            document.getElementById('blockedListContainer').style.display = blockedVisible ? 'block' : 'none';
-            if (blockedVisible) renderBlockedList();
+        // =========================================================
+        // 9. МАГАЗИН ПОДАРКОВ
+        // =========================================================
+        const shopModal = document.getElementById('shopModal');
+        const shopContainer = document.getElementById('shopContainer');
+        const closeShopModal = document.getElementById('closeShopModal');
+
+        function loadShop() {
+            if (!shopContainer) return;
+            shopContainer.innerHTML = '';
+            GIFTS.forEach(gift => {
+                const div = document.createElement('div');
+                div.className = 'shop-item';
+                div.innerHTML = `
+                    <span class="emoji">${gift.emoji}</span>
+                    <div class="info">
+                        <div>${gift.name}</div>
+                        <div style="font-size:11px;color:#888;">⭐ ${gift.price}</div>
+                    </div>
+                    <button class="buy-btn" data-emoji="${gift.emoji}" data-price="${gift.price}">Купить</button>
+                `;
+                div.querySelector('.buy-btn').addEventListener('click', function() {
+                    buyGift(gift.emoji, gift.price);
+                });
+                shopContainer.appendChild(div);
+            });
+        }
+
+        function buyGift(emoji, price) {
+            if (!myCode) return;
+            db.ref('users/' + myCode + '/stars').once('value').then(snap => {
+                const stars = snap.val() || 0;
+                if (stars < price) {
+                    alert('❌ Недостаточно звёзд! Нужно ' + price + ' ⭐');
+                    return;
+                }
+                if (!confirm('Купить ' + emoji + ' за ' + price + ' ⭐?')) return;
+                db.ref('users/' + myCode + '/stars').set(stars - price);
+                const gift = { emoji: emoji, name: GIFTS.find(g => g.emoji === emoji)?.name || 'Подарок' };
+                db.ref('users/' + myCode + '/gifts').push(gift);
+                alert('✅ Подарок куплен! Он добавлен в твою коллекцию.');
+                loadUserData();
+            });
+        }
+
+        document.querySelector('.settings-item:has(.label:contains("🛍️ Магазин подарков"))')?.addEventListener('click', function() {
+            loadShop();
+            shopModal.classList.add('active');
+        });
+
+        closeShopModal.addEventListener('click', function() {
+            shopModal.classList.remove('active');
         });
 
         // =========================================================
-        // 8. ГРУППЫ (СОЗДАНИЕ)
+        // 10. КОЛЛЕКЦИЯ ПОДАРКОВ
+        // =========================================================
+        const giftModal = document.getElementById('giftModal');
+        const giftListContainer = document.getElementById('giftListContainer');
+        const closeGiftModal = document.getElementById('closeGiftModal');
+
+        document.getElementById('showGiftsBtn').addEventListener('click', function() {
+            giftListContainer.innerHTML = '';
+            const gifts = currentUserData.gifts || [];
+            if (gifts.length === 0) {
+                giftListContainer.innerHTML = '<div class="no-gifts">У вас нет подарков</div>';
+            } else {
+                const list = document.createElement('div');
+                list.className = 'gift-list';
+                gifts.forEach(g => {
+                    const span = document.createElement('span');
+                    span.className = 'gift-item';
+                    span.textContent = g.emoji || '🎁';
+                    const nameSpan = document.createElement('div');
+                    nameSpan.style.fontSize = '10px';
+                    nameSpan.style.color = '#888';
+                    nameSpan.textContent = g.name || '';
+                    const wrapper = document.createElement('div');
+                    wrapper.style.display = 'inline-block';
+                    wrapper.style.textAlign = 'center';
+                    wrapper.style.margin = '4px';
+                    wrapper.appendChild(span);
+                    wrapper.appendChild(nameSpan);
+                    list.appendChild(wrapper);
+                });
+                giftListContainer.appendChild(list);
+            }
+            giftModal.classList.add('active');
+        });
+
+        closeGiftModal.addEventListener('click', function() {
+            giftModal.classList.remove('active');
+        });
+
+        // =========================================================
+        // 11. РЕДКИЕ ПОДАРКИ
+        // =========================================================
+        const rareGiftModal = document.getElementById('rareGiftModal');
+        const rareGiftContainer = document.getElementById('rareGiftContainer');
+        const closeRareGiftModal = document.getElementById('closeRareGiftModal');
+
+        document.getElementById('showRareGiftsBtn').addEventListener('click', function() {
+            rareGiftContainer.innerHTML = '';
+            const rareGifts = currentUserData.rareGifts || [];
+            if (rareGifts.length === 0) {
+                rareGiftContainer.innerHTML = '<div class="no-gifts">Редких подарков пока нет</div>';
+            } else {
+                const list = document.createElement('div');
+                list.className = 'gift-list';
+                rareGifts.forEach(g => {
+                    const span = document.createElement('span');
+                    span.className = 'gift-item';
+                    span.textContent = g.emoji || '👑';
+                    const nameSpan = document.createElement('div');
+                    nameSpan.style.fontSize = '10px';
+                    nameSpan.style.color = '#ffd200';
+                    nameSpan.textContent = g.name || 'Редкий';
+                    const wrapper = document.createElement('div');
+                    wrapper.style.display = 'inline-block';
+                    wrapper.style.textAlign = 'center';
+                    wrapper.style.margin = '4px';
+                    wrapper.appendChild(span);
+                    wrapper.appendChild(nameSpan);
+                    list.appendChild(wrapper);
+                });
+                rareGiftContainer.appendChild(list);
+            }
+            rareGiftModal.classList.add('active');
+        });
+
+        closeRareGiftModal.addEventListener('click', function() {
+            rareGiftModal.classList.remove('active');
+        });
+
+        // =========================================================
+        // 12. ГРУППЫ
         // =========================================================
         const groupModal = document.getElementById('groupModal');
         const createGroupBtn = document.getElementById('createGroupBtn');
@@ -561,12 +828,10 @@
         createGroupBtn.addEventListener('click', function() {
             groupNameInput.value = '';
             groupMembersList.innerHTML = '';
-            // Загружаем контакты
             db.ref('users/' + myCode + '/contacts').once('value').then(snap => {
                 const contacts = snap.val() || {};
                 let hasContacts = false;
                 for (let code in contacts) {
-                    if (isBlocked(code)) continue;
                     hasContacts = true;
                     const div = document.createElement('div');
                     div.className = 'contact-item';
@@ -574,7 +839,7 @@
                         const name = snap.val() || code;
                         div.innerHTML = `
                             <input type="checkbox" data-code="${code}" />
-                            <span>${name}</span>
+                            <span>@${name}</span>
                         `;
                     });
                     groupMembersList.appendChild(div);
@@ -599,12 +864,25 @@
             checkboxes.forEach(cb => {
                 members.push(cb.dataset.code);
             });
-            createGroup(name, members);
-            groupModal.classList.remove('active');
+            const groupId = 'g_' + Date.now();
+            const groupData = {
+                name: name,
+                members: members,
+                admin: myCode,
+                createdAt: Date.now()
+            };
+            db.ref('groups/' + groupId).set(groupData).then(() => {
+                members.forEach(code => {
+                    db.ref('users/' + code + '/groups/' + groupId).set(true);
+                });
+                loadChats();
+                alert('✅ Группа создана!');
+                groupModal.classList.remove('active');
+            });
         });
 
         // =========================================================
-        // 9. ЧАТЫ (ЛИЧНЫЕ + ГРУППОВЫЕ)
+        // 13. ЧАТЫ (ЛИЧНЫЕ + ГРУППОВЫЕ)
         // =========================================================
         const chatList = document.getElementById('chatList');
         const chatView = document.getElementById('chatView');
@@ -621,19 +899,13 @@
             db.ref('users/' + myCode + '/contacts').once('value').then(snap => {
                 const contacts = snap.val() || {};
                 for (let code in contacts) {
-                    if (isBlocked(code)) continue;
                     const div = document.createElement('div');
                     div.className = 'contact';
                     db.ref('users/' + code + '/username').once('value').then(snap => {
                         const name = snap.val() || code;
                         div.innerHTML = `
-                            <span>💬 ${name}</span>
-                            <button class="block-btn" data-code="${code}">🚫</button>
+                            <span>💬 @${name}</span>
                         `;
-                        div.querySelector('.block-btn').addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            toggleBlock(code);
-                        });
                     });
                     div.addEventListener('click', function() {
                         openChat('user', code);
@@ -666,16 +938,12 @@
         }
 
         function openChat(type, id) {
-            if (type === 'user' && isBlocked(id)) {
-                alert('🚫 Этот пользователь заблокирован!');
-                return;
-            }
             currentChat = { type, id };
             chatView.classList.add('active');
             chatList.style.display = 'none';
             if (type === 'user') {
                 db.ref('users/' + id + '/username').once('value').then(snap => {
-                    chatHeader.textContent = snap.val() || id;
+                    chatHeader.textContent = '@' + (snap.val() || id);
                 });
             } else {
                 db.ref('groups/' + id + '/name').once('value').then(snap => {
@@ -698,15 +966,11 @@
 
         function sendMessage() {
             if (!currentChat) return;
-            if (currentChat.type === 'user' && isBlocked(currentChat.id)) {
-                alert('🚫 Вы не можете отправлять сообщения заблокированному пользователю!');
-                return;
-            }
             const text = msgInput.value.trim();
             if (!text) return;
-            const ref = currentChat.type === 'user' 
-                ? db.ref('chats/' + getChatId(myCode, currentChat.id))
-                : db.ref('groups/' + currentChat.id + '/messages');
+            const ref = currentChat.type === 'user' ?
+                db.ref('chats/' + getChatId(myCode, currentChat.id)) :
+                db.ref('groups/' + currentChat.id + '/messages');
             ref.push({
                 from: myCode,
                 text: text,
@@ -721,12 +985,11 @@
 
         function loadMessages(type, id) {
             messages.innerHTML = '';
-            const ref = type === 'user' 
-                ? db.ref('chats/' + getChatId(myCode, id))
-                : db.ref('groups/' + id + '/messages');
+            const ref = type === 'user' ?
+                db.ref('chats/' + getChatId(myCode, id)) :
+                db.ref('groups/' + id + '/messages');
             ref.orderByChild('time').on('child_added', function(snap) {
                 const data = snap.val();
-                if (type === 'user' && isBlocked(data.from)) return;
                 const div = document.createElement('div');
                 div.className = 'msg';
                 if (data.from === myCode) div.classList.add('my');
@@ -734,7 +997,7 @@
                     const name = snap.val() || data.from;
                     const nickSpan = document.createElement('span');
                     nickSpan.className = 'nick';
-                    nickSpan.textContent = name;
+                    nickSpan.textContent = '@' + name;
                     div.prepend(nickSpan);
                 });
                 const textSpan = document.createElement('span');
@@ -751,7 +1014,7 @@
         }
 
         // =========================================================
-        // 10. КОНТАКТЫ
+        // 14. КОНТАКТЫ (ПО USERNAME)
         // =========================================================
         const contactSearch = document.getElementById('contactSearch');
         const addContactBtn = document.getElementById('addContactBtn');
@@ -763,11 +1026,10 @@
                 const contacts = snap.val() || {};
                 contactList.innerHTML = '';
                 for (let code in contacts) {
-                    if (isBlocked(code)) continue;
                     const div = document.createElement('div');
                     div.className = 'contact';
                     db.ref('users/' + code + '/username').once('value').then(snap => {
-                        div.textContent = snap.val() || code;
+                        div.textContent = '@' + (snap.val() || code);
                     });
                     contactList.appendChild(div);
                 }
@@ -779,13 +1041,14 @@
 
         addContactBtn.addEventListener('click', function() {
             const query = contactSearch.value.trim();
-            if (!query) return alert('Введи ник!');
+            if (!query) return alert('Введи username!');
+            if (query.startsWith('@')) query = query.substring(1);
             db.ref('users').orderByChild('username').equalTo(query).once('value').then(snap => {
                 if (snap.exists()) {
                     let found = false;
                     snap.forEach(child => {
                         const code = child.key;
-                        if (code !== myCode && !isBlocked(code)) {
+                        if (code !== myCode) {
                             db.ref('users/' + myCode + '/contacts/' + code).set(true);
                             found = true;
                         }
@@ -795,16 +1058,16 @@
                         loadContacts();
                         alert('✅ Контакт добавлен!');
                     } else {
-                        alert('❌ Это ты или пользователь заблокирован!');
+                        alert('❌ Это ты!');
                     }
                 } else {
-                    alert('❌ Пользователь с таким ником не найден!');
+                    alert('❌ Пользователь с таким username не найден!');
                 }
             });
         });
 
         // =========================================================
-        // 11. ТАБЫ
+        // 15. ТАБЫ
         // =========================================================
         document.querySelectorAll('#tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -819,9 +1082,9 @@
         });
 
         // =========================================================
-        // 12. ИНИЦИАЛИЗАЦИЯ
+        // 16. ИНИЦИАЛИЗАЦИЯ
         // =========================================================
-        console.log('🔥 GURU запущен! Код: ' + myCode + ', Имя: ' + myName);
+        console.log('🔥 GURU запущен! Код: ' + myCode + ', Username: ' + myUsername);
         console.log('📱 Аккаунтов: ' + accounts.length);
     </script>
 </body>
