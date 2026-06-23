@@ -14,8 +14,9 @@
         #app{display:none;flex-direction:column;height:100vh}
         #header{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #2a2a3a;flex-wrap:wrap;gap:4px}
         #header h1{background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:22px}
+        #headerRight{display:flex;align-items:center;gap:6px}
         #userName{color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px;cursor:pointer}
-        #userName:hover{background:#2a2a4a}
+        #settingsBtn{background:transparent;border:none;color:#888;font-size:20px;cursor:pointer}
         #tabs{display:flex;gap:4px;padding:8px 0;border-bottom:1px solid #2a2a3a}
         #tabs button{flex:1;padding:8px;border:none;background:transparent;color:#888;font-size:14px;cursor:pointer;border-radius:8px}
         #tabs button.active{background:#1e2a4a;color:#fff}
@@ -33,11 +34,21 @@
         .back-btn{background:transparent;color:#ffd200;border:none;font-size:16px;cursor:pointer;padding:4px 8px}
         #info{text-align:center;font-size:11px;color:#444;padding:4px 0}
         .nick{color:#ffd200;font-size:12px;margin-bottom:2px;display:block}
-        #accountsMenu{display:none;position:absolute;top:50px;right:10px;background:#1a1a2e;border-radius:12px;padding:8px;min-width:150px;border:1px solid #2a2a3a;z-index:100}
-        #accountsMenu button{display:block;width:100%;padding:8px 12px;background:transparent;border:none;color:#fff;font-size:14px;text-align:left;cursor:pointer;border-radius:6px}
-        #accountsMenu button:hover{background:#2a2a4a}
-        #accountsMenu button.active{color:#ffd200}
-        .account-badge{font-size:10px;color:#888;margin-left:4px}
+        
+        /* ===== НАСТРОЙКИ (МОДАЛКА) ===== */
+        #settingsModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1000}
+        #settingsModal.active{display:flex}
+        #settingsModal .modal-content{background:#1a1a2e;padding:20px;border-radius:16px;width:90%;max-width:350px;max-height:80vh;overflow-y:auto}
+        #settingsModal h2{color:#ffd200;margin-bottom:16px;text-align:center}
+        .settings-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #2a2a3a;cursor:pointer;align-items:center}
+        .settings-item:hover{background:#2a2a4a;border-radius:8px;padding-left:8px;padding-right:8px}
+        .settings-item .label{color:#fff}
+        .settings-item .value{color:#888;font-size:13px}
+        .settings-item .active-account{color:#ffd200}
+        .settings-item .add-btn{color:#4caf50;font-size:20px}
+        .settings-item .delete-btn{color:#ff6b6b;font-size:16px;margin-left:8px;background:transparent;border:none;cursor:pointer}
+        #closeSettings{width:100%;padding:12px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:16px;cursor:pointer;margin-top:12px}
+        .account-item{display:flex;justify-content:space-between;align-items:center;width:100%}
     </style>
 </head>
 <body>
@@ -57,13 +68,9 @@
     <div id="app">
         <div id="header">
             <h1>GURU</h1>
-            <div style="display:flex;align-items:center;gap:8px;position:relative;">
+            <div id="headerRight">
                 <span id="userName" style="color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px;cursor:pointer;">----</span>
-                <button id="accountsBtn" style="background:transparent;border:none;color:#888;font-size:18px;cursor:pointer;">▼</button>
-                <div id="accountsMenu">
-                    <button class="active" data-account="main">👤 Основной</button>
-                    <button data-account="second">➕ Второй</button>
-                </div>
+                <button id="settingsBtn">⚙️</button>
             </div>
         </div>
 
@@ -100,6 +107,21 @@
         <div id="info">👀 Жёлтые галочки — прочитано</div>
     </div>
 
+    <!-- ===== НАСТРОЙКИ (МОДАЛКА) ===== -->
+    <div id="settingsModal">
+        <div class="modal-content">
+            <h2>⚙️ Настройки</h2>
+            <div id="accountsList">
+                <!-- Аккаунты будут добавляться сюда -->
+            </div>
+            <div class="settings-item" id="addAccountBtn">
+                <span class="label">➕ Добавить аккаунт</span>
+                <span class="add-btn">+</span>
+            </div>
+            <button id="closeSettings">✖️ Закрыть</button>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script>
@@ -116,37 +138,78 @@
         let myCode = null;
         let myName = null;
         let currentChat = null;
-        let currentAccount = 'main';
+        let accounts = [];
+        let activeAccountIndex = 0;
 
         // =========================================================
         // 3. РАБОТА С АККАУНТАМИ
         // =========================================================
-        function loadMyCode() {
-            const saved = localStorage.getItem('myCode');
-            if (saved) { myCode = saved; return true; }
+        function loadAccounts() {
+            const saved = localStorage.getItem('guruAccounts');
+            if (saved) {
+                accounts = JSON.parse(saved);
+                return true;
+            }
             return false;
         }
-        function saveMyCode(code) {
-            localStorage.setItem('myCode', code);
-            myCode = code;
+        function saveAccounts() {
+            localStorage.setItem('guruAccounts', JSON.stringify(accounts));
         }
-        function loadMyName() {
-            const saved = localStorage.getItem('myName');
-            if (saved) { myName = saved; return true; }
+        function loadActiveAccount() {
+            const saved = localStorage.getItem('guruActiveAccount');
+            if (saved !== null) {
+                activeAccountIndex = parseInt(saved);
+                return true;
+            }
             return false;
         }
-        function saveMyName(name) {
-            localStorage.setItem('myName', name);
-            myName = name;
+        function saveActiveAccount(index) {
+            localStorage.setItem('guruActiveAccount', index.toString());
+            activeAccountIndex = index;
         }
-        function loadAccount() {
-            const saved = localStorage.getItem('currentAccount');
-            if (saved) { currentAccount = saved; return true; }
-            return false;
+
+        function getCurrentAccount() {
+            if (accounts.length === 0) return null;
+            return accounts[activeAccountIndex] || null;
         }
-        function saveAccount(account) {
-            localStorage.setItem('currentAccount', account);
-            currentAccount = account;
+
+        function setCurrentAccount(index) {
+            if (index < 0 || index >= accounts.length) return;
+            activeAccountIndex = index;
+            const acc = accounts[index];
+            myCode = acc.code;
+            myName = acc.name;
+            saveActiveAccount(index);
+            document.getElementById('userName').textContent = myName;
+            loadChats();
+            loadContacts();
+            renderAccounts();
+        }
+
+        function addAccount(code, name) {
+            accounts.push({ code, name });
+            saveAccounts();
+            renderAccounts();
+        }
+
+        function removeAccount(index) {
+            if (accounts.length <= 1) {
+                alert('❌ Нельзя удалить последний аккаунт!');
+                return;
+            }
+            accounts.splice(index, 1);
+            saveAccounts();
+            if (activeAccountIndex >= accounts.length) {
+                activeAccountIndex = accounts.length - 1;
+            }
+            const acc = accounts[activeAccountIndex];
+            myCode = acc.code;
+            myName = acc.name;
+            saveActiveAccount(activeAccountIndex);
+            document.getElementById('userName').textContent = myName;
+            loadChats();
+            loadContacts();
+            renderAccounts();
         }
 
         // =========================================================
@@ -166,9 +229,15 @@
         function showApp() {
             auth.style.display = 'none';
             app.style.display = 'flex';
-            document.getElementById('userName').textContent = myName;
-            loadChats();
-            loadContacts();
+            const acc = getCurrentAccount();
+            if (acc) {
+                myCode = acc.code;
+                myName = acc.name;
+                document.getElementById('userName').textContent = myName;
+                loadChats();
+                loadContacts();
+                renderAccounts();
+            }
         }
 
         loginBtn.addEventListener('click', function() {
@@ -179,11 +248,17 @@
             db.ref('users/' + code).once('value').then(snap => {
                 if (snap.exists()) {
                     const data = snap.val();
-                    myCode = code;
-                    myName = data.username || name;
-                    saveMyCode(code);
-                    saveMyName(myName);
-                    showApp();
+                    // Проверяем, есть ли уже такой аккаунт
+                    const exists = accounts.some(a => a.code === code);
+                    if (exists) {
+                        const idx = accounts.findIndex(a => a.code === code);
+                        setCurrentAccount(idx);
+                        showApp();
+                    } else {
+                        addAccount(code, data.username || name);
+                        setCurrentAccount(accounts.length - 1);
+                        showApp();
+                    }
                 } else {
                     alert('❌ Аккаунт не найден!');
                 }
@@ -207,91 +282,103 @@
                     contacts: {},
                     createdAt: Date.now()
                 }).then(() => {
-                    myCode = newCode;
-                    myName = newName;
-                    saveMyCode(newCode);
-                    saveMyName(newName);
+                    addAccount(newCode, newName);
+                    setCurrentAccount(accounts.length - 1);
                     showApp();
                     alert('✅ Аккаунт создан!');
                 });
             }).catch(() => alert('Ошибка соединения!'));
         });
 
-        if (loadMyCode() && loadMyName()) {
-            db.ref('users/' + myCode).once('value').then(snap => {
-                if (snap.exists()) {
-                    const data = snap.val();
-                    myName = data.username || myName;
-                    saveMyName(myName);
-                    showApp();
-                } else {
-                    showAuth();
-                }
-            }).catch(() => { showAuth(); });
+        // Восстановление аккаунтов
+        if (loadAccounts() && loadActiveAccount()) {
+            const acc = getCurrentAccount();
+            if (acc) {
+                myCode = acc.code;
+                myName = acc.name;
+                showApp();
+            } else {
+                showAuth();
+            }
         } else {
             showAuth();
         }
 
         // =========================================================
-        // 5. ПЕРЕКЛЮЧЕНИЕ АККАУНТОВ
+        // 5. НАСТРОЙКИ (АККАУНТЫ)
         // =========================================================
-        const accountsBtn = document.getElementById('accountsBtn');
-        const accountsMenu = document.getElementById('accountsMenu');
+        const settingsModal = document.getElementById('settingsModal');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const closeSettings = document.getElementById('closeSettings');
+        const accountsList = document.getElementById('accountsList');
 
-        accountsBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            accountsMenu.style.display = accountsMenu.style.display === 'block' ? 'none' : 'block';
+        settingsBtn.addEventListener('click', function() {
+            renderAccounts();
+            settingsModal.classList.add('active');
         });
 
-        document.addEventListener('click', function() {
-            accountsMenu.style.display = 'none';
+        closeSettings.addEventListener('click', function() {
+            settingsModal.classList.remove('active');
         });
 
-        document.querySelectorAll('#accountsMenu button').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const account = this.dataset.account;
-                document.querySelectorAll('#accountsMenu button').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                if (account === 'second') {
-                    // Переключаем на второй аккаунт (можно привязать к другому коду)
-                    const secondCode = prompt('Введи код второго аккаунта:');
-                    if (secondCode) {
-                        db.ref('users/' + secondCode).once('value').then(snap => {
-                            if (snap.exists()) {
-                                const data = snap.val();
-                                myCode = secondCode;
-                                myName = data.username || 'Второй';
-                                saveMyCode(myCode);
-                                saveMyName(myName);
-                                saveAccount(account);
-                                showApp();
-                                alert('✅ Переключено на ' + myName);
-                            } else {
-                                alert('❌ Аккаунт не найден!');
-                            }
-                        });
+        settingsModal.addEventListener('click', function(e) {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('active');
+            }
+        });
+
+        function renderAccounts() {
+            accountsList.innerHTML = '';
+            accounts.forEach((acc, index) => {
+                const div = document.createElement('div');
+                div.className = 'settings-item';
+                const isActive = index === activeAccountIndex;
+                div.innerHTML = `
+                    <div class="account-item">
+                        <span class="label ${isActive ? 'active-account' : ''}">
+                            ${isActive ? '⭐ ' : ''}${acc.name}
+                            <span style="font-size:10px;color:#888;">(${acc.code})</span>
+                        </span>
+                        <div>
+                            ${!isActive ? `<button class="delete-btn" data-index="${index}">🗑️</button>` : ''}
+                            <span style="color:#888;font-size:12px;">${isActive ? '✅ активен' : ''}</span>
+                        </div>
+                    </div>
+                `;
+                div.addEventListener('click', function() {
+                    if (!isActive) {
+                        setCurrentAccount(index);
+                        settingsModal.classList.remove('active');
                     }
-                } else {
-                    // Возврат на основной аккаунт
-                    const mainCode = prompt('Введи код основного аккаунта:');
-                    if (mainCode) {
-                        db.ref('users/' + mainCode).once('value').then(snap => {
-                            if (snap.exists()) {
-                                const data = snap.val();
-                                myCode = mainCode;
-                                myName = data.username || 'Основной';
-                                saveMyCode(myCode);
-                                saveMyName(myName);
-                                saveAccount(account);
-                                showApp();
-                                alert('✅ Переключено на ' + myName);
-                            } else {
-                                alert('❌ Аккаунт не найден!');
-                            }
-                        });
-                    }
+                });
+                const deleteBtn = div.querySelector('.delete-btn');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        removeAccount(index);
+                    });
                 }
-                accountsMenu.style.display = 'none';
+                accountsList.appendChild(div);
+            });
+        }
+
+        document.getElementById('addAccountBtn').addEventListener('click', function() {
+            const code = prompt('Введи код нового аккаунта:');
+            if (!code) return;
+            db.ref('users/' + code).once('value').then(snap => {
+                if (!snap.exists()) {
+                    alert('❌ Аккаунт не найден!');
+                    return;
+                }
+                const data = snap.val();
+                const name = data.username || 'Аккаунт';
+                // Проверяем, не добавлен ли уже
+                if (accounts.some(a => a.code === code)) {
+                    alert('❌ Этот аккаунт уже добавлен!');
+                    return;
+                }
+                addAccount(code, name);
+                alert('✅ Аккаунт добавлен!');
             });
         });
 
@@ -425,7 +512,6 @@
         addContactBtn.addEventListener('click', function() {
             const query = contactSearch.value.trim();
             if (!query) return alert('Введи ник!');
-            // Ищем пользователя по username
             db.ref('users').orderByChild('username').equalTo(query).once('value').then(snap => {
                 if (snap.exists()) {
                     let found = false;
@@ -468,6 +554,7 @@
         // 9. ИНИЦИАЛИЗАЦИЯ
         // =========================================================
         console.log('🔥 GURU запущен! Код: ' + myCode + ', Имя: ' + myName);
+        console.log('📱 Аккаунтов: ' + accounts.length);
     </script>
 </body>
 </html>
