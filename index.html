@@ -14,22 +14,24 @@
         #app{display:none;flex-direction:column;height:100vh}
         #header{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #2a2a3a}
         #header h1{background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:22px}
+        #userName{color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px}
         #tabs{display:flex;gap:4px;padding:8px 0;border-bottom:1px solid #2a2a3a}
         #tabs button{flex:1;padding:8px;border:none;background:transparent;color:#888;font-size:14px;cursor:pointer;border-radius:8px}
         #tabs button.active{background:#1e2a4a;color:#fff}
         #content{flex:1;overflow-y:auto;padding:10px 0}
-        .contact{padding:12px 16px;background:#1a1a2e;margin:4px 0;border-radius:12px;cursor:pointer}
+        .contact{padding:12px 16px;background:#1a1a2e;margin:4px 0;border-radius:12px;cursor:pointer;display:flex;justify-content:space-between}
         .chat-area{display:none;flex-direction:column;height:100%}
         .chat-area.active{display:flex}
-        #messages{flex:1;overflow-y:auto;padding:10px 0}
-        .msg{padding:8px 14px;border-radius:16px;max-width:70%;margin:4px 0;background:#1e2a4a;align-self:flex-start}
-        .msg.my{background:#0084ff;align-self:flex-end}
+        #messages{flex:1;overflow-y:auto;padding:10px 0;display:flex;flex-direction:column;gap:4px}
+        .msg{padding:8px 14px;border-radius:16px;max-width:70%;word-wrap:break-word;background:#1e2a4a;align-self:flex-start;border-bottom-left-radius:4px}
+        .msg.my{background:#0084ff;align-self:flex-end;border-bottom-right-radius:4px;border-bottom-left-radius:16px}
         .msg .time{font-size:9px;color:#aaa;margin-left:8px}
         #bottom{display:flex;gap:8px;padding:10px 0}
         #bottom input{flex:1;padding:12px 16px;border-radius:24px;border:none;background:#1a1a2e;color:#fff;font-size:16px;outline:none}
         #bottom button{padding:12px 20px;border-radius:24px;border:none;background:#e94560;color:#fff;font-size:16px;cursor:pointer}
         .back-btn{background:transparent;color:#ffd200;border:none;font-size:16px;cursor:pointer;padding:4px 8px}
         #info{text-align:center;font-size:11px;color:#444;padding:4px 0}
+        .nick{color:#ffd200;font-size:12px;margin-bottom:2px;display:block}
     </style>
 </head>
 <body>
@@ -39,16 +41,17 @@
         <h1>GURU</h1>
         <div style="color:#888;font-size:13px;margin-bottom:20px;">твой приватный мир</div>
         <input id="codeInput" placeholder="Код" />
+        <input id="nameInput" placeholder="Твоё имя" />
         <button id="loginBtn">Войти</button>
         <button id="newCodeBtn" style="background:#1e2a4a;">Создать аккаунт</button>
-        <div style="color:#666;font-size:12px;margin-top:20px;text-align:center;">💡 Придумай код, который не забудешь!</div>
+        <div style="color:#666;font-size:12px;margin-top:20px;text-align:center;">💡 Придумай код и имя, которые не забудешь!</div>
     </div>
 
     <!-- ===== ОСНОВНОЙ ЭКРАН ===== -->
     <div id="app">
         <div id="header">
             <h1>GURU</h1>
-            <span id="myCodeDisplay" style="color:#888;font-size:12px;background:#1a1a2e;padding:4px 12px;border-radius:12px;">Код: ----</span>
+            <span id="userName" style="color:#ffd200;font-size:14px;background:#1a1a2e;padding:4px 12px;border-radius:12px;">----</span>
         </div>
 
         <div id="tabs">
@@ -98,6 +101,7 @@
         // 2. ПЕРЕМЕННЫЕ
         // =========================================================
         let myCode = null;
+        let myName = null;
         let currentChat = null;
 
         // =========================================================
@@ -112,10 +116,20 @@
             localStorage.setItem('myCode', code);
             myCode = code;
         }
+        function loadMyName() {
+            const saved = localStorage.getItem('myName');
+            if (saved) { myName = saved; return true; }
+            return false;
+        }
+        function saveMyName(name) {
+            localStorage.setItem('myName', name);
+            myName = name;
+        }
 
         const auth = document.getElementById('auth');
         const app = document.getElementById('app');
         const codeInput = document.getElementById('codeInput');
+        const nameInput = document.getElementById('nameInput');
         const loginBtn = document.getElementById('loginBtn');
         const newCodeBtn = document.getElementById('newCodeBtn');
 
@@ -126,18 +140,23 @@
         function showApp() {
             auth.style.display = 'none';
             app.style.display = 'flex';
-            document.getElementById('myCodeDisplay').textContent = 'Код: ' + myCode;
+            document.getElementById('userName').textContent = myName;
             loadChats();
             loadContacts();
         }
 
         loginBtn.addEventListener('click', function() {
             const code = codeInput.value.trim();
+            const name = nameInput.value.trim();
             if (!code) return alert('Введи код!');
+            if (!name) return alert('Введи имя!');
             db.ref('users/' + code).once('value').then(snap => {
                 if (snap.exists()) {
+                    const data = snap.val();
                     myCode = code;
+                    myName = data.username || name;
                     saveMyCode(code);
+                    saveMyName(myName);
                     showApp();
                 } else {
                     alert('❌ Аккаунт не найден!');
@@ -147,8 +166,10 @@
 
         newCodeBtn.addEventListener('click', function() {
             const newCode = codeInput.value.trim();
+            const newName = nameInput.value.trim();
             if (!newCode) return alert('Придумай код!');
-            if (newCode.length < 3) return alert('Минимум 3 символа!');
+            if (newCode.length < 3) return alert('Код минимум 3 символа!');
+            if (!newName) return alert('Придумай имя!');
             db.ref('users/' + newCode).once('value').then(snap => {
                 if (snap.exists()) {
                     alert('❌ Код занят!');
@@ -156,21 +177,26 @@
                 }
                 db.ref('users/' + newCode).set({
                     code: newCode,
-                    username: 'user_' + newCode.substring(0, 4),
+                    username: newName,
                     contacts: {},
                     createdAt: Date.now()
                 }).then(() => {
                     myCode = newCode;
+                    myName = newName;
                     saveMyCode(newCode);
+                    saveMyName(newName);
                     showApp();
                     alert('✅ Аккаунт создан!');
                 });
             }).catch(() => alert('Ошибка соединения!'));
         });
 
-        if (loadMyCode()) {
+        if (loadMyCode() && loadMyName()) {
             db.ref('users/' + myCode).once('value').then(snap => {
                 if (snap.exists()) {
+                    const data = snap.val();
+                    myName = data.username || myName;
+                    saveMyName(myName);
                     showApp();
                 } else {
                     showAuth();
@@ -199,7 +225,10 @@
                 for (let code in contacts) {
                     const div = document.createElement('div');
                     div.className = 'contact';
-                    div.textContent = code;
+                    db.ref('users/' + code + '/username').once('value').then(snap => {
+                        const name = snap.val() || code;
+                        div.textContent = name;
+                    });
                     div.addEventListener('click', function() {
                         openChat('user', code);
                     });
@@ -215,7 +244,9 @@
             currentChat = { type, id };
             chatView.classList.add('active');
             chatList.style.display = 'none';
-            chatHeader.textContent = id;
+            db.ref('users/' + id + '/username').once('value').then(snap => {
+                chatHeader.textContent = snap.val() || id;
+            });
             loadMessages(id);
         }
 
@@ -256,7 +287,22 @@
                 const div = document.createElement('div');
                 div.className = 'msg';
                 if (data.from === myCode) div.classList.add('my');
-                div.innerHTML = `${data.text} <span class="time">${new Date(data.time).getHours()}:${String(new Date(data.time).getMinutes()).padStart(2,'0')}</span>`;
+                // Показываем ник отправителя
+                db.ref('users/' + data.from + '/username').once('value').then(snap => {
+                    const name = snap.val() || data.from;
+                    const nickSpan = document.createElement('span');
+                    nickSpan.className = 'nick';
+                    nickSpan.textContent = name;
+                    div.prepend(nickSpan);
+                });
+                const textSpan = document.createElement('span');
+                textSpan.textContent = data.text;
+                div.appendChild(textSpan);
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'time';
+                const date = new Date(data.time);
+                timeSpan.textContent = date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+                div.appendChild(timeSpan);
                 messages.appendChild(div);
                 messages.scrollTop = messages.scrollHeight;
             });
@@ -277,7 +323,9 @@
                 for (let code in contacts) {
                     const div = document.createElement('div');
                     div.className = 'contact';
-                    div.textContent = code;
+                    db.ref('users/' + code + '/username').once('value').then(snap => {
+                        div.textContent = snap.val() || code;
+                    });
                     contactList.appendChild(div);
                 }
                 if (Object.keys(contacts).length === 0) {
@@ -320,7 +368,7 @@
         // =========================================================
         // 7. ИНИЦИАЛИЗАЦИЯ
         // =========================================================
-        console.log('🔥 GURU запущен! Код: ' + myCode);
+        console.log('🔥 GURU запущен! Код: ' + myCode + ', Имя: ' + myName);
     </script>
 </body>
 </html>
