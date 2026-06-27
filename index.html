@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GURU — с Firebase</title>
+    <title>GURU — полная версия</title>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -28,6 +28,10 @@
             padding: 10px;
         }
 
+        body.light-theme {
+            background: #e8e8e8;
+        }
+
         .telegram-clone {
             max-width: 430px;
             width: 100%;
@@ -39,6 +43,12 @@
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            transition: background 0.3s;
+        }
+
+        .telegram-clone.light {
+            background: #ffffff;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
         }
 
         /* ===== ВЕРХНЯЯ ПАНЕЛЬ ===== */
@@ -52,6 +62,12 @@
             flex-shrink: 0;
             position: relative;
             z-index: 10;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .light .guru-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .header-left {
@@ -80,6 +96,14 @@
             pointer-events: none;
         }
 
+        .light .burger-btn {
+            color: #555;
+        }
+
+        .light .burger-btn:hover {
+            color: #000;
+        }
+
         .guru-brand {
             display: flex;
             align-items: baseline;
@@ -91,6 +115,11 @@
             font-weight: 700;
             color: #ffffff;
             letter-spacing: 0.2px;
+            transition: color 0.3s;
+        }
+
+        .light .guru-brand .name {
+            color: #000;
         }
 
         .guru-brand .badge {
@@ -121,6 +150,14 @@
             color: #ffffff;
         }
 
+        .light .header-right i {
+            color: #555;
+        }
+
+        .light .header-right i:hover {
+            color: #000;
+        }
+
         /* ===== БОКОВОЕ МЕНЮ ===== */
         .side-menu {
             position: absolute;
@@ -135,6 +172,11 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+        }
+
+        .light .side-menu {
+            background: #ffffff;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
         }
 
         .side-menu.open {
@@ -161,6 +203,11 @@
             padding: 30px 20px 20px 20px;
             border-bottom: 1px solid #2a2a2a;
             background: #1f1f1f;
+        }
+
+        .light .side-menu-header {
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .side-menu-user {
@@ -193,6 +240,10 @@
             color: #f0f0f0;
         }
 
+        .light .side-menu-user-info .name {
+            color: #000;
+        }
+
         .side-menu-user-info .status {
             font-size: 13px;
             color: #6a6a6a;
@@ -218,9 +269,18 @@
             font-size: 15px;
         }
 
+        .light .side-menu-item {
+            color: #333;
+        }
+
         .side-menu-item:hover {
             background: #252525;
             color: #ffffff;
+        }
+
+        .light .side-menu-item:hover {
+            background: #f0f0f0;
+            color: #000;
         }
 
         .side-menu-item i {
@@ -231,6 +291,10 @@
 
         .side-menu-item:hover i {
             color: #ffffff;
+        }
+
+        .light .side-menu-item:hover i {
+            color: #000;
         }
 
         .side-menu-item .badge {
@@ -249,11 +313,19 @@
             margin: 8px 20px;
         }
 
+        .light .side-menu-divider {
+            background: #e0e0e0;
+        }
+
         .side-menu-footer {
             padding: 16px 20px;
             border-top: 1px solid #2a2a2a;
             color: #6a6a6a;
             font-size: 13px;
+        }
+
+        .light .side-menu-footer {
+            border-top: 1px solid #e0e0e0;
         }
 
         /* ===== СТРОКА ПОИСКА ===== */
@@ -262,6 +334,12 @@
             padding: 4px 16px 12px 16px;
             border-bottom: 1px solid #2a2a2a;
             flex-shrink: 0;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .light .search-area {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .search-box {
@@ -272,6 +350,10 @@
             align-items: center;
             gap: 10px;
             color: #8e8e8e;
+        }
+
+        .light .search-box {
+            background: #f0f0f0;
         }
 
         .search-box i {
@@ -288,6 +370,10 @@
             width: 100%;
         }
 
+        .light .search-box input {
+            color: #000;
+        }
+
         .search-box input::placeholder {
             color: #6a6a6a;
             font-weight: 400;
@@ -302,6 +388,11 @@
             align-items: center;
             padding: 40px 30px;
             background: #0f0f0f;
+            transition: background 0.3s;
+        }
+
+        .light .auth-container {
+            background: #ffffff;
         }
 
         .auth-container .logo {
@@ -309,6 +400,10 @@
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 8px;
+        }
+
+        .light .auth-container .logo {
+            color: #000;
         }
 
         .auth-container .logo span {
@@ -338,6 +433,10 @@
             margin-bottom: 6px;
         }
 
+        .light .auth-form .input-group label {
+            color: #555;
+        }
+
         .auth-form .input-group input {
             width: 100%;
             padding: 12px 16px;
@@ -348,6 +447,12 @@
             font-size: 16px;
             outline: none;
             transition: border 0.2s;
+        }
+
+        .light .auth-form .input-group input {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            color: #000;
         }
 
         .auth-form .input-group input:focus {
@@ -432,6 +537,11 @@
             padding: 2px 0 8px 0;
             background: #0f0f0f;
             display: none;
+            transition: background 0.3s;
+        }
+
+        .light .chat-list {
+            background: #ffffff;
         }
 
         .chat-list::-webkit-scrollbar {
@@ -454,8 +564,16 @@
             border-bottom: 1px solid #181818;
         }
 
+        .light .chat-item {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
         .chat-item:hover {
             background: #181818;
+        }
+
+        .light .chat-item:hover {
+            background: #f5f5f5;
         }
 
         .chat-avatar {
@@ -502,6 +620,10 @@
             text-overflow: ellipsis;
         }
 
+        .light .chat-name .name {
+            color: #000;
+        }
+
         .chat-name .time {
             font-size: 13px;
             color: #6a6a6a;
@@ -522,6 +644,10 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 220px;
+        }
+
+        .light .chat-preview .message {
+            color: #666;
         }
 
         .chat-preview .badge-unread {
@@ -548,6 +674,11 @@
             background: #0f0f0f;
         }
 
+        .light .chat-divider {
+            border-bottom: 1px solid #f0f0f0;
+            background: #ffffff;
+        }
+
         .empty-chats {
             display: flex;
             flex-direction: column;
@@ -565,6 +696,10 @@
             margin-bottom: 16px;
         }
 
+        .light .empty-chats i {
+            color: #ddd;
+        }
+
         .empty-chats h3 {
             font-size: 18px;
             font-weight: 500;
@@ -572,10 +707,163 @@
             margin-bottom: 8px;
         }
 
+        .light .empty-chats h3 {
+            color: #333;
+        }
+
         .empty-chats p {
             font-size: 14px;
             color: #6a6a6a;
             max-width: 260px;
+        }
+
+        /* ===== ОКНО ЧАТА ===== */
+        .chat-window {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f0f0f;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            animation: slideIn 0.3s ease;
+        }
+
+        .light .chat-window {
+            background: #ffffff;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .chat-window.active {
+            display: flex;
+        }
+
+        .chat-window-header {
+            background: #1f1f1f;
+            padding: 12px 16px;
+            border-bottom: 1px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .light .chat-window-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .chat-window-back {
+            font-size: 20px;
+            color: #2b6b9c;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+
+        .chat-window-title {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+            color: #f0f0f0;
+        }
+
+        .light .chat-window-title {
+            color: #000;
+        }
+
+        .chat-window-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 15px;
+            word-wrap: break-word;
+        }
+
+        .message-bubble.mine {
+            background: #2b6b9c;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .message-bubble.other {
+            background: #1f1f1f;
+            color: #eaeaea;
+            align-self: flex-start;
+        }
+
+        .light .message-bubble.other {
+            background: #f0f0f0;
+            color: #000;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #6a6a6a;
+            margin-top: 4px;
+        }
+
+        .chat-window-input {
+            display: flex;
+            gap: 10px;
+            padding: 12px 16px;
+            border-top: 1px solid #2a2a2a;
+            background: #1f1f1f;
+            flex-shrink: 0;
+        }
+
+        .light .chat-window-input {
+            border-top: 1px solid #e0e0e0;
+            background: #ffffff;
+        }
+
+        .chat-window-input input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 24px;
+            border: 1px solid #2a2a2a;
+            background: #2b2b2b;
+            color: #eaeaea;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .light .chat-window-input input {
+            border: 1px solid #ddd;
+            background: #f5f5f5;
+            color: #000;
+        }
+
+        .chat-window-input button {
+            padding: 10px 20px;
+            background: #2b6b9c;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .chat-window-input button:hover {
+            background: #1f5a85;
         }
 
         /* ===== НИЖНЯЯ ПАНЕЛЬ ===== */
@@ -586,6 +874,12 @@
             justify-content: space-around;
             padding: 8px 0 12px 0;
             flex-shrink: 0;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .light .bottom-nav {
+            background: #ffffff;
+            border-top: 1px solid #e0e0e0;
         }
 
         .nav-item {
@@ -628,6 +922,11 @@
             background: #0f0f0f;
             padding: 20px;
             overflow-y: auto;
+            transition: background 0.3s;
+        }
+
+        .light .page-container {
+            background: #ffffff;
         }
 
         .page-container.active {
@@ -639,6 +938,10 @@
             font-weight: 700;
             color: #f0f0f0;
             margin-bottom: 20px;
+        }
+
+        .light .page-title {
+            color: #000;
         }
 
         .page-item {
@@ -658,8 +961,17 @@
             font-size: 15px;
         }
 
+        .light .page-item {
+            background: #f5f5f5;
+            color: #333;
+        }
+
         .page-item:hover {
             background: #252525;
+        }
+
+        .light .page-item:hover {
+            background: #e8e8e8;
         }
 
         .page-item i {
@@ -690,6 +1002,40 @@
             color: #4a8bc4;
         }
 
+        .toggle-switch {
+            margin-left: auto;
+            width: 48px;
+            height: 28px;
+            background: #3a3a3a;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .light .toggle-switch {
+            background: #ddd;
+        }
+
+        .toggle-switch.active {
+            background: #2b6b9c;
+        }
+
+        .toggle-switch .toggle-knob {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: 0.3s;
+        }
+
+        .toggle-switch.active .toggle-knob {
+            left: 23px;
+        }
+
         /* ===== ПРОФИЛЬ ===== */
         .user-profile {
             display: flex;
@@ -718,6 +1064,10 @@
             font-weight: 500;
         }
 
+        .light .user-profile .username {
+            color: #000;
+        }
+
         .user-profile .logout-btn {
             color: #6a6a6a;
             font-size: 13px;
@@ -730,9 +1080,36 @@
             transition: 0.2s;
         }
 
+        .light .user-profile .logout-btn {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+
         .user-profile .logout-btn:hover {
             background: #2a2a2a;
             color: #eaeaea;
+        }
+
+        .light .user-profile .logout-btn:hover {
+            background: #ddd;
+            color: #000;
+        }
+
+        .create-group-btn {
+            background: #2b6b9c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: 0.2s;
+        }
+
+        .create-group-btn:hover {
+            background: #1f5a85;
         }
 
         @media (max-width: 460px) {
@@ -790,7 +1167,7 @@
                 </button>
             </div>
             <div class="side-menu-footer">
-                GURU v1.0 • Firebase
+                GURU v2.0 • Firebase
             </div>
         </div>
 
@@ -848,12 +1225,36 @@
 
         <!-- ===== СПИСОК ЧАТОВ ===== -->
         <div class="chat-list" id="chatList">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 18px;">
+                <h3 style="color:#6a6a6a; font-size:14px;">Чаты</h3>
+                <button class="create-group-btn" id="createGroupBtn">
+                    <i class="fas fa-users"></i> Создать группу
+                </button>
+            </div>
             <div class="empty-chats" id="emptyChats">
                 <i class="fas fa-comments"></i>
                 <h3>Нет чатов</h3>
                 <p>Здесь будут ваши диалоги. Начните общение или создайте новый чат.</p>
             </div>
             <div id="chatItems"></div>
+        </div>
+
+        <!-- ===== ОКНО ЧАТА ===== -->
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-window-header">
+                <button class="chat-window-back" id="chatWindowBack">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <span class="chat-window-title" id="chatWindowTitle">Чат</span>
+            </div>
+            <div class="chat-window-messages" id="chatMessages">
+                <div class="message-bubble other">Привет! Как дела? <div class="message-time">12:34</div></div>
+                <div class="message-bubble mine">Всё отлично! <div class="message-time">12:35</div></div>
+            </div>
+            <div class="chat-window-input">
+                <input type="text" placeholder="Сообщение..." id="chatInput">
+                <button id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
         </div>
 
         <!-- ===== СТРАНИЦЫ ===== -->
@@ -895,12 +1296,11 @@
             databaseURL: "https://guromessenger-ef076-default-rtdb.firebaseio.com/"
         };
 
-        // Инициализация Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
         // =============================================
-        //  ОСТАЛЬНОЙ КОД
+        //  ВСЯ ЛОГИКА
         // =============================================
 
         // --- Элементы ---
@@ -917,6 +1317,13 @@
         const pageBack = document.getElementById('pageBack');
         const chatItems = document.getElementById('chatItems');
         const emptyChats = document.getElementById('emptyChats');
+        const chatWindow = document.getElementById('chatWindow');
+        const chatWindowTitle = document.getElementById('chatWindowTitle');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+        const chatWindowBack = document.getElementById('chatWindowBack');
+        const createGroupBtn = document.getElementById('createGroupBtn');
 
         const usernameInput = document.getElementById('usernameInput');
         const passwordInput = document.getElementById('passwordInput');
@@ -932,163 +1339,126 @@
         let isLoginMode = true;
         let currentUser = null;
         let currentPage = null;
+        let currentChatId = null;
+        let isDarkTheme = true;
 
-        // --- Функции работы с Firebase ---
-
-        // Проверка существования пользователя
+        // --- Функции Firebase ---
         function checkUserExists(username) {
             return new Promise((resolve) => {
-                const userRef = database.ref('users/' + username);
-                userRef.once('value', (snapshot) => {
+                database.ref('users/' + username).once('value', (snapshot) => {
                     resolve(snapshot.exists());
                 });
             });
         }
 
-        // Регистрация пользователя
         function registerUser(username, password) {
             return new Promise((resolve, reject) => {
-                const userRef = database.ref('users/' + username);
-                userRef.set({
+                database.ref('users/' + username).set({
                     password: password,
                     created: Date.now()
-                }).then(() => {
-                    resolve();
-                }).catch((error) => {
-                    reject(error);
-                });
+                }).then(() => resolve()).catch(reject);
             });
         }
 
-        // Проверка пароля
         function checkPassword(username, password) {
             return new Promise((resolve, reject) => {
-                const userRef = database.ref('users/' + username + '/password');
-                userRef.once('value', (snapshot) => {
-                    if (snapshot.exists() && snapshot.val() === password) {
-                        resolve(true);
-                    } else {
-                        resolve(false);
-                    }
-                }).catch((error) => {
-                    reject(error);
-                });
+                database.ref('users/' + username + '/password').once('value', (snapshot) => {
+                    resolve(snapshot.exists() && snapshot.val() === password);
+                }).catch(reject);
             });
         }
 
-        // Сохранение сессии
         function saveSession(username) {
-            database.ref('sessions/' + username).set({
-                lastLogin: Date.now(),
-                active: true
-            });
+            database.ref('sessions/' + username).set({ lastLogin: Date.now(), active: true });
         }
 
-        // Проверка сессии
         function checkSession() {
             return new Promise((resolve) => {
                 const sessionKey = localStorage.getItem('guru_session');
-                if (!sessionKey) {
-                    resolve(null);
-                    return;
-                }
-                const sessionRef = database.ref('sessions/' + sessionKey);
-                sessionRef.once('value', (snapshot) => {
-                    if (snapshot.exists() && snapshot.val().active) {
-                        resolve(sessionKey);
-                    } else {
-                        resolve(null);
-                    }
+                if (!sessionKey) { resolve(null); return; }
+                database.ref('sessions/' + sessionKey).once('value', (snapshot) => {
+                    resolve(snapshot.exists() && snapshot.val().active ? sessionKey : null);
                 });
             });
         }
 
-        // Выход из сессии
         function clearSession(username) {
-            if (username) {
-                database.ref('sessions/' + username).remove();
-            }
+            if (username) database.ref('sessions/' + username).remove();
             localStorage.removeItem('guru_session');
         }
 
-        // Загрузка контактов пользователя
         function loadContacts(username) {
             return new Promise((resolve) => {
-                const contactsRef = database.ref('users/' + username + '/contacts');
-                contactsRef.once('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        resolve(snapshot.val());
-                    } else {
-                        resolve({});
-                    }
+                database.ref('users/' + username + '/contacts').once('value', (snapshot) => {
+                    resolve(snapshot.exists() ? snapshot.val() : {});
                 });
             });
         }
 
-        // Добавление контакта
         function addContact(username, contactName) {
             return new Promise((resolve, reject) => {
-                const contactRef = database.ref('users/' + username + '/contacts/' + contactName);
-                contactRef.set({
-                    added: Date.now()
-                }).then(() => {
-                    resolve();
-                }).catch((error) => {
-                    reject(error);
-                });
+                database.ref('users/' + username + '/contacts/' + contactName).set({ added: Date.now() })
+                    .then(resolve).catch(reject);
             });
         }
 
-        // Загрузка чатов
         function loadChats(username) {
             return new Promise((resolve) => {
-                const chatsRef = database.ref('chats');
-                chatsRef.once('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        const allChats = snapshot.val();
-                        const userChats = {};
-                        for (const [chatId, chat] of Object.entries(allChats)) {
-                            if (chat.participants && chat.participants.includes(username)) {
-                                userChats[chatId] = chat;
-                            }
+                database.ref('chats').once('value', (snapshot) => {
+                    if (!snapshot.exists()) { resolve({}); return; }
+                    const allChats = snapshot.val();
+                    const userChats = {};
+                    for (const [chatId, chat] of Object.entries(allChats)) {
+                        if (chat.participants && chat.participants.includes(username)) {
+                            userChats[chatId] = chat;
                         }
-                        resolve(userChats);
-                    } else {
-                        resolve({});
                     }
+                    resolve(userChats);
                 });
             });
         }
 
-        // Создание чата
-        function createChat(username, contactName) {
+        function createChat(username, contactName, isGroup = false) {
             return new Promise((resolve, reject) => {
                 const chatId = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-                const chatRef = database.ref('chats/' + chatId);
-                chatRef.set({
-                    participants: [username, contactName],
+                const participants = isGroup ? [username, contactName] : [username, contactName];
+                database.ref('chats/' + chatId).set({
+                    participants: participants,
                     created: Date.now(),
+                    isGroup: isGroup,
                     messages: {
                         first: {
-                            text: 'Чат создан!',
+                            text: isGroup ? 'Группа создана!' : 'Чат создан!',
                             from: username,
                             time: Date.now()
                         }
                     }
-                }).then(() => {
-                    resolve(chatId);
-                }).catch((error) => {
-                    reject(error);
-                });
+                }).then(() => resolve(chatId)).catch(reject);
+            });
+        }
+
+        function sendMessage(chatId, from, text) {
+            const msgId = Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+            return database.ref('chats/' + chatId + '/messages/' + msgId).set({
+                text: text,
+                from: from,
+                time: Date.now()
+            });
+        }
+
+        function loadMessages(chatId, callback) {
+            database.ref('chats/' + chatId + '/messages').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    callback(snapshot.val());
+                } else {
+                    callback({});
+                }
             });
         }
 
         // --- Меню ---
         function toggleMenu() {
-            // Меню доступно только если пользователь авторизован
-            if (!currentUser) {
-                return;
-            }
+            if (!currentUser) return;
             sideMenu.classList.toggle('open');
             menuOverlay.classList.toggle('active');
         }
@@ -1101,7 +1471,7 @@
         burgerBtn.addEventListener('click', toggleMenu);
         menuOverlay.addEventListener('click', closeMenu);
 
-        // --- Показать/скрыть ошибку ---
+        // --- Уведомления ---
         function showError(msg) {
             authError.textContent = msg;
             authError.style.display = 'block';
@@ -1116,6 +1486,39 @@
             setTimeout(() => { authSuccess.style.display = 'none'; }, 3000);
         }
 
+        function showNotification(msg) {
+            const notif = document.createElement('div');
+            notif.style.cssText = `
+                position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+                background: #2b6b9c; color: white; padding: 12px 20px;
+                border-radius: 12px; font-size: 14px; z-index: 200;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+                animation: slideDown 0.3s ease;
+            `;
+            notif.textContent = msg;
+            document.getElementById('app').appendChild(notif);
+            setTimeout(() => {
+                notif.style.opacity = '0';
+                notif.style.transition = '0.3s';
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        // --- Переключение темы ---
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            const app = document.getElementById('app');
+            const clone = document.querySelector('.telegram-clone');
+            if (isDarkTheme) {
+                document.body.classList.remove('light-theme');
+                clone.classList.remove('light');
+            } else {
+                document.body.classList.add('light-theme');
+                clone.classList.add('light');
+            }
+            localStorage.setItem('guru_theme', isDarkTheme ? 'dark' : 'light');
+        }
+
         // --- Переключение режима ---
         function toggleMode() {
             isLoginMode = !isLoginMode;
@@ -1125,14 +1528,12 @@
                 document.querySelector('.subtitle').textContent = 'Войдите в свой аккаунт';
                 document.querySelector('.auth-form .input-group:last-child label').textContent = '🔐 Код-пароль';
                 document.querySelector('.auth-form .input-group:last-child input').placeholder = 'Введите код';
-                document.querySelector('.auth-form .input-group:last-child input').setAttribute('autocomplete', 'current-password');
             } else {
                 authBtn.textContent = 'Зарегистрироваться';
                 authSwitchLink.textContent = 'Войти';
                 document.querySelector('.subtitle').textContent = 'Создайте новый аккаунт';
                 document.querySelector('.auth-form .input-group:last-child label').textContent = '🔐 Придумайте код';
                 document.querySelector('.auth-form .input-group:last-child input').placeholder = 'Придумайте код';
-                document.querySelector('.auth-form .input-group:last-child input').setAttribute('autocomplete', 'new-password');
             }
             usernameInput.value = '';
             passwordInput.value = '';
@@ -1144,9 +1545,7 @@
 
         // --- Выход ---
         function logout() {
-            if (currentUser) {
-                clearSession(currentUser.username);
-            }
+            if (currentUser) clearSession(currentUser.username);
             currentUser = null;
             showApp(false);
             usernameInput.value = '';
@@ -1156,6 +1555,7 @@
             if (!isLoginMode) toggleMode();
             closeMenu();
             pageContainer.classList.remove('active');
+            chatWindow.classList.remove('active');
             chatList.style.display = 'block';
             bottomNav.style.display = 'flex';
             searchArea.style.display = 'block';
@@ -1163,8 +1563,11 @@
             document.querySelector('[data-tab="chats"]').classList.add('active');
             chatItems.innerHTML = '';
             emptyChats.style.display = 'flex';
-            // Блокируем меню
             burgerBtn.classList.add('disabled');
+            if (chatMessages._listener) {
+                database.ref('chats/' + currentChatId + '/messages').off();
+            }
+            currentChatId = null;
         }
 
         // --- Показать страницу ---
@@ -1174,6 +1577,7 @@
             chatList.style.display = 'none';
             bottomNav.style.display = 'none';
             searchArea.style.display = 'none';
+            chatWindow.classList.remove('active');
             pageContainer.classList.add('active');
             closeMenu();
 
@@ -1220,9 +1624,14 @@
                 settings: {
                     title: 'Настройки',
                     content: `
-                        <div class="page-item"><i class="fas fa-moon"></i> Тёмная тема <span style="margin-left:auto;color:#4a4a4a;">Вкл</span></div>
+                        <div class="page-item" id="themeToggle">
+                            <i class="fas fa-moon"></i> Тёмная тема
+                            <div class="toggle-switch ${isDarkTheme ? 'active' : ''}" id="themeSwitch">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
                         <div class="page-item"><i class="fas fa-bell"></i> Уведомления <span style="margin-left:auto;color:#4a4a4a;">Вкл</span></div>
-                        <div class="page-item"><i class="fas fa-lock"></i> Конфиденциальность</div>
+                        <div class="page-item" id="privacyItem"><i class="fas fa-lock"></i> Конфиденциальность</div>
                         <div class="page-item"><i class="fas fa-database"></i> Хранилище</div>
                         <div class="page-item"><i class="fas fa-language"></i> Язык: Русский</div>
                     `
@@ -1232,6 +1641,8 @@
                     content: `
                         <div class="page-item"><i class="fas fa-question-circle"></i> Как создать аккаунт?</div>
                         <div class="page-item"><i class="fas fa-question-circle"></i> Как добавить контакт?</div>
+                        <div class="page-item"><i class="fas fa-question-circle"></i> Как создать группу?</div>
+                        <div class="page-item"><i class="fas fa-question-circle"></i> Как сменить пароль?</div>
                         <div class="page-item"><i class="fas fa-headset"></i> Поддержка</div>
                     `
                 }
@@ -1263,10 +1674,33 @@
                         });
                     }
                 }
+
+                if (page === 'settings') {
+                    const themeSwitch = document.getElementById('themeSwitch');
+                    const themeToggle = document.getElementById('themeToggle');
+                    if (themeSwitch) {
+                        themeSwitch.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            toggleTheme();
+                            this.classList.toggle('active');
+                            // Обновляем иконку
+                            const icon = themeToggle.querySelector('i');
+                            if (icon) {
+                                icon.className = isDarkTheme ? 'fas fa-moon' : 'fas fa-sun';
+                            }
+                        });
+                    }
+                    const privacyItem = document.getElementById('privacyItem');
+                    if (privacyItem) {
+                        privacyItem.addEventListener('click', function() {
+                            showNotification('🔒 Конфиденциальность: Ваши данные защищены!');
+                        });
+                    }
+                }
             }
         }
 
-        // --- Загрузка списка контактов ---
+        // --- Загрузка контактов ---
         function loadContactsList() {
             if (!currentUser) return;
             loadContacts(currentUser.username).then((contacts) => {
@@ -1287,9 +1721,10 @@
                         div.style.cursor = 'pointer';
                         div.addEventListener('click', function() {
                             if (confirm('Начать чат с ' + contact + '?')) {
-                                createChat(currentUser.username, contact).then(() => {
+                                createChat(currentUser.username, contact).then((chatId) => {
                                     showSuccess('Чат создан!');
                                     loadChatsList();
+                                    openChat(chatId);
                                 });
                             }
                         });
@@ -1309,35 +1744,26 @@
                     return;
                 }
                 emptyChats.style.display = 'none';
-                let hasToday = false;
-                let hasYesterday = false;
-                let hasEarlier = false;
+                let hasToday = false, hasYesterday = false, hasEarlier = false;
                 const today = new Date();
                 const yesterday = new Date(today);
                 yesterday.setDate(yesterday.getDate() - 1);
 
                 for (const [chatId, chat] of Object.entries(chats)) {
                     const otherUser = chat.participants.find(p => p !== currentUser.username);
+                    const isGroup = chat.isGroup || false;
                     const chatDate = new Date(chat.created);
                     let divider = '';
                     if (chatDate.toDateString() === today.toDateString()) {
-                        if (!hasToday) {
-                            divider = '<div class="chat-divider">СЕГОДНЯ</div>';
-                            hasToday = true;
-                        }
+                        if (!hasToday) { divider = '<div class="chat-divider">СЕГОДНЯ</div>'; hasToday = true; }
                     } else if (chatDate.toDateString() === yesterday.toDateString()) {
-                        if (!hasYesterday) {
-                            divider = '<div class="chat-divider">ВЧЕРА</div>';
-                            hasYesterday = true;
-                        }
+                        if (!hasYesterday) { divider = '<div class="chat-divider">ВЧЕРА</div>'; hasYesterday = true; }
                     } else {
-                        if (!hasEarlier) {
-                            divider = '<div class="chat-divider">РАНЕЕ</div>';
-                            hasEarlier = true;
-                        }
+                        if (!hasEarlier) { divider = '<div class="chat-divider">РАНЕЕ</div>'; hasEarlier = true; }
                     }
 
-                    const firstLetter = otherUser ? otherUser.charAt(0).toUpperCase() : '?';
+                    const displayName = isGroup ? '👥 ' + (chat.participants.join(', ')) : (otherUser || 'Чат');
+                    const firstLetter = isGroup ? 'G' : (otherUser ? otherUser.charAt(0).toUpperCase() : '?');
                     const colors = ['avatar-1', 'avatar-2', 'avatar-3', 'avatar-4', 'avatar-5', 'avatar-6'];
                     const colorClass = colors[Math.floor(Math.random() * colors.length)];
 
@@ -1351,7 +1777,7 @@
                             <div class="chat-avatar ${colorClass}">${firstLetter}</div>
                             <div class="chat-info">
                                 <div class="chat-name">
-                                    <span class="name">${otherUser || 'Чат'}</span>
+                                    <span class="name">${displayName}</span>
                                     <span class="time">${new Date(chat.created).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
                                 </div>
                                 <div class="chat-preview">
@@ -1366,31 +1792,117 @@
                 document.querySelectorAll('.chat-item').forEach(item => {
                     item.addEventListener('click', function() {
                         const chatId = this.dataset.chat;
-                        alert('Чат открыт! ID: ' + chatId);
+                        if (chatId) openChat(chatId);
                     });
                 });
             });
         }
+
+        // --- Открыть чат ---
+        function openChat(chatId) {
+            currentChatId = chatId;
+            chatWindow.classList.add('active');
+            chatList.style.display = 'none';
+            bottomNav.style.display = 'none';
+            searchArea.style.display = 'none';
+            pageContainer.classList.remove('active');
+
+            // Загружаем информацию о чате
+            database.ref('chats/' + chatId).once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const chat = snapshot.val();
+                    const otherUser = chat.participants.find(p => p !== currentUser.username);
+                    chatWindowTitle.textContent = chat.isGroup ? '👥 ' + chat.participants.join(', ') : (otherUser || 'Чат');
+                }
+            });
+
+            // Загружаем сообщения
+            chatMessages.innerHTML = '';
+            if (chatMessages._listener) {
+                database.ref('chats/' + chatId + '/messages').off();
+            }
+            chatMessages._listener = true;
+            
+            database.ref('chats/' + chatId + '/messages').on('value', (snapshot) => {
+                chatMessages.innerHTML = '';
+                if (snapshot.exists()) {
+                    const messages = snapshot.val();
+                    const sorted = Object.values(messages).sort((a, b) => a.time - b.time);
+                    sorted.forEach((msg) => {
+                        const bubble = document.createElement('div');
+                        bubble.className = 'message-bubble ' + (msg.from === currentUser.username ? 'mine' : 'other');
+                        const time = new Date(msg.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                        bubble.innerHTML = `${msg.text} <div class="message-time">${time}</div>`;
+                        chatMessages.appendChild(bubble);
+                    });
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            });
+        }
+
+        // --- Отправить сообщение ---
+        function sendMessageHandler() {
+            const text = chatInput.value.trim();
+            if (!text || !currentChatId || !currentUser) return;
+            sendMessage(currentChatId, currentUser.username, text).then(() => {
+                chatInput.value = '';
+            });
+        }
+
+        chatSendBtn.addEventListener('click', sendMessageHandler);
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') sendMessageHandler();
+        });
+
+        chatWindowBack.addEventListener('click', function() {
+            chatWindow.classList.remove('active');
+            chatList.style.display = 'block';
+            bottomNav.style.display = 'flex';
+            searchArea.style.display = 'block';
+            if (chatMessages._listener) {
+                database.ref('chats/' + currentChatId + '/messages').off();
+                chatMessages._listener = null;
+            }
+            currentChatId = null;
+            loadChatsList();
+        });
+
+        // --- Создать группу ---
+        createGroupBtn.addEventListener('click', function() {
+            if (!currentUser) return;
+            const members = prompt('Введите ники участников через запятую (включая вас):');
+            if (members && members.trim()) {
+                const names = members.split(',').map(s => s.trim()).filter(s => s);
+                if (names.length < 2) {
+                    showError('Минимум 2 участника');
+                    return;
+                }
+                // Проверяем всех участников
+                let allExist = true;
+                const promises = names.map(name => checkUserExists(name));
+                Promise.all(promises).then((results) => {
+                    const missing = names.filter((_, i) => !results[i]);
+                    if (missing.length > 0) {
+                        showError('Пользователи не найдены: ' + missing.join(', '));
+                        return;
+                    }
+                    createChat(currentUser.username, names.join(','), true).then((chatId) => {
+                        showSuccess('Группа создана!');
+                        loadChatsList();
+                        openChat(chatId);
+                    });
+                });
+            }
+        });
 
         // --- Авторизация ---
         async function handleAuth() {
             const username = usernameInput.value.trim();
             const password = passwordInput.value.trim();
 
-            if (!username || !password) {
-                showError('Заполните все поля');
-                return;
-            }
-
-            if (username.length < 2) {
-                showError('Ник должен быть минимум 2 символа');
-                return;
-            }
-
-            if (password.length < 4) {
-                showError('Код должен быть минимум 4 символа');
-                return;
-            }
+            if (!username || !password) { showError('Заполните все поля'); return; }
+            if (username.length < 2) { showError('Ник минимум 2 символа'); return; }
+            if (password.length < 4) { showError('Код минимум 4 символа'); return; }
 
             authBtn.disabled = true;
             authBtn.textContent = 'Загрузка...';
@@ -1399,43 +1911,22 @@
                 const exists = await checkUserExists(username);
 
                 if (isLoginMode) {
-                    if (!exists) {
-                        showError('Пользователь не найден');
-                        authBtn.disabled = false;
-                        authBtn.textContent = 'Войти';
-                        return;
-                    }
+                    if (!exists) { showError('Пользователь не найден'); authBtn.disabled = false; authBtn.textContent = 'Войти'; return; }
                     const correct = await checkPassword(username, password);
-                    if (!correct) {
-                        showError('Неверный пароль');
-                        authBtn.disabled = false;
-                        authBtn.textContent = 'Войти';
-                        return;
-                    }
+                    if (!correct) { showError('Неверный пароль'); authBtn.disabled = false; authBtn.textContent = 'Войти'; return; }
                     currentUser = { username: username };
                     localStorage.setItem('guru_session', username);
                     saveSession(username);
                     showSuccess('Добро пожаловать, ' + username + '!');
-                    setTimeout(() => {
-                        showApp(true);
-                        loadChatsList();
-                    }, 300);
+                    setTimeout(() => { showApp(true); loadChatsList(); }, 300);
                 } else {
-                    if (exists) {
-                        showError('Пользователь уже существует');
-                        authBtn.disabled = false;
-                        authBtn.textContent = 'Зарегистрироваться';
-                        return;
-                    }
+                    if (exists) { showError('Пользователь уже существует'); authBtn.disabled = false; authBtn.textContent = 'Зарегистрироваться'; return; }
                     await registerUser(username, password);
                     currentUser = { username: username };
                     localStorage.setItem('guru_session', username);
                     saveSession(username);
                     showSuccess('Аккаунт создан! Добро пожаловать, ' + username + '!');
-                    setTimeout(() => {
-                        showApp(true);
-                        loadChatsList();
-                    }, 300);
+                    setTimeout(() => { showApp(true); loadChatsList(); }, 300);
                 }
             } catch (error) {
                 showError('Ошибка: ' + error.message);
@@ -1450,7 +1941,7 @@
             if (e.key === 'Enter') handleAuth();
         });
 
-        // --- Показать/скрыть интерфейс ---
+        // --- Показать интерфейс ---
         function showApp(show) {
             if (show) {
                 authContainer.style.display = 'none';
@@ -1458,7 +1949,6 @@
                 bottomNav.style.display = 'flex';
                 searchArea.style.display = 'block';
                 pageContainer.classList.remove('active');
-                // Разблокируем меню
                 burgerBtn.classList.remove('disabled');
                 
                 if (currentUser) {
@@ -1487,7 +1977,7 @@
                 bottomNav.style.display = 'none';
                 searchArea.style.display = 'none';
                 pageContainer.classList.remove('active');
-                // Блокируем меню
+                chatWindow.classList.remove('active');
                 burgerBtn.classList.add('disabled');
                 
                 const profile = document.querySelector('.user-profile');
@@ -1508,9 +1998,8 @@
                 
                 if (pageContainer.classList.contains('active')) {
                     pageContainer.classList.remove('active');
-                    chatList.style.display = 'block';
-                    searchArea.style.display = 'block';
                 }
+                chatWindow.classList.remove('active');
                 
                 if (tabName === 'chats') {
                     chatList.style.display = 'block';
@@ -1547,8 +2036,16 @@
             });
         });
 
-        // --- Проверка сессии ---
+        // --- Проверка сессии и темы ---
         async function initApp() {
+            // Загружаем тему
+            const savedTheme = localStorage.getItem('guru_theme');
+            if (savedTheme === 'light') {
+                isDarkTheme = false;
+                document.body.classList.add('light-theme');
+                document.querySelector('.telegram-clone').classList.add('light');
+            }
+
             try {
                 const sessionUser = await checkSession();
                 if (sessionUser) {
@@ -1563,10 +2060,8 @@
             }
         }
 
-        // --- Инициализация ---
         document.addEventListener('DOMContentLoaded', initApp);
 
-        // Закрытие меню при клике вне
         document.addEventListener('click', function(e) {
             if (sideMenu.classList.contains('open')) {
                 if (!sideMenu.contains(e.target) && e.target !== burgerBtn && !burgerBtn.contains(e.target)) {
@@ -1574,6 +2069,16 @@
                 }
             }
         });
+
+        // Добавляем CSS для анимации
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { transform: translate(-50%, -20px); opacity: 0; }
+                to { transform: translate(-50%, 0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
