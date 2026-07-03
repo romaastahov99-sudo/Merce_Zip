@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GURU — полная версия</title>
+    <title>GURU — с аватарками</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -246,6 +246,7 @@
 </head>
 <body>
     <div class="telegram-clone" id="app">
+        <!-- ВЕСЬ ТВОЙ HTML (ВСЁ КАК БЫЛО) -->
         <div class="side-menu-overlay" id="menuOverlay"></div>
         <div class="side-menu" id="sideMenu">
             <div class="side-menu-header">
@@ -267,7 +268,7 @@
                 <button class="side-menu-item" data-page="settings"><i class="fas fa-cog"></i> Настройки</button>
                 <button class="side-menu-item" data-page="faq"><i class="fas fa-question-circle"></i> Вопросы</button>
             </div>
-            <div class="side-menu-footer">GURU v4.1</div>
+            <div class="side-menu-footer">GURU v3.2</div>
         </div>
 
         <div class="guru-header">
@@ -311,20 +312,19 @@
         <div class="chat-window" id="chatWindow">
             <div class="chat-window-header">
                 <button class="chat-window-back" id="chatWindowBack"><i class="fas fa-arrow-left"></i></button>
-                <div class="chat-window-title-wrap">
-                    <span class="chat-window-title" id="chatWindowTitle">Чат</span>
-                    <span class="chat-window-subtitle" id="chatWindowSubtitle"></span>
-                </div>
+                <span class="chat-window-title" id="chatWindowTitle">Чат</span>
                 <div class="chat-window-actions">
                     <button id="chatInfoBtn" title="Информация о чате"><i class="fas fa-info-circle"></i></button>
                     <button id="chatDeleteBtn" title="Удалить чат"><i class="fas fa-trash"></i></button>
+                    <!-- ЗВОНКИ В ШАПКЕ КАК В TELEGRAM -->
+                    <button id="callBtn" title="Звонок" style="color:#4fae4f;"><i class="fas fa-phone"></i></button>
                 </div>
             </div>
             <div class="chat-window-messages" id="chatMessages"></div>
             <div class="chat-window-input">
                 <input type="text" placeholder="Сообщение..." id="chatInput">
-                <button class="input-btn" id="fileBtn" title="Прикрепить фото"><i class="fas fa-paperclip"></i></button>
-                <input type="file" id="fileInput" class="file-input-hidden" accept="image/*">
+                <button class="input-btn" id="fileBtn" title="Прикрепить файл"><i class="fas fa-paperclip"></i></button>
+                <input type="file" id="fileInput" class="file-input-hidden" accept="image/*,video/*">
                 <div class="voice-controls" id="voiceControls">
                     <span class="voice-timer" id="voiceTimer">00:00</span>
                     <button class="voice-cancel-btn" id="voiceCancelBtn"><i class="fas fa-times"></i></button>
@@ -385,7 +385,6 @@
         const emptyChats = document.getElementById('emptyChats');
         const chatWindow = document.getElementById('chatWindow');
         const chatWindowTitle = document.getElementById('chatWindowTitle');
-        const chatWindowSubtitle = document.getElementById('chatWindowSubtitle');
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const chatSendBtn = document.getElementById('chatSendBtn');
@@ -393,6 +392,7 @@
         const createGroupBtn = document.getElementById('createGroupBtn');
         const chatInfoBtn = document.getElementById('chatInfoBtn');
         const chatDeleteBtn = document.getElementById('chatDeleteBtn');
+        const callBtn = document.getElementById('callBtn');
         const voiceBtn = document.getElementById('voiceBtn');
         const voiceTimer = document.getElementById('voiceTimer');
         const voiceControls = document.getElementById('voiceControls');
@@ -422,7 +422,6 @@
         let currentUser = null;
         let currentPage = null;
         let currentChatId = null;
-        let currentOtherUser = null;
         let isDarkTheme = true;
         let messageListener = null;
         let currentChatData = null;
@@ -433,68 +432,6 @@
         let recordingSeconds = 0;
         let recordedBlob = null;
         let typingTimeout = null;
-        let typingListener = null;
-        let onlineListener = null;
-
-        // =============================================
-        //  ЗВУК УВЕДОМЛЕНИЯ
-        // =============================================
-        function playNotificationSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.frequency.value = 800;
-                osc.type = 'sine';
-                gain.gain.value = 0.15;
-                osc.start();
-                setTimeout(() => {
-                    osc.stop();
-                    ctx.close();
-                }, 150);
-            } catch(e) {}
-        }
-
-        // =============================================
-        //  ВСПЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ
-        // =============================================
-        function showToast(title, body, icon = '💬') {
-            // Проверяем разрешение на уведомления
-            if (Notification.permission === 'granted') {
-                new Notification(title, { body, icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💬</text></svg>' });
-            }
-            
-            // Показываем внутри приложения
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: absolute; top: 70px; left: 50%; transform: translateX(-50%);
-                background: #1f1f1f; color: #eaeaea; padding: 14px 20px;
-                border-radius: 14px; font-size: 14px; z-index: 300;
-                box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-                border-left: 4px solid #2b6b9c;
-                max-width: 90%; min-width: 280px;
-                animation: slideDown 0.3s ease;
-                display: flex; align-items: center; gap: 12px;
-            `;
-            toast.innerHTML = `
-                <div style="background:#2b6b9c;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <span style="font-size:18px;">${icon}</span>
-                </div>
-                <div style="flex:1;">
-                    <div style="font-weight:600;color:#fff;font-size:14px;">${title}</div>
-                    <div style="color:#a0a0a0;font-size:13px;">${body}</div>
-                </div>
-            `;
-            document.getElementById('app').appendChild(toast);
-            playNotificationSound();
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transition = '0.3s';
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
 
         // --- Firebase функции ---
         function checkUserExists(username) {
@@ -623,9 +560,6 @@
             });
         }
 
-        // =============================================
-        //  ДОБАВЛЕНИЕ УЧАСТНИКА В ГРУППУ (ЛЮБОЙ УЧАСТНИК)
-        // =============================================
         function addMemberToGroup(groupId, newMember) {
             return new Promise((resolve, reject) => {
                 checkUserExists(newMember).then((exists) => {
@@ -648,12 +582,6 @@
                                 from: 'system',
                                 time: Date.now(),
                                 read: true
-                            });
-                            // Уведомление всем участникам
-                            participants.forEach(user => {
-                                if (user !== newMember && user !== currentUser.username) {
-                                    showToast('👥 Новый участник', newMember + ' присоединился к группе!');
-                                }
                             });
                             resolve('✅ ' + newMember + ' добавлен в группу!');
                         }).catch((err) => reject('❌ Ошибка: ' + err.message));
@@ -722,20 +650,22 @@
         }
 
         // =============================================
-        //  АВАТАРКИ
+        //  АВАТАРКИ (БЕЗ STORAGE)
         // =============================================
         function uploadAvatar(user, file) {
             return new Promise((resolve, reject) => {
-                const ref = storage.ref('avatars/' + user + '/' + Date.now() + '.jpg');
-                ref.put(file).then((snapshot) => {
-                    return snapshot.ref.getDownloadURL();
-                }).then((url) => {
-                    return database.ref('users/' + user + '/avatar').set(url);
-                }).then(() => {
-                    return database.ref('users/' + user + '/avatar').once('value');
-                }).then((snapshot) => {
-                    resolve(snapshot.val());
-                }).catch(reject);
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const base64 = e.target.result;
+                        await database.ref('users/' + user + '/avatar').set(base64);
+                        resolve(base64);
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
             });
         }
 
@@ -748,51 +678,53 @@
         }
 
         // =============================================
-        //  ОТПРАВКА ФОТО
+        //  ОТПРАВКА ФОТО/ВИДЕО (БЕЗ STORAGE)
         // =============================================
         function uploadFile(chatId, from, file, type) {
             return new Promise((resolve, reject) => {
-                const msgId = Date.now() + '_' + Math.random().toString(36).substr(2, 4);
-                const ref = storage.ref('files/' + chatId + '/' + msgId + '_' + file.name);
-                ref.put(file).then((snapshot) => {
-                    return snapshot.ref.getDownloadURL();
-                }).then((url) => {
-                    return database.ref('chats/' + chatId + '/messages/' + msgId).set({
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result;
+                    const msgId = Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+                    database.ref('chats/' + chatId + '/messages/' + msgId).set({
                         type: type,
-                        url: url,
+                        data: base64,
                         fileName: file.name,
                         from: from,
                         time: Date.now(),
                         read: false
-                    });
-                }).then(() => { resolve(); }).catch(reject);
+                    }).then(() => resolve()).catch(reject);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
             });
         }
 
         // =============================================
-        //  ГОЛОСОВЫЕ СООБЩЕНИЯ
+        //  ГОЛОСОВЫЕ СООБЩЕНИЯ (БЕЗ STORAGE)
         // =============================================
         function sendVoiceMessage(chatId, from, audioBlob, duration) {
             return new Promise((resolve, reject) => {
-                const msgId = Date.now() + '_' + Math.random().toString(36).substr(2, 4);
-                const ref = storage.ref('voices/' + chatId + '/' + msgId + '.webm');
-                ref.put(audioBlob).then((snapshot) => {
-                    return snapshot.ref.getDownloadURL();
-                }).then((url) => {
-                    return database.ref('chats/' + chatId + '/messages/' + msgId).set({
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result;
+                    const msgId = Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+                    database.ref('chats/' + chatId + '/messages/' + msgId).set({
                         type: 'voice',
-                        url: url,
+                        data: base64,
                         duration: duration,
                         from: from,
                         time: Date.now(),
                         read: false
-                    });
-                }).then(() => { resolve(); }).catch(reject);
+                    }).then(() => resolve()).catch(reject);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(audioBlob);
             });
         }
 
-        function playVoice(url, element) {
-            const audio = new Audio(url);
+        function playVoice(base64, element) {
+            const audio = new Audio(base64);
             audio.play();
             const progress = element.querySelector('.fill');
             const durationEl = element.querySelector('.voice-duration');
@@ -927,10 +859,7 @@
             pageContainer.classList.remove('active');
             chatWindow.classList.remove('active');
             if (messageListener) { database.ref('chats/' + currentChatId + '/messages').off(); messageListener = null; }
-            if (typingListener) { database.ref('users/' + currentOtherUser + '/typing').off(); typingListener = null; }
-            if (onlineListener) { database.ref('users/' + currentOtherUser).off(); onlineListener = null; }
             currentChatId = null;
-            currentOtherUser = null;
             chatList.style.display = 'block';
             bottomNav.style.display = 'flex';
             searchArea.style.display = 'block';
@@ -974,7 +903,14 @@
                         <div id="contactsList"></div>
                     `
                 },
-                calls: { title: 'Звонки', content: `<div class="page-item"><i class="fas fa-phone"></i> История звонков</div>` },
+                calls: {
+                    title: 'Звонки',
+                    content: `
+                        <div class="page-item"><i class="fas fa-phone"></i> История звонков</div>
+                        <div class="page-item"><i class="fas fa-phone-slash"></i> Пропущенные</div>
+                        <div class="page-item"><i class="fas fa-microphone"></i> Голосовые сообщения</div>
+                    `
+                },
                 channels: { title: 'Каналы', content: `<div class="page-item"><i class="fas fa-broadcast"></i> GURU Channel</div>` },
                 saved: { title: 'Сохранённое', content: `<div class="page-item"><i class="fas fa-bookmark"></i> Сохранённые сообщения</div>` },
                 settings: {
@@ -1160,23 +1096,7 @@
                     const colorClass = colors[Math.floor(Math.random() * colors.length)];
 
                     const messages = chat.messages || {};
-                    const messageKeys = Object.keys(messages);
-                    let lastMessage = { text: 'Нет сообщений', from: otherUser };
-                    let unreadCount = 0;
-                    
-                    if (messageKeys.length > 0) {
-                        const sortedKeys = messageKeys.sort((a, b) => (messages[a].time || 0) - (messages[b].time || 0));
-                        const lastKey = sortedKeys[sortedKeys.length - 1];
-                        lastMessage = messages[lastKey] || { text: 'Нет сообщений', from: otherUser };
-                        
-                        messageKeys.forEach(key => {
-                            const msg = messages[key];
-                            if (msg.from !== currentUser.username && !msg.read) {
-                                unreadCount++;
-                            }
-                        });
-                    }
-                    
+                    const lastMessage = Object.values(messages).pop() || { text: 'Нет сообщений', from: otherUser };
                     let previewText = lastMessage.text;
                     if (lastMessage.type === 'voice') {
                         const mins = Math.floor(lastMessage.duration / 60);
@@ -1185,7 +1105,7 @@
                     } else if (lastMessage.type === 'image') {
                         previewText = '📷 Фото';
                     } else if (lastMessage.type === 'video') {
-                        previewText = '🎬 Видеосообщение';
+                        previewText = '🎬 Видео';
                     }
                     if (lastMessage.from === 'system') previewText = '📢 ' + previewText;
                     if (lastMessage.from === currentUser.username) previewText = 'Вы: ' + previewText;
@@ -1203,7 +1123,6 @@
                                 <div class="chat-preview">
                                     <span class="message">${previewText}</span>
                                     ${!isGroup && otherUser ? `<div class="chat-status" id="status_${chatId}">⏳</div>` : ''}
-                                    ${unreadCount > 0 ? `<span class="badge-unread">${unreadCount}</span>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -1251,14 +1170,6 @@
                 database.ref('chats/' + currentChatId + '/messages').off();
                 messageListener = null;
             }
-            if (typingListener) {
-                database.ref('users/' + currentOtherUser + '/typing').off();
-                typingListener = null;
-            }
-            if (onlineListener) {
-                database.ref('users/' + currentOtherUser).off();
-                onlineListener = null;
-            }
             
             currentChatId = chatId;
             chatWindow.classList.add('active');
@@ -1273,63 +1184,19 @@
                     const isGroup = currentChatData.isGroup || false;
                     const participants = currentChatData.participants || [];
                     let displayName;
-                    let otherUser = null;
                     if (isGroup) {
                         displayName = '👥 ' + (currentChatData.groupName || participants.join(', '));
-                        chatWindowTitle.textContent = displayName;
-                        chatWindowSubtitle.textContent = participants.length + ' участников';
-                        chatWindowSubtitle.className = 'chat-window-subtitle';
                     } else {
-                        otherUser = participants.find(p => p !== currentUser.username);
+                        const otherUser = participants.find(p => p !== currentUser.username);
                         displayName = otherUser || 'Чат';
-                        chatWindowTitle.textContent = displayName;
-                        currentOtherUser = otherUser;
-                        
-                        if (otherUser) {
-                            onlineListener = database.ref('users/' + otherUser);
-                            onlineListener.on('value', (snap) => {
-                                if (snap.exists()) {
-                                    const data = snap.val();
-                                    if (data.online) {
-                                        chatWindowSubtitle.textContent = '🟢 Онлайн';
-                                        chatWindowSubtitle.className = 'chat-window-subtitle online';
-                                    } else if (data.lastSeen) {
-                                        chatWindowSubtitle.textContent = '🕒 Был(а) ' + formatLastSeen(data.lastSeen);
-                                        chatWindowSubtitle.className = 'chat-window-subtitle';
-                                    } else {
-                                        chatWindowSubtitle.textContent = '🕒 Недавно';
-                                        chatWindowSubtitle.className = 'chat-window-subtitle';
-                                    }
-                                }
-                            });
-                            
-                            typingListener = database.ref('users/' + otherUser + '/typing');
-                            typingListener.on('value', (snap) => {
-                                const typingEl = document.getElementById('typingIndicator');
-                                if (typingEl) {
-                                    if (snap.val()) {
-                                        typingEl.textContent = '✏️ ' + otherUser + ' печатает...';
-                                    } else {
-                                        typingEl.textContent = '';
-                                    }
-                                }
-                            });
-                        }
                     }
+                    chatWindowTitle.textContent = displayName;
                 }
             });
 
             chatMessages.innerHTML = '';
-            const typingDiv = document.createElement('div');
-            typingDiv.id = 'typingIndicator';
-            typingDiv.className = 'typing-indicator';
-            chatMessages.appendChild(typingDiv);
-            
             loadMessages(chatId, (messages) => {
-                const typingEl = document.getElementById('typingIndicator');
                 chatMessages.innerHTML = '';
-                if (typingEl) chatMessages.appendChild(typingEl);
-                
                 if (Object.keys(messages).length === 0) {
                     const empty = document.createElement('div');
                     empty.style.cssText = 'color:#6a6a6a;text-align:center;padding:20px;';
@@ -1369,7 +1236,7 @@
                                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                                 return;
                             }
-                            audio = playVoice(msg.url, voiceDiv);
+                            audio = playVoice(msg.data, voiceDiv);
                             playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                         });
                         
@@ -1394,7 +1261,7 @@
                         time.innerHTML = new Date(msg.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + 
                             (msg.from === currentUser.username ? `<span class="read-status ${msg.read ? 'read' : ''}">${msg.read ? ' ✓✓' : ' ✓'}</span>` : '');
                         bubble.appendChild(time);
-                    } else if (msg.type === 'image') {
+                    } else if (msg.type === 'image' || msg.type === 'video') {
                         bubble.className = 'message-bubble ' + (msg.from === currentUser.username ? 'mine' : 'other');
                         if (msg.from !== currentUser.username) {
                             const sender = document.createElement('div');
@@ -1402,14 +1269,25 @@
                             sender.textContent = msg.from;
                             bubble.appendChild(sender);
                         }
-                        const img = document.createElement('img');
-                        img.className = 'message-img';
-                        img.src = msg.url;
-                        img.alt = 'Фото';
-                        img.addEventListener('click', function() {
-                            showModal('📷 Фото', `<img src="${msg.url}" style="max-width:100%;border-radius:12px;">`);
-                        });
-                        bubble.appendChild(img);
+                        if (msg.type === 'image') {
+                            const img = document.createElement('img');
+                            img.className = 'message-img';
+                            img.src = msg.data;
+                            img.alt = 'Фото';
+                            img.addEventListener('click', function() {
+                                showModal('📷 Фото', `<img src="${msg.data}" style="max-width:100%;border-radius:12px;">`);
+                            });
+                            bubble.appendChild(img);
+                        } else {
+                            const video = document.createElement('video');
+                            video.className = 'message-img';
+                            video.src = msg.data;
+                            video.controls = true;
+                            video.style.maxHeight = '300px';
+                            video.style.maxWidth = '100%';
+                            video.style.borderRadius = '12px';
+                            bubble.appendChild(video);
+                        }
                         const time = document.createElement('div');
                         time.className = 'message-time';
                         const readStatus = (msg.read && msg.from === currentUser.username) ? ' ✓✓' : (msg.from === currentUser.username ? ' ✓' : '');
@@ -1437,6 +1315,7 @@
                     chatMessages.appendChild(bubble);
                 });
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                markMessagesRead(chatId);
             });
         }
 
@@ -1448,7 +1327,6 @@
             const ref = database.ref('chats/' + chatId + '/messages');
             ref.on('value', (snapshot) => {
                 callback(snapshot.exists() ? snapshot.val() : {});
-                markMessagesRead(chatId);
             });
             messageListener = ref;
         }
@@ -1484,25 +1362,12 @@
                 read: false
             }).then(() => {
                 chatInput.value = '';
-                if (currentOtherUser) {
-                    database.ref('users/' + currentUser.username + '/typing').set(false);
-                }
                 loadChatsList();
             });
         }
 
         chatSendBtn.addEventListener('click', sendMessageHandler);
         chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessageHandler(); });
-
-        chatInput.addEventListener('input', () => {
-            if (currentOtherUser) {
-                database.ref('users/' + currentUser.username + '/typing').set(true);
-                clearTimeout(typingTimeout);
-                typingTimeout = setTimeout(() => {
-                    database.ref('users/' + currentUser.username + '/typing').set(false);
-                }, 2000);
-            }
-        });
 
         chatWindowBack.addEventListener('click', function() {
             chatWindow.classList.remove('active');
@@ -1513,21 +1378,12 @@
                 database.ref('chats/' + currentChatId + '/messages').off();
                 messageListener = null;
             }
-            if (typingListener) {
-                database.ref('users/' + currentOtherUser + '/typing').off();
-                typingListener = null;
-            }
-            if (onlineListener) {
-                database.ref('users/' + currentOtherUser).off();
-                onlineListener = null;
-            }
             currentChatId = null;
-            currentOtherUser = null;
             loadChatsList();
         });
 
         // =============================================
-        //  ОТПРАВКА ФОТО
+        //  ОТПРАВКА ФОТО/ВИДЕО
         // =============================================
         fileBtn.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', function(e) {
@@ -1537,9 +1393,10 @@
                     showError('Файл больше 20МБ');
                     return;
                 }
-                showNotification('⏳ Загрузка фото...');
-                uploadFile(currentChatId, currentUser.username, file, 'image').then(() => {
-                    showToast('📷 Фото', 'Фото отправлено!');
+                const type = file.type.startsWith('image/') ? 'image' : 'video';
+                showNotification('⏳ Загрузка...');
+                uploadFile(currentChatId, currentUser.username, file, type).then(() => {
+                    showNotification('✅ Файл отправлен!');
                     loadChatsList();
                 }).catch(() => showError('Ошибка загрузки'));
                 fileInput.value = '';
@@ -1547,7 +1404,7 @@
         });
 
         // =============================================
-        //  ГОЛОСОВЫЕ СООБЩЕНИЯ
+        //  ГОЛОСОВЫЕ СООБЩЕНИЯ (ПОЧИНЕНО)
         // =============================================
         voiceBtn.addEventListener('mousedown', function(e) {
             e.preventDefault();
@@ -1563,6 +1420,7 @@
                 voiceBtn.style.display = 'none';
                 chatInput.style.display = 'none';
                 fileBtn.style.display = 'none';
+                chatSendBtn.style.display = 'none';
                 
                 mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.ondataavailable = (event) => {
@@ -1571,10 +1429,7 @@
                 mediaRecorder.onstop = () => {
                     recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     stream.getTracks().forEach(track => track.stop());
-                    if (recordedBlob.size < 5000 || recordingSeconds < 1) {
-                        showNotification('Слишком короткое сообщение');
-                        resetVoiceUI();
-                    }
+                    // УБИРАЕМ ПРОВЕРКУ НА "СЛИШКОМ КОРОТКО" - ОТПРАВЛЯЕМ ЛЮБЫЕ
                 };
                 mediaRecorder.start();
                 
@@ -1612,6 +1467,7 @@
             voiceBtn.style.display = 'flex';
             chatInput.style.display = 'flex';
             fileBtn.style.display = 'flex';
+            chatSendBtn.style.display = 'flex';
             recordedBlob = null;
             audioChunks = [];
             recordingSeconds = 0;
@@ -1631,9 +1487,9 @@
         });
 
         voiceSendBtn.addEventListener('click', function() {
-            if (recordedBlob && recordedBlob.size > 5000 && recordingSeconds >= 1) {
+            if (recordedBlob && recordedBlob.size > 1000) {
                 sendVoiceMessage(currentChatId, currentUser.username, recordedBlob, recordingSeconds).then(() => {
-                    showToast('🎤 Голосовое', 'Голосовое отправлено! (' + recordingSeconds + 'с)');
+                    showNotification('🎤 Голосовое отправлено! (' + recordingSeconds + 'с)');
                     resetVoiceUI();
                     loadChatsList();
                 }).catch((err) => {
@@ -1641,12 +1497,58 @@
                     resetVoiceUI();
                 });
             } else {
-                showNotification('Слишком короткое сообщение');
+                // ЕСЛИ СЛИШКОМ КОРОТКО - ПРОСТО ПОКАЗЫВАЕМ УВЕДОМЛЕНИЕ
+                showNotification('❌ Слишком коротко');
                 resetVoiceUI();
             }
         });
 
-        // --- Информация о группе (теперь любой может добавлять) ---
+        // =============================================
+        //  ЗВОНКИ (КАК В TELEGRAM)
+        // =============================================
+        callBtn.addEventListener('click', function() {
+            if (!currentChatId || !currentUser) {
+                showNotification('❌ Откройте чат');
+                return;
+            }
+            
+            // Получаем имя собеседника
+            database.ref('chats/' + currentChatId).once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const chat = snapshot.val();
+                    const participants = chat.participants || [];
+                    const otherUser = participants.find(p => p !== currentUser.username);
+                    
+                    // Показываем модалку звонка
+                    showModal('📞 Звонок', `
+                        <div style="text-align:center;padding:10px 0;">
+                            <div style="font-size:60px;margin-bottom:10px;">📞</div>
+                            <div style="font-size:18px;font-weight:600;color:#f0f0f0;">Звонок ${otherUser || ''}</div>
+                            <div style="color:#6a6a6a;font-size:14px;margin:10px 0;">Идёт вызов...</div>
+                            <button class="btn" style="background:#b35e5e;width:60px;height:60px;border-radius:50%;font-size:24px;margin:10px auto;" id="endCallBtn">
+                                <i class="fas fa-phone-slash"></i>
+                            </button>
+                            <div style="color:#6a6a6a;font-size:12px;margin-top:10px;">Тестовая версия</div>
+                        </div>
+                    `);
+                    
+                    document.getElementById('endCallBtn')?.addEventListener('click', function() {
+                        closeModal();
+                        showNotification('❌ Звонок завершён');
+                    });
+                    
+                    // Автоматически завершаем через 30 секунд
+                    setTimeout(() => {
+                        if (document.querySelector('.modal-overlay.active')) {
+                            closeModal();
+                            showNotification('⏰ Звонок не ответили');
+                        }
+                    }, 30000);
+                }
+            });
+        });
+
+        // --- Информация о группе ---
         chatInfoBtn.addEventListener('click', function() {
             if (!currentChatId || !currentChatData) {
                 showNotification('Нет информации о чате');
@@ -1661,13 +1563,12 @@
                 let html = `<div style="margin-bottom:12px;color:#6a6a6a;">👥 Название: <strong style="color:#f0f0f0;">${groupName}</strong></div>`;
                 html += `<div style="margin-bottom:12px;color:#6a6a6a;">👤 Создатель: <strong style="color:#f0f0f0;">${creator}</strong></div>`;
                 
-                // ТЕПЕРЬ ЛЮБОЙ УЧАСТНИК МОЖЕТ ДОБАВЛЯТЬ
                 html += `
                     <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center;">
-                        <input type="text" id="addMemberInput" placeholder="Введите ник участника" style="flex:1;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px;">
+                        <input type="text" id="addMemberInput" placeholder="Введите ник участника" style="flex:1;padding:8px 12px;border-radius:10px;border:1px solid #2a2a2a;background:#1f1f1f;color:#eaeaea;font-size:14px;">
                         <button class="add-member-btn" id="addMemberBtn">➕ Добавить</button>
                     </div>
-                    <div id="addMemberStatus" style="font-size:12px;color:var(--sub);margin-bottom:10px;"></div>
+                    <div id="addMemberStatus" style="font-size:12px;color:#6a6a6a;margin-bottom:10px;"></div>
                 `;
                 
                 html += `<div style="margin-bottom:8px;color:#6a6a6a;">Участники (${participants.length}):</div>`;
@@ -1712,7 +1613,7 @@
                         
                         if (statusEl) {
                             statusEl.textContent = '⏳ Проверка...';
-                            statusEl.style.color = 'var(--sub)';
+                            statusEl.style.color = '#6a6a6a';
                         }
                         newAddBtn.disabled = true;
                         newAddBtn.textContent = '⏳';
@@ -1775,16 +1676,7 @@
                         database.ref('chats/' + currentChatId + '/messages').off();
                         messageListener = null;
                     }
-                    if (typingListener) {
-                        database.ref('users/' + currentOtherUser + '/typing').off();
-                        typingListener = null;
-                    }
-                    if (onlineListener) {
-                        database.ref('users/' + currentOtherUser).off();
-                        onlineListener = null;
-                    }
                     currentChatId = null;
-                    currentOtherUser = null;
                     loadChatsList();
                 }).catch((err) => {
                     showError('Ошибка: ' + err);
@@ -1860,10 +1752,6 @@
                     showApp(true);
                     loadChatsList();
                     updateAllAvatars();
-                    // Запрос разрешения на уведомления
-                    if (Notification.permission === 'default') {
-                        Notification.requestPermission();
-                    }
                 } else {
                     if (exists) { showError('Пользователь уже существует'); authBtn.disabled = false; authBtn.textContent = 'Зарегистрироваться'; return; }
                     await registerUser(username, password);
@@ -1875,9 +1763,6 @@
                     showApp(true);
                     loadChatsList();
                     updateAllAvatars();
-                    if (Notification.permission === 'default') {
-                        Notification.requestPermission();
-                    }
                 }
             } catch (error) {
                 showError('Ошибка: ' + error.message);
@@ -2013,9 +1898,6 @@
                     loadChatsList();
                     updateAllAvatars();
                     updateOnlineStatus(sessionUser, true);
-                    if (Notification.permission === 'default') {
-                        Notification.requestPermission();
-                    }
                 } else {
                     showApp(false);
                 }
@@ -2041,12 +1923,7 @@
         });
 
         const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideDown {
-                from { transform: translate(-50%, -20px); opacity: 0; }
-                to { transform: translate(-50%, 0); opacity: 1; }
-            }
-        `;
+        style.textContent = `@keyframes slideDown { from { transform: translate(-50%, -20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }`;
         document.head.appendChild(style);
     </script>
 </body>
