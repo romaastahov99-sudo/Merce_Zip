@@ -488,6 +488,8 @@
         let callTimerInterval = null;
         let callSecondsTimer = 0;
         let callStartTime = 0;
+        let currentCallId = null;
+        let signalRef = null;
 
         const rtcConfig = {
             iceServers: [
@@ -496,7 +498,9 @@
             ]
         };
 
-        // --- ФУНКЦИИ ЗВОНКОВ (ИСПРАВЛЕНО) ---
+        // =============================================
+        //  ИСПРАВЛЕННЫЕ ФУНКЦИИ ЗВОНКОВ
+        // =============================================
         function showCallModal(name, avatar, status, showAnswer = false) {
             callModal.classList.add('active');
             callName.textContent = name || 'Неизвестный';
@@ -564,6 +568,12 @@
                 peerConnection.ontrack = (event) => {
                     remoteStream = event.streams[0];
                     document.getElementById('remoteVideo').srcObject = remoteStream;
+                    // ВОСПРОИЗВОДИМ УДАЛЁННЫЙ ЗВУК
+                    if (remoteStream) {
+                        const audioEl = new Audio();
+                        audioEl.srcObject = remoteStream;
+                        audioEl.play().catch(e => console.log('Audio play error:', e));
+                    }
                     callStatus.textContent = '🔊 В разговоре';
                     startCallTimer();
                 };
@@ -571,8 +581,8 @@
                 const offer = await peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer);
 
-                const callId = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-                const signalRef = database.ref('calls/' + callId);
+                currentCallId = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                signalRef = database.ref('calls/' + currentCallId);
                 await signalRef.set({
                     from: currentUser.username,
                     to: targetUser,
@@ -593,7 +603,11 @@
                     }
 
                     if (data.type === 'candidate' && peerConnection) {
-                        await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+                        try {
+                            await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+                        } catch(e) {
+                            console.log('Candidate error:', e);
+                        }
                     }
 
                     if (data.status === 'ended' || data.status === 'rejected') {
@@ -607,7 +621,7 @@
                 });
 
                 peerConnection.onicecandidate = (event) => {
-                    if (event.candidate) {
+                    if (event.candidate && signalRef) {
                         signalRef.update({
                             type: 'candidate',
                             candidate: event.candidate
@@ -615,7 +629,7 @@
                     }
                 };
 
-                callData = { ref: signalRef, callId: callId };
+                callData = { ref: signalRef, callId: currentCallId };
 
             } catch (e) {
                 console.error('Call error:', e);
@@ -624,14 +638,17 @@
             }
         }
 
-        async function answerCall(callId, signalRef) {
+        // =============================================
+        //  ЗВОНКИ - ANSWER CALL (ИСПРАВЛЕНО)
+        // =============================================
+        async function answerCall(callId, ref) {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
                 document.getElementById('localVideo').srcObject = localStream;
 
                 showCallModal('Входящий звонок', '📞', '🔄 Соединение...');
 
-                const snap = await signalRef.once('value');
+                const snap = await ref.once('value');
                 const data = snap.val();
                 if (!data || data.type !== 'offer') return;
 
@@ -644,6 +661,12 @@
                 peerConnection.ontrack = (event) => {
                     remoteStream = event.streams[0];
                     document.getElementById('remoteVideo').srcObject = remoteStream;
+                    // ВОСПРОИЗВОДИМ УДАЛЁННЫЙ ЗВУК
+                    if (remoteStream) {
+                        const audioEl = new Audio();
+                        audioEl.srcObject = remoteStream;
+                        audioEl.play().catch(e => console.log('Audio play error:', e));
+                    }
                     callStatus.textContent = '🔊 В разговоре';
                     startCallTimer();
                 };
@@ -652,18 +675,22 @@
                 const answer = await peerConnection.createAnswer();
                 await peerConnection.setLocalDescription(answer);
 
-                await signalRef.update({
+                await ref.update({
                     type: 'answer',
                     sdp: answer,
                     status: 'connected'
                 });
 
-                signalRef.on('value', async (snap) => {
+                ref.on('value', async (snap) => {
                     const d = snap.val();
                     if (!d) return;
 
                     if (d.type === 'candidate' && peerConnection) {
-                        await peerConnection.addIceCandidate(new RTCIceCandidate(d.candidate));
+                        try {
+                            await peerConnection.addIceCandidate(new RTCIceCandidate(d.candidate));
+                        } catch(e) {
+                            console.log('Candidate error:', e);
+                        }
                     }
 
                     if (d.status === 'ended') {
@@ -677,15 +704,17 @@
                 });
 
                 peerConnection.onicecandidate = (event) => {
-                    if (event.candidate) {
-                        signalRef.update({
+                    if (event.candidate && ref) {
+                        ref.update({
                             type: 'candidate',
                             candidate: event.candidate
                         });
                     }
                 };
 
-                callData = { ref: signalRef, callId: callId };
+                signalRef = ref;
+                currentCallId = callId;
+                callData = { ref: ref, callId: callId };
 
             } catch (e) {
                 console.error('Answer error:', e);
@@ -694,10 +723,14 @@
             }
         }
 
+        // =============================================
+        //  ЗВОНКИ - END CALL (ИСПРАВЛЕНО)
+        // =============================================
         function endCall(message = 'Звонок завершён') {
-            if (callData && callData.ref) {
-                callData.ref.update({ status: 'ended' });
-                callData.ref.off();
+            if (signalRef) {
+                signalRef.update({ status: 'ended' });
+                signalRef.off();
+                signalRef = null;
             }
             if (peerConnection) {
                 peerConnection.close();
@@ -707,13 +740,21 @@
                 localStream.getTracks().forEach(track => track.stop());
                 localStream = null;
             }
-            remoteStream = null;
+            if (remoteStream) {
+                remoteStream.getTracks().forEach(track => track.stop());
+                remoteStream = null;
+            }
             hideCallModal();
             document.getElementById('localVideo').srcObject = null;
             document.getElementById('remoteVideo').srcObject = null;
             if (message) showNotification('📞 ' + message);
+            currentCallId = null;
+            callData = null;
         }
 
+        // =============================================
+        //  ЗВОНКИ - LISTEN FOR CALLS (ИСПРАВЛЕНО)
+        // =============================================
         function listenForCalls() {
             if (!currentUser) return;
 
@@ -722,11 +763,13 @@
                 const data = snap.val();
                 if (!data || data.status === 'ended' || data.status === 'rejected') return;
                 if (data.to !== currentUser.username) return;
+                if (currentCallId) return; // Уже в звонке
 
                 showCallModal(data.from, data.from.charAt(0).toUpperCase(), '📞 ' + data.from + ' звонит...', true);
 
                 callAnswerBtn.onclick = async function() {
                     this.style.display = 'none';
+                    currentCallId = snap.key;
                     await answerCall(snap.key, snap.ref);
                 };
 
@@ -735,8 +778,9 @@
                     endCall('Вы отклонили звонок');
                 };
 
+                // Таймаут если не отвечают
                 setTimeout(() => {
-                    if (callModal.classList.contains('active')) {
+                    if (callModal.classList.contains('active') && !callData) {
                         snap.ref.update({ status: 'rejected' });
                         endCall('Звонок не отвечен');
                     }
@@ -748,6 +792,10 @@
         callBtn?.addEventListener('click', function() {
             if (!currentChatId || !currentUser) {
                 showNotification('❌ Откройте чат');
+                return;
+            }
+            if (currentCallId) {
+                showNotification('❌ Уже в звонке');
                 return;
             }
             
@@ -774,8 +822,7 @@
         callEndBtn?.addEventListener('click', function() {
             const duration = Math.floor((Date.now() - callStartTime) / 1000);
             if (duration > 0 && callData && callData.ref) {
-                const snap = callData.ref;
-                snap.once('value', (s) => {
+                callData.ref.once('value', (s) => {
                     const data = s.val();
                     if (data) {
                         saveCallHistory(data.from, data.to, duration);
@@ -1054,7 +1101,7 @@
         }
 
         // =============================================
-        //  ГОЛОСОВЫЕ СООБЩЕНИЯ (БЕЗ STORAGE)
+        //  ГОЛОСОВЫЕ СООБЩЕНИЯ (ИСПРАВЛЕНО)
         // =============================================
         function sendVoiceMessage(chatId, from, audioBlob, duration) {
             return new Promise((resolve, reject) => {
@@ -1078,7 +1125,7 @@
 
         function playVoice(base64, element) {
             const audio = new Audio(base64);
-            audio.play();
+            audio.play().catch(e => console.log('Play error:', e));
             const progress = element.querySelector('.fill');
             const durationEl = element.querySelector('.voice-duration');
             
@@ -1200,6 +1247,10 @@
             if (currentUser) {
                 updateOnlineStatus(currentUser.username, false);
                 clearSession(currentUser.username);
+            }
+            // Завершаем звонок если был
+            if (currentCallId) {
+                endCall('Звонок завершён');
             }
             currentUser = null;
             showApp(false);
@@ -1452,12 +1503,10 @@
                     let unreadCount = 0;
                     
                     if (messageKeys.length > 0) {
-                        // СОРТИРУЕМ ПО ВРЕМЕНИ И БЕРЁМ ПОСЛЕДНЕЕ
                         const sortedKeys = messageKeys.sort((a, b) => (messages[a].time || 0) - (messages[b].time || 0));
                         const lastKey = sortedKeys[sortedKeys.length - 1];
                         lastMessage = messages[lastKey] || { text: 'Нет сообщений', from: otherUser };
                         
-                        // СЧИТАЕМ НЕПРОЧИТАННЫЕ
                         messageKeys.forEach(key => {
                             const msg = messages[key];
                             if (msg.from !== currentUser.username && !msg.read) {
@@ -1655,7 +1704,7 @@
                                 return;
                             }
                             if (audio) {
-                                audio.play();
+                                audio.play().catch(e => console.log('Play error:', e));
                                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                                 return;
                             }
@@ -1849,7 +1898,7 @@
         });
 
         // =============================================
-        //  ГОЛОСОВЫЕ СООБЩЕНИЯ (ИСПРАВЛЕНО - УБИРАЕМ ПРОВЕРКУ)
+        //  ГОЛОСОВЫЕ СООБЩЕНИЯ (ИСПРАВЛЕНО)
         // =============================================
         voiceBtn.addEventListener('mousedown', function(e) {
             e.preventDefault();
@@ -1874,7 +1923,6 @@
                 mediaRecorder.onstop = () => {
                     recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     stream.getTracks().forEach(track => track.stop());
-                    // Убираем проверку на размер - отправляем любые!
                 };
                 mediaRecorder.start();
                 
@@ -2333,6 +2381,9 @@
         window.addEventListener('beforeunload', function() {
             if (currentUser) {
                 updateOnlineStatus(currentUser.username, false);
+            }
+            if (currentCallId) {
+                endCall('Звонок завершён');
             }
         });
 
