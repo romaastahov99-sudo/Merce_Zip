@@ -112,6 +112,8 @@
         .light .chat-item:hover { background: #f5f5f5; }
         .chat-avatar { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 500; color: white; flex-shrink: 0; margin-right: 14px; text-transform: uppercase; overflow: hidden; background: #2b6b9c; }
         .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .chat-avatar.has-story { border: 3px solid #2b6b9c; padding: 2px; }
+        .chat-avatar.has-story.viewed { border-color: #6a6a6a; }
         .chat-info { flex: 1; min-width: 0; }
         .chat-name { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2px; }
         .chat-name .name { font-size: 16px; font-weight: 500; color: #f0f0f0; letter-spacing: 0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -125,6 +127,38 @@
         .chat-preview .badge-unread { background: #2b6b9c; color: white; font-size: 12px; font-weight: 600; padding: 0 6px; border-radius: 12px; line-height: 18px; min-width: 18px; text-align: center; flex-shrink: 0; margin-left: 4px; }
         .chat-divider { padding: 12px 18px 4px 18px; font-size: 13px; font-weight: 500; color: #6a6a6a; letter-spacing: 0.3px; border-bottom: 1px solid #181818; background: #0f0f0f; }
         .light .chat-divider { border-bottom: 1px solid #f0f0f0; background: #ffffff; }
+        
+        /* STORIES ROW */
+        .stories-row { display: none; padding: 10px 16px; gap: 12px; overflow-x: auto; border-bottom: 1px solid #2a2a2a; background: #0f0f0f; }
+        .stories-row.active { display: flex; }
+        .light .stories-row { background: #ffffff; border-bottom: 1px solid #e0e0e0; }
+        .stories-row::-webkit-scrollbar { height: 0; }
+        .story-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; min-width: 60px; }
+        .story-item .story-avatar { width: 52px; height: 52px; border-radius: 50%; background: #2b6b9c; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; color: white; overflow: hidden; border: 3px solid #2b6b9c; }
+        .story-item .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .story-item .story-avatar.has-story { border-color: #2b6b9c; }
+        .story-item .story-avatar.viewed { border-color: #6a6a6a; }
+        .story-item .story-name { font-size: 11px; color: #6a6a6a; text-align: center; max-width: 60px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .story-item .story-add { width: 52px; height: 52px; border-radius: 50%; background: #2b6b9c; border: 2px dashed #6a6a6a; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #6a6a6a; }
+        
+        /* STORY VIEWER */
+        .story-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; flex-direction: column; }
+        .story-viewer.active { display: flex; }
+        .story-viewer .story-content { max-width: 90%; max-height: 80%; border-radius: 12px; }
+        .story-viewer .story-content video { max-width: 100%; max-height: 80vh; border-radius: 12px; }
+        .story-viewer .story-content img { max-width: 100%; max-height: 80vh; border-radius: 12px; }
+        .story-viewer .story-header { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; align-items: center; gap: 12px; color: white; z-index: 10; }
+        .story-viewer .story-header .story-user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #2b6b9c; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: white; overflow: hidden; }
+        .story-viewer .story-header .story-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .story-viewer .story-header .story-user-name { font-size: 16px; font-weight: 600; }
+        .story-viewer .story-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 28px; cursor: pointer; background: none; border: none; z-index: 10; }
+        .story-viewer .story-progress { position: absolute; top: 70px; left: 20px; right: 20px; height: 3px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; z-index: 10; }
+        .story-viewer .story-progress .fill { height: 100%; background: #2b6b9c; border-radius: 2px; width: 0%; transition: width 0.1s linear; }
+        .story-viewer .story-viewers { position: absolute; bottom: 30px; color: rgba(255,255,255,0.5); font-size: 12px; z-index: 10; }
+        .story-viewer .story-nav { position: absolute; top: 0; width: 50%; height: 100%; z-index: 5; cursor: pointer; }
+        .story-viewer .story-nav.prev { left: 0; }
+        .story-viewer .story-nav.next { right: 0; }
+        
         .empty-chats { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #6a6a6a; text-align: center; padding: 40px 20px; }
         .empty-chats i { font-size: 56px; color: #2b2b2b; margin-bottom: 16px; }
         .light .empty-chats i { color: #ddd; }
@@ -132,6 +166,7 @@
         .light .empty-chats h3 { color: #333; }
         .empty-chats p { font-size: 14px; color: #6a6a6a; max-width: 260px; }
         
+        /* REST OF STYLES */
         .chat-window { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0f0f0f; z-index: 50; display: none; flex-direction: column; animation: slideIn 0.3s ease; background-size: cover; background-position: center; transition: background 0.3s; }
         .chat-window.has-wallpaper .chat-window-messages { background: rgba(0,0,0,0.2); }
         .chat-window.has-wallpaper.light .chat-window-messages { background: rgba(255,255,255,0.2); }
@@ -171,7 +206,6 @@
         .message-video-round { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid #2b6b9c; position: relative; }
         .message-video-round:hover { border-color: #f1c40f; }
         .message-video-round .video-indicator { position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
-        .message-video-round.fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; border-radius: 0; z-index: 999; border: none; background: #000; object-fit: contain; }
         .message-voice { display: flex; align-items: center; gap: 10px; min-width: 140px; }
         .message-voice .play-btn { background: none; border: none; color: inherit; font-size: 18px; cursor: pointer; padding: 4px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .message-voice .play-btn:hover { background: rgba(255,255,255,0.1); }
@@ -361,6 +395,35 @@
         .recording-overlay .recording-actions .cancel-btn:hover { transform: scale(1.1); }
         .recording-overlay .swipe-hint { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 15px; }
         @keyframes pulse-dot { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.3); } 100% { transform: translateX(-50%) scale(1); } }
+        .story-recording-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 998; justify-content: center; align-items: center; flex-direction: column; }
+        .story-recording-overlay.active { display: flex; }
+        .story-recording-overlay .story-recording-circle { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #ff3b30; position: relative; overflow: hidden; background: #000; }
+        .story-recording-overlay .story-recording-circle video { width: 100%; height: 100%; object-fit: cover; }
+        .story-recording-overlay .story-recording-circle .red-dot { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; background: #ff3b30; border-radius: 50%; animation: pulse-dot 1s infinite; }
+        .story-recording-overlay .story-recording-timer { color: white; font-size: 18px; font-weight: 600; margin-top: 15px; }
+        .story-recording-overlay .story-recording-actions { display: flex; gap: 30px; margin-top: 20px; }
+        .story-recording-overlay .story-recording-actions button { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .story-recording-overlay .story-recording-actions .stop-btn { background: #ff3b30; color: white; }
+        .story-recording-overlay .story-recording-actions .stop-btn:hover { transform: scale(1.1); }
+        .story-recording-overlay .story-recording-actions .cancel-btn { background: rgba(255,255,255,0.2); color: white; }
+        .story-recording-overlay .story-recording-actions .cancel-btn:hover { transform: scale(1.1); }
+        .story-recording-overlay .swipe-hint { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 15px; }
+        .notification-permission { display: none; position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2b6b9c; color: white; padding: 12px 20px; border-radius: 12px; font-size: 14px; z-index: 50; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .notification-permission.active { display: block; }
+        .notif-request-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
+        .notif-request-modal.active { display: flex; }
+        .notif-request-modal .notif-box { background: #1f1f1f; border-radius: 20px; padding: 30px; max-width: 340px; width: 90%; text-align: center; }
+        .notif-request-modal .notif-box .notif-icon { font-size: 48px; margin-bottom: 16px; }
+        .notif-request-modal .notif-box .notif-title { font-size: 20px; font-weight: 700; color: #f0f0f0; margin-bottom: 8px; }
+        .notif-request-modal .notif-box .notif-desc { color: #6a6a6a; font-size: 14px; margin-bottom: 20px; }
+        .notif-request-modal .notif-box .notif-buttons { display: flex; gap: 12px; }
+        .notif-request-modal .notif-box .notif-buttons button { flex: 1; padding: 12px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
+        .notif-request-modal .notif-box .notif-buttons .allow-btn { background: #2b6b9c; color: white; }
+        .notif-request-modal .notif-box .notif-buttons .allow-btn:hover { background: #1f5a85; }
+        .notif-request-modal .notif-box .notif-buttons .deny-btn { background: #3a3a3a; color: #6a6a6a; }
+        .notif-request-modal .notif-box .notif-buttons .deny-btn:hover { background: #4a4a4a; }
+        .light .notif-request-modal .notif-box { background: #ffffff; }
+        .light .notif-request-modal .notif-box .notif-title { color: #000; }
     </style>
 </head>
 <body>
@@ -423,6 +486,8 @@
 
         <!-- CHAT LIST -->
         <div class="chat-list" id="chatList">
+            <!-- STORIES ROW -->
+            <div class="stories-row" id="storiesRow"></div>
             <div class="chat-header-actions">
                 <h3><i class="fas fa-comment-dots" style="margin-right:6px;"></i>Чаты</h3>
                 <button class="create-group-btn" id="createGroupBtn"><i class="fas fa-users"></i> Создать группу</button>
@@ -569,6 +634,48 @@
             <div class="swipe-hint">👈 Свайп влево для отмены</div>
         </div>
 
+        <!-- STORY RECORDING OVERLAY -->
+        <div class="story-recording-overlay" id="storyRecordingOverlay">
+            <div class="story-recording-circle" id="storyRecordingCircle">
+                <video id="storyRecordingPreview" autoplay muted playsinline></video>
+                <div class="red-dot"></div>
+            </div>
+            <div class="story-recording-timer" id="storyRecordingTimer">0:00</div>
+            <div class="story-recording-actions">
+                <button class="cancel-btn" id="storyRecordingCancelBtn"><i class="fas fa-trash"></i></button>
+                <button class="stop-btn" id="storyRecordingStopBtn"><i class="fas fa-stop"></i></button>
+            </div>
+            <div class="swipe-hint">👈 Свайп влево для отмены</div>
+        </div>
+
+        <!-- STORY VIEWER -->
+        <div class="story-viewer" id="storyViewer">
+            <div class="story-header">
+                <div class="story-user-avatar" id="storyViewerAvatar">?</div>
+                <span class="story-user-name" id="storyViewerName">Имя</span>
+                <span style="margin-left:auto;font-size:12px;opacity:0.5;" id="storyViewerTime">0:00</span>
+            </div>
+            <div class="story-progress"><div class="fill" id="storyProgressFill"></div></div>
+            <button class="story-close" id="storyViewerClose"><i class="fas fa-times"></i></button>
+            <div class="story-nav prev" id="storyPrev"></div>
+            <div class="story-nav next" id="storyNext"></div>
+            <div class="story-content" id="storyViewerContent"></div>
+            <div class="story-viewers" id="storyViewerCount">👁️ 0 просмотров</div>
+        </div>
+
+        <!-- NOTIFICATION REQUEST MODAL -->
+        <div class="notif-request-modal" id="notifRequestModal">
+            <div class="notif-box">
+                <div class="notif-icon">🔔</div>
+                <div class="notif-title">Включите уведомления</div>
+                <div class="notif-desc">Получайте уведомления о новых сообщениях, даже когда приложение закрыто</div>
+                <div class="notif-buttons">
+                    <button class="deny-btn" id="notifDenyBtn">Не сейчас</button>
+                    <button class="allow-btn" id="notifAllowBtn">Включить</button>
+                </div>
+            </div>
+        </div>
+
         <!-- VIDEO ELEMENTS -->
         <video id="localVideo" autoplay muted style="display:none;"></video>
         <video id="remoteVideo" autoplay style="display:none;"></video>
@@ -668,6 +775,25 @@
     const recordingTimer = document.getElementById('recordingTimer');
     const recordingCancelBtn = document.getElementById('recordingCancelBtn');
     const recordingStopBtn = document.getElementById('recordingStopBtn');
+    const storiesRow = document.getElementById('storiesRow');
+    const storyViewer = document.getElementById('storyViewer');
+    const storyViewerAvatar = document.getElementById('storyViewerAvatar');
+    const storyViewerName = document.getElementById('storyViewerName');
+    const storyViewerTime = document.getElementById('storyViewerTime');
+    const storyViewerContent = document.getElementById('storyViewerContent');
+    const storyViewerCount = document.getElementById('storyViewerCount');
+    const storyViewerClose = document.getElementById('storyViewerClose');
+    const storyPrev = document.getElementById('storyPrev');
+    const storyNext = document.getElementById('storyNext');
+    const storyProgressFill = document.getElementById('storyProgressFill');
+    const storyRecordingOverlay = document.getElementById('storyRecordingOverlay');
+    const storyRecordingPreview = document.getElementById('storyRecordingPreview');
+    const storyRecordingTimer = document.getElementById('storyRecordingTimer');
+    const storyRecordingCancelBtn = document.getElementById('storyRecordingCancelBtn');
+    const storyRecordingStopBtn = document.getElementById('storyRecordingStopBtn');
+    const notifRequestModal = document.getElementById('notifRequestModal');
+    const notifAllowBtn = document.getElementById('notifAllowBtn');
+    const notifDenyBtn = document.getElementById('notifDenyBtn');
 
     const usernameInput = document.getElementById('usernameInput');
     const passwordInput = document.getElementById('passwordInput');
@@ -722,6 +848,13 @@
     let isSwiping = false;
     let videoRecordedBlob = null;
 
+    // STORIES
+    let storiesData = {};
+    let currentStoryIndex = 0;
+    let currentStoryUser = null;
+    let storyTimerInterval = null;
+    let storyProgress = 0;
+
     // =============================================
     //  CALL VARIABLES
     // =============================================
@@ -773,6 +906,423 @@
             return encrypted;
         }
     }
+
+    // =============================================
+    //  NOTIFICATIONS - ПОЛНОСТЬЮ ПЕРЕПИСАНЫ
+    // =============================================
+    function requestNotificationPermission() {
+        if ('Notification' in window && Notification.permission === 'default') {
+            // Показываем модалку в мессенджере
+            notifRequestModal.classList.add('active');
+        } else if ('Notification' in window && Notification.permission === 'granted') {
+            console.log('🔔 Уведомления уже включены');
+        }
+    }
+
+    notifAllowBtn.addEventListener('click', function() {
+        notifRequestModal.classList.remove('active');
+        if ('Notification' in window) {
+            Notification.requestPermission().then(perm => {
+                if (perm === 'granted') {
+                    showNotification('🔔 Уведомления включены!');
+                    // Также запрашиваем в браузере
+                    if ('serviceWorker' in navigator) {
+                        navigator.serviceWorker.ready.then(registration => {
+                            registration.showNotification('GURU', {
+                                body: 'Уведомления включены!',
+                                icon: '📱'
+                            });
+                        });
+                    }
+                }
+            });
+        }
+    });
+
+    notifDenyBtn.addEventListener('click', function() {
+        notifRequestModal.classList.remove('active');
+        showNotification('❌ Уведомления отключены');
+    });
+
+    function sendNotification(title, body) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            try {
+                const notif = new Notification(title, { 
+                    body: body, 
+                    icon: '📱',
+                    tag: 'guru_message',
+                    requireInteraction: true
+                });
+                
+                // Звук
+                try {
+                    const audio = new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqNkZOVlpeXmJeWlZSTkI6LiYeFgoB9ent5d3Z1dXRzc3Nzc3N0dXZ3eHl6fHx9f3+BgoSFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp+goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2+v8DBwsPExcbHyMnKy8zNzs/Q0dLT1NXW19jZ2tvc3d7f4OHi4+Tl5ufo6err7O3u7/Dx8vP09fb3+Pn6+/z9/v8=');
+                    audio.volume = 0.5;
+                    audio.play().catch(() => {});
+                } catch(e) {}
+                
+                notif.onclick = () => {
+                    window.focus();
+                };
+            } catch(e) {
+                console.log('Notification error:', e);
+            }
+        }
+    }
+
+    // =============================================
+    //  STORIES
+    // =============================================
+    function loadStories() {
+        if (!currentUser) return;
+        
+        database.ref('stories').on('value', (snap) => {
+            storiesData = snap.val() || {};
+            renderStories();
+        });
+    }
+
+    function renderStories() {
+        if (!currentUser) return;
+        
+        const users = Object.keys(storiesData);
+        const myStories = storiesData[currentUser.username] || {};
+        const myStoryKeys = Object.keys(myStories);
+        const hasMyStory = myStoryKeys.length > 0;
+        
+        // Проверяем свежесть историй (удаляем старше 24 часов)
+        const now = Date.now();
+        Object.keys(storiesData).forEach(user => {
+            const userStories = storiesData[user];
+            Object.keys(userStories).forEach(storyId => {
+                const story = userStories[storyId];
+                if (now - story.time > 24 * 60 * 60 * 1000) {
+                    database.ref('stories/' + user + '/' + storyId).remove();
+                }
+            });
+        });
+        
+        storiesRow.innerHTML = '';
+        let hasAnyStories = false;
+        
+        // Мой статус (всегда первый)
+        const myItem = document.createElement('div');
+        myItem.className = 'story-item';
+        myItem.innerHTML = `
+            <div class="story-avatar ${hasMyStory ? 'has-story' : ''}" id="myStoryAvatar">
+                ${currentUser.username.charAt(0).toUpperCase()}
+            </div>
+            <div class="story-name">${hasMyStory ? 'Мой статус' : 'Мой статус'}</div>
+        `;
+        myItem.onclick = () => {
+            if (hasMyStory) {
+                // Показываем свои истории
+                viewStories(currentUser.username);
+            } else {
+                // Создаем новую историю
+                createStory();
+            }
+        };
+        storiesRow.appendChild(myItem);
+        
+        // Загружаем аватар
+        getUserAvatar(currentUser.username).then(url => {
+            const avatar = document.getElementById('myStoryAvatar');
+            if (avatar && url) {
+                avatar.innerHTML = `<img src="${url}" alt="avatar">`;
+            }
+        });
+        
+        // Истории друзей (только из контактов)
+        users.forEach(user => {
+            if (user === currentUser.username) return;
+            
+            const userStories = storiesData[user];
+            const storyKeys = Object.keys(userStories).filter(key => {
+                return Date.now() - userStories[key].time < 24 * 60 * 60 * 1000;
+            });
+            
+            if (storyKeys.length === 0) return;
+            
+            hasAnyStories = true;
+            const item = document.createElement('div');
+            item.className = 'story-item';
+            const isViewed = userStories[storyKeys[0]]?.viewers?.[currentUser.username] || false;
+            item.innerHTML = `
+                <div class="story-avatar ${isViewed ? 'viewed' : 'has-story'}" id="storyAvatar_${user}">
+                    ${user.charAt(0).toUpperCase()}
+                </div>
+                <div class="story-name">${user}</div>
+            `;
+            item.onclick = () => {
+                viewStories(user);
+            };
+            storiesRow.appendChild(item);
+            
+            getUserAvatar(user).then(url => {
+                const avatar = document.getElementById('storyAvatar_' + user);
+                if (avatar && url) {
+                    avatar.innerHTML = `<img src="${url}" alt="avatar">`;
+                }
+            });
+        });
+        
+        if (hasAnyStories || hasMyStory) {
+            storiesRow.classList.add('active');
+        } else {
+            storiesRow.classList.remove('active');
+        }
+    }
+
+    function createStory() {
+        // Показываем выбор: фото или видео
+        if (confirm('📸 Сделать фото или 🎬 видео для статуса?')) {
+            // Видео
+            startStoryRecording('video');
+        } else {
+            // Фото
+            startStoryRecording('photo');
+        }
+    }
+
+    function startStoryRecording(type) {
+        const constraints = type === 'video' ? { video: true, audio: true } : { video: true, audio: false };
+        
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then((stream) => {
+                storyRecordingOverlay.classList.add('active');
+                storyRecordingPreview.srcObject = stream;
+                
+                let seconds = 0;
+                const timerInterval = setInterval(() => {
+                    seconds++;
+                    const mins = Math.floor(seconds / 60);
+                    const secs = Math.floor(seconds % 60);
+                    storyRecordingTimer.textContent = mins + ':' + String(secs).padStart(2, '0');
+                }, 1000);
+                
+                const recorder = new MediaRecorder(stream);
+                const chunks = [];
+                recorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) chunks.push(e.data);
+                };
+                recorder.onstop = () => {
+                    clearInterval(timerInterval);
+                    storyRecordingOverlay.classList.remove('active');
+                    storyRecordingPreview.srcObject = null;
+                    stream.getTracks().forEach(t => t.stop());
+                    
+                    const blob = new Blob(chunks, { type: type === 'video' ? 'video/mp4' : 'image/png' });
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const data = e.target.result;
+                        const storyId = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                        database.ref('stories/' + currentUser.username + '/' + storyId).set({
+                            data: data,
+                            type: type,
+                            time: Date.now(),
+                            viewers: {}
+                        }).then(() => {
+                            showNotification('✅ Статус опубликован!');
+                            loadStories();
+                        });
+                    };
+                    reader.readAsDataURL(blob);
+                };
+                recorder.start();
+                
+                // Стоп кнопка
+                storyRecordingStopBtn.onclick = function() {
+                    if (recorder.state === 'recording') {
+                        recorder.stop();
+                    }
+                    storyRecordingStopBtn.onclick = null;
+                };
+                
+                // Отмена
+                storyRecordingCancelBtn.onclick = function() {
+                    if (recorder.state === 'recording') {
+                        recorder.stop();
+                    }
+                    storyRecordingOverlay.classList.remove('active');
+                    storyRecordingPreview.srcObject = null;
+                    stream.getTracks().forEach(t => t.stop());
+                    showNotification('❌ Статус отменён');
+                };
+                
+                // Автостоп через 30 секунд
+                setTimeout(() => {
+                    if (recorder.state === 'recording') {
+                        recorder.stop();
+                    }
+                }, 30000);
+            })
+            .catch((err) => {
+                console.error('Story recording error:', err);
+                showNotification('❌ Ошибка доступа к камере');
+            });
+    }
+
+    function viewStories(user) {
+        const userStories = storiesData[user] || {};
+        const storyKeys = Object.keys(userStories).filter(key => {
+            return Date.now() - userStories[key].time < 24 * 60 * 60 * 1000;
+        });
+        
+        if (storyKeys.length === 0) {
+            showNotification('❌ Нет историй');
+            return;
+        }
+        
+        currentStoryUser = user;
+        currentStoryIndex = 0;
+        showStory(storyKeys[currentStoryIndex]);
+    }
+
+    function showStory(storyId) {
+        const story = storiesData[currentStoryUser][storyId];
+        if (!story) {
+            closeStoryViewer();
+            return;
+        }
+        
+        storyViewer.classList.add('active');
+        
+        // Аватар и имя
+        storyViewerAvatar.textContent = currentStoryUser.charAt(0).toUpperCase();
+        storyViewerName.textContent = currentStoryUser;
+        getUserAvatar(currentStoryUser).then(url => {
+            if (url) {
+                storyViewerAvatar.innerHTML = `<img src="${url}" alt="avatar">`;
+            }
+        });
+        
+        // Время
+        const diff = Math.floor((Date.now() - story.time) / 1000);
+        const mins = Math.floor(diff / 60);
+        const secs = Math.floor(diff % 60);
+        storyViewerTime.textContent = mins + ':' + String(secs).padStart(2, '0') + ' назад';
+        
+        // Контент
+        storyViewerContent.innerHTML = '';
+        if (story.type === 'video') {
+            const video = document.createElement('video');
+            video.src = story.data;
+            video.controls = false;
+            video.autoplay = true;
+            video.muted = false;
+            video.playsInline = true;
+            video.style.maxWidth = '100%';
+            video.style.maxHeight = '80vh';
+            video.style.borderRadius = '12px';
+            video.onended = () => {
+                nextStory();
+            };
+            storyViewerContent.appendChild(video);
+        } else {
+            const img = document.createElement('img');
+            img.src = story.data;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '80vh';
+            img.style.borderRadius = '12px';
+            storyViewerContent.appendChild(img);
+            // Авто-следующая через 5 секунд
+            setTimeout(() => {
+                if (storyViewer.classList.contains('active')) {
+                    nextStory();
+                }
+            }, 5000);
+        }
+        
+        // Просмотры
+        const viewers = story.viewers || {};
+        const viewerCount = Object.keys(viewers).length;
+        storyViewerCount.textContent = '👁️ ' + viewerCount + ' просмотров';
+        
+        // Отметить как просмотренное
+        if (!viewers[currentUser.username]) {
+            database.ref('stories/' + currentStoryUser + '/' + storyId + '/viewers/' + currentUser.username).set(true);
+        }
+        
+        // Прогресс
+        storyProgress = 0;
+        storyProgressFill.style.width = '0%';
+        if (storyTimerInterval) clearInterval(storyTimerInterval);
+        storyTimerInterval = setInterval(() => {
+            storyProgress += 1;
+            storyProgressFill.style.width = Math.min(storyProgress, 100) + '%';
+            if (storyProgress >= 100) {
+                clearInterval(storyTimerInterval);
+            }
+        }, 50);
+    }
+
+    function nextStory() {
+        const userStories = storiesData[currentStoryUser] || {};
+        const storyKeys = Object.keys(userStories).filter(key => {
+            return Date.now() - userStories[key].time < 24 * 60 * 60 * 1000;
+        });
+        
+        if (currentStoryIndex + 1 < storyKeys.length) {
+            currentStoryIndex++;
+            showStory(storyKeys[currentStoryIndex]);
+        } else {
+            // Ищем следующего пользователя с историями
+            const users = Object.keys(storiesData);
+            const currentIndex = users.indexOf(currentStoryUser);
+            let nextUser = null;
+            for (let i = currentIndex + 1; i < users.length; i++) {
+                const user = users[i];
+                const userStoryKeys = Object.keys(storiesData[user]).filter(key => {
+                    return Date.now() - storiesData[user][key].time < 24 * 60 * 60 * 1000;
+                });
+                if (userStoryKeys.length > 0 && user !== currentUser.username) {
+                    nextUser = user;
+                    break;
+                }
+            }
+            if (nextUser) {
+                currentStoryUser = nextUser;
+                currentStoryIndex = 0;
+                const keys = Object.keys(storiesData[nextUser]).filter(key => {
+                    return Date.now() - storiesData[nextUser][key].time < 24 * 60 * 60 * 1000;
+                });
+                showStory(keys[0]);
+            } else {
+                closeStoryViewer();
+            }
+        }
+    }
+
+    function prevStory() {
+        if (currentStoryIndex > 0) {
+            currentStoryIndex--;
+            const userStories = storiesData[currentStoryUser] || {};
+            const storyKeys = Object.keys(userStories).filter(key => {
+                return Date.now() - userStories[key].time < 24 * 60 * 60 * 1000;
+            });
+            showStory(storyKeys[currentStoryIndex]);
+        }
+    }
+
+    function closeStoryViewer() {
+        storyViewer.classList.remove('active');
+        storyViewerContent.innerHTML = '';
+        if (storyTimerInterval) {
+            clearInterval(storyTimerInterval);
+            storyTimerInterval = null;
+        }
+    }
+
+    storyViewerClose.addEventListener('click', closeStoryViewer);
+    storyNext.addEventListener('click', nextStory);
+    storyPrev.addEventListener('click', prevStory);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nextStory();
+        if (e.key === 'ArrowLeft') prevStory();
+        if (e.key === 'Escape') closeStoryViewer();
+    });
 
     // =============================================
     //  WALLPAPER
@@ -855,55 +1405,6 @@
         text = text.replace(/\*(.*?)\*/g, '<span class="italic">$1</span>');
         text = text.replace(/`(.*?)`/g, '<span class="code">$1</span>');
         return text;
-    }
-
-    // =============================================
-    //  NOTIFICATIONS - ВКЛЮЧЕНЫ СРАЗУ
-    // =============================================
-    function requestNotificationPermission() {
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission().then(perm => {
-                if (perm === 'granted') {
-                    console.log('🔔 Уведомления включены');
-                }
-            });
-        } else if ('Notification' in window && Notification.permission === 'granted') {
-            console.log('🔔 Уведомления уже включены');
-        }
-    }
-
-    // Включаем уведомления сразу
-    setTimeout(() => {
-        requestNotificationPermission();
-    }, 1000);
-
-    function sendNotification(title, body) {
-        if ('Notification' in window && Notification.permission === 'granted') {
-            try {
-                const notif = new Notification(title, { 
-                    body: body, 
-                    icon: '📱',
-                    tag: 'guru_message',
-                    requireInteraction: true
-                });
-                
-                // Звук уведомления
-                const audio = new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqNkZOVlpeXmJeWlZSTkI6LiYeFgoB9ent5d3Z1dXRzc3Nzc3N0dXZ3eHl6fHx9f3+BgoSFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp+goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2+v8DBwsPExcbHyMnKy8zNzs/Q0dLT1NXW19jZ2tvc3d7f4OHi4+Tl5ufo6err7O3u7/Dx8vP09fb3+Pn6+/z9/v8=');
-                audio.volume = 0.5;
-                audio.play().catch(() => {});
-                
-                // Клик по уведомлению - открываем приложение
-                notif.onclick = () => {
-                    window.focus();
-                    // Если есть чат - открываем его
-                    if (currentChatId) {
-                        // уже открыто
-                    }
-                };
-            } catch(e) {
-                console.log('Notification error:', e);
-            }
-        }
     }
 
     // =============================================
@@ -1354,7 +1855,6 @@
     //  CALL FUNCTIONS - ПОЛНОСТЬЮ ПЕРЕПИСАНЫ
     // =============================================
     
-    // --- ПОКАЗАТЬ ВХОДЯЩИЙ ЗВОНОК ---
     function showIncomingCall(from, video = false) {
         callIncoming.classList.add('active');
         incomingAvatar.textContent = from.charAt(0).toUpperCase();
@@ -1381,30 +1881,25 @@
         incomingCallData = null;
     }
 
-    // --- НАЧАТЬ ЗВОНОК ---
     async function startCall(targetUser, video = false) {
         if (!currentUser) return showNotification('❌ Войдите в аккаунт');
         if (!targetUser) return showNotification('❌ Нет собеседника');
         if (currentCallId) return showNotification('❌ Уже в звонке');
 
         try {
-            // Получаем медиа
             const constraints = video ? { 
                 audio: true, 
                 video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } 
             } : { audio: true };
             
             localStream = await navigator.mediaDevices.getUserMedia(constraints);
-            console.log('✅ Медиа получено');
             
-            // Показываем локальное видео
             if (video) {
                 localVideoCall.srcObject = localStream;
                 callVideoContainer.classList.add('active');
             }
             document.getElementById('localVideo').srcObject = localStream;
 
-            // Показываем модалку
             callModal.classList.add('active');
             callAvatar.textContent = targetUser.charAt(0).toUpperCase();
             callName.textContent = targetUser;
@@ -1415,21 +1910,16 @@
             isCaller = true;
             isVideoCall = video;
 
-            // Создаем PeerConnection
             peerConnection = new RTCPeerConnection(rtcConfig);
             
-            // Добавляем треки
             localStream.getTracks().forEach(track => {
                 peerConnection.addTrack(track, localStream);
-                console.log('📤 Добавлен трек:', track.kind);
             });
 
-            // Обработка входящего потока
             peerConnection.ontrack = (event) => {
                 console.log('📥 Получен трек:', event.track.kind);
                 
                 if (event.track.kind === 'audio') {
-                    // Аудио
                     if (audioElement) {
                         audioElement.pause();
                         audioElement.srcObject = null;
@@ -1444,7 +1934,6 @@
                 }
                 
                 if (event.track.kind === 'video') {
-                    // Видео
                     remoteVideoCall.srcObject = event.streams[0];
                     callVideoContainer.classList.add('active');
                     console.log('🎥 Видео получено');
@@ -1454,23 +1943,18 @@
                 startCallTimer();
             };
 
-            // ICE кандидаты
             peerConnection.onicecandidate = (event) => {
                 if (event.candidate && signalRef) {
                     signalRef.update({
                         type: 'candidate',
                         candidate: event.candidate
                     });
-                    console.log('📤 ICE кандидат отправлен');
                 }
             };
 
-            // Создаем Offer
             const offer = await peerConnection.createOffer();
             await peerConnection.setLocalDescription(offer);
-            console.log('📤 Offer создан');
 
-            // Сохраняем в Firebase
             currentCallId = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
             signalRef = database.ref('calls/' + currentCallId);
             await signalRef.set({
@@ -1483,7 +1967,6 @@
                 video: video
             });
 
-            // Слушаем ответ
             signalRef.on('value', async (snap) => {
                 const data = snap.val();
                 if (!data) return;
@@ -1492,13 +1975,11 @@
                     await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
                     callStatus.textContent = '🔊 В разговоре';
                     startCallTimer();
-                    console.log('📥 Answer получен');
                 }
 
                 if (data.type === 'candidate' && peerConnection) {
                     try {
                         await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-                        console.log('✅ ICE кандидат добавлен');
                     } catch(e) {
                         console.log('❌ ICE ошибка:', e);
                     }
@@ -1523,7 +2004,6 @@
         }
     }
 
-    // --- ОТВЕТИТЬ НА ЗВОНОК ---
     async function answerCall(callId, ref) {
         try {
             const snap = await ref.once('value');
@@ -1533,22 +2013,18 @@
             const video = data.video || false;
             isVideoCall = video;
             
-            // Получаем медиа
             const constraints = video ? { 
                 audio: true, 
                 video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } 
             } : { audio: true };
             localStream = await navigator.mediaDevices.getUserMedia(constraints);
-            console.log('✅ Медиа получено');
             
-            // Показываем локальное видео
             if (video) {
                 localVideoCall.srcObject = localStream;
                 callVideoContainer.classList.add('active');
             }
             document.getElementById('localVideo').srcObject = localStream;
 
-            // Показываем модалку
             callModal.classList.add('active');
             callAvatar.textContent = data.from.charAt(0).toUpperCase();
             callName.textContent = data.from;
@@ -1557,18 +2033,13 @@
             callVideoToggle.style.display = 'none';
             document.querySelector('.call-sub').textContent = video ? 'Видеозвонок' : 'Аудиозвонок';
             isCaller = false;
-            isVideoCall = video;
 
-            // Создаем PeerConnection
             peerConnection = new RTCPeerConnection(rtcConfig);
             
-            // Добавляем треки
             localStream.getTracks().forEach(track => {
                 peerConnection.addTrack(track, localStream);
-                console.log('📤 Добавлен трек:', track.kind);
             });
 
-            // Обработка входящего потока
             peerConnection.ontrack = (event) => {
                 console.log('📥 Получен трек:', event.track.kind);
                 
@@ -1596,18 +2067,15 @@
                 startCallTimer();
             };
 
-            // ICE кандидаты
             peerConnection.onicecandidate = (event) => {
                 if (event.candidate && ref) {
                     ref.update({
                         type: 'candidate',
                         candidate: event.candidate
                     });
-                    console.log('📤 ICE кандидат отправлен');
                 }
             };
 
-            // Отвечаем
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
@@ -1617,9 +2085,7 @@
                 sdp: answer,
                 status: 'connected'
             });
-            console.log('📤 Answer отправлен');
 
-            // Слушаем дальше
             ref.on('value', async (snap) => {
                 const d = snap.val();
                 if (!d) return;
@@ -1627,7 +2093,6 @@
                 if (d.type === 'candidate' && peerConnection) {
                     try {
                         await peerConnection.addIceCandidate(new RTCIceCandidate(d.candidate));
-                        console.log('✅ ICE кандидат добавлен');
                     } catch(e) {
                         console.log('❌ ICE ошибка:', e);
                     }
@@ -1654,7 +2119,6 @@
         }
     }
 
-    // --- ЗАВЕРШИТЬ ЗВОНОК ---
     function endCall(message = 'Звонок завершён') {
         if (signalRef) {
             signalRef.update({ status: 'ended' });
@@ -1721,7 +2185,6 @@
         database.ref('calls_history/' + to + '/' + callId).set(data);
     }
 
-    // --- СЛУШАТЬ ВХОДЯЩИЕ ЗВОНКИ ---
     function listenForCalls() {
         if (!currentUser) return;
 
@@ -1732,17 +2195,12 @@
             if (data.to !== currentUser.username) return;
             if (currentCallId) return;
 
-            // Сохраняем данные звонка
             incomingCallData = { callId: snap.key, ref: snap.ref };
-            
-            // Показываем входящий звонок
             showIncomingCall(data.from, data.video || false);
             
-            // Уведомление
             const type = data.video ? 'Видеозвонок' : 'Аудиозвонок';
             sendNotification('📞 ' + type + ' от ' + data.from, 'Входящий вызов...');
             
-            // Автоотказ через 30 секунд
             setTimeout(() => {
                 if (callIncoming.classList.contains('active')) {
                     snap.ref.update({ status: 'rejected' });
@@ -1753,7 +2211,6 @@
         });
     }
 
-    // --- КНОПКИ ЗВОНКОВ ---
     callBtn.addEventListener('click', function() {
         if (!currentChatId || !currentUser) {
             showNotification('❌ Откройте чат');
@@ -2461,7 +2918,7 @@
                         <div class="toggle-switch ${isDarkTheme ? 'active' : ''}" id="themeSwitch"><div class="toggle-knob"></div></div>
                     </div>
                     <div class="page-item" id="privacyItem"><i class="fas fa-lock"></i> Конфиденциальность</div>
-                    <div class="page-item" id="notifItem"><i class="fas fa-bell"></i> Уведомления включены 🔔</div>
+                    <div class="page-item" id="notifItem"><i class="fas fa-bell"></i> Уведомления</div>
                     <div class="page-item" id="encryptionItem"><i class="fas fa-shield-alt"></i> Все сообщения шифруются 🔒</div>
                 `
             },
@@ -2541,7 +2998,6 @@
                 });
                 document.getElementById('notifItem')?.addEventListener('click', () => {
                     requestNotificationPermission();
-                    showNotification('🔔 Уведомления включены!');
                 });
                 document.getElementById('encryptionItem')?.addEventListener('click', () => {
                     showModal('🔒 Шифрование', 'Все сообщения в GURU шифруются с помощью XOR шифрования. Ваши данные в безопасности!');
@@ -3340,7 +3796,7 @@
     });
 
     // =============================================
-    //  VOICE MESSAGES (5 МИНУТ)
+    //  VOICE MESSAGES
     // =============================================
     voiceBtn.addEventListener('mousedown', function(e) {
         e.preventDefault();
@@ -3718,6 +4174,7 @@
                 updateAllAvatars();
                 listenForCalls();
                 initStickers();
+                loadStories();
                 requestNotificationPermission();
             } else {
                 if (exists) { showError('Пользователь уже существует'); authBtn.disabled = false; authBtn.textContent = 'Зарегистрироваться'; return; }
@@ -3732,6 +4189,7 @@
                 updateAllAvatars();
                 listenForCalls();
                 initStickers();
+                loadStories();
                 requestNotificationPermission();
             }
         } catch (error) {
@@ -3829,6 +4287,7 @@
                 searchArea.style.display = 'block';
                 bottomNav.style.display = 'flex';
                 loadChatsList();
+                loadStories();
             } else {
                 chatList.style.display = 'none';
                 searchArea.style.display = 'none';
@@ -3846,6 +4305,7 @@
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.querySelector('[data-tab="chats"]').classList.add('active');
         loadChatsList();
+        loadStories();
     });
 
     document.querySelectorAll('.side-menu-item').forEach(item => {
@@ -3876,6 +4336,7 @@
                 updateOnlineStatus(sessionUser, true);
                 listenForCalls();
                 initStickers();
+                loadStories();
                 requestNotificationPermission();
             } else {
                 showApp(false);
