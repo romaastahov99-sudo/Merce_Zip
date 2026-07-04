@@ -318,6 +318,19 @@
         .call-video-container video { width: 100%; height: 100%; object-fit: cover; }
         .call-video-container .remote-label { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); color: white; font-size: 12px; background: rgba(0,0,0,0.5); padding: 2px 12px; border-radius: 10px; }
         .call-video-container .local-video-small { position: absolute; top: 8px; right: 8px; width: 60px; height: 80px; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255,255,255,0.3); }
+        .call-incoming { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; justify-content: center; align-items: center; flex-direction: column; }
+        .call-incoming.active { display: flex; }
+        .call-incoming .incoming-box { background: #1f1f1f; border-radius: 30px; padding: 40px; text-align: center; max-width: 350px; width: 90%; }
+        .call-incoming .incoming-avatar { width: 80px; height: 80px; border-radius: 50%; background: #2b6b9c; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: white; overflow: hidden; }
+        .call-incoming .incoming-name { font-size: 22px; font-weight: bold; color: #fff; }
+        .call-incoming .incoming-status { color: #6a6a6a; font-size: 14px; margin: 10px 0 20px; }
+        .call-incoming .incoming-buttons { display: flex; gap: 30px; justify-content: center; }
+        .call-incoming .incoming-buttons button { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 28px; cursor: pointer; transition: 0.2s; }
+        .call-incoming .incoming-buttons button:hover { transform: scale(1.05); }
+        .call-incoming .incoming-buttons .answer-btn { background: #4fae4f; }
+        .call-incoming .incoming-buttons .answer-btn:hover { background: #3d8b3d; }
+        .call-incoming .incoming-buttons .decline-btn { background: #e74c3c; }
+        .call-incoming .incoming-buttons .decline-btn:hover { background: #c0392b; }
         @media (max-width: 460px) { body { padding: 0; } .telegram-clone { border-radius: 0; height: 100vh; max-width: 100%; } .side-menu { width: 280px; left: -300px; } }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         @keyframes slideDown { from { transform: translate(-50%, -20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
@@ -508,10 +521,23 @@
                 <div class="call-status" id="callStatus">Соединение...</div>
                 <div class="call-buttons">
                     <button class="call-btn end" id="callEndBtn"><i class="fas fa-phone-slash"></i></button>
-                    <button class="call-btn answer" id="callAnswerBtn"><i class="fas fa-phone"></i></button>
+                    <button class="call-btn answer" id="callAnswerBtn" style="display:none;"><i class="fas fa-phone"></i></button>
                     <button class="call-btn video" id="callVideoToggle" style="display:none;"><i class="fas fa-video"></i></button>
                 </div>
                 <div class="call-sub">Аудиозвонок</div>
+            </div>
+        </div>
+
+        <!-- INCOMING CALL -->
+        <div class="call-incoming" id="callIncoming">
+            <div class="incoming-box">
+                <div class="incoming-avatar" id="incomingAvatar">?</div>
+                <div class="incoming-name" id="incomingName">Имя</div>
+                <div class="incoming-status" id="incomingStatus">📞 Входящий вызов...</div>
+                <div class="incoming-buttons">
+                    <button class="answer-btn" id="incomingAnswerBtn"><i class="fas fa-phone"></i></button>
+                    <button class="decline-btn" id="incomingDeclineBtn"><i class="fas fa-phone-slash"></i></button>
+                </div>
             </div>
         </div>
 
@@ -613,6 +639,12 @@
     const callVideoContainer = document.getElementById('callVideoContainer');
     const remoteVideoCall = document.getElementById('remoteVideoCall');
     const localVideoCall = document.getElementById('localVideoCall');
+    const callIncoming = document.getElementById('callIncoming');
+    const incomingAvatar = document.getElementById('incomingAvatar');
+    const incomingName = document.getElementById('incomingName');
+    const incomingStatus = document.getElementById('incomingStatus');
+    const incomingAnswerBtn = document.getElementById('incomingAnswerBtn');
+    const incomingDeclineBtn = document.getElementById('incomingDeclineBtn');
     const stickerBtn = document.getElementById('stickerBtn');
     const stickerPicker = document.getElementById('stickerPicker');
     const messageMenu = document.getElementById('messageMenu');
@@ -672,7 +704,6 @@
     let selectedMessageData = null;
     let longPressTimer = null;
     
-    // 30 РЕАКЦИЙ КАК В TELEGRAM
     const REACTIONS = ['👍', '❤️', '🔥', '🥰', '👏', '😁', '🤔', '🤯', '😱', '🥺', '🤩', '😎', '🙏', '💅', '🤷', '😈', '👀', '💀', '🎉', '💪', '🖕', '🐱', '🐶', '🍕', '🚀', '⭐', '🌈', '💯', '🔥', '💀'];
     const STICKERS = ['😊', '😂', '❤️', '🔥', '🎉', '💀', '🐱', '🐶', '🍕', '🚀', '⭐', '🌈', '💪', '🤣', '😍', '🥰', '😘', '💋', '👋', '🙌', '🤝', '✨', '💯', '🔥', '💀'];
     let remoteAudioElement = null;
@@ -705,13 +736,16 @@
     let currentCallId = null;
     let signalRef = null;
     let isVideoCall = false;
+    let incomingCallData = null;
+    let audioElement = null;
 
     const rtcConfig = {
         iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
             { urls: 'stun:stun1.l.google.com:19302' },
             { urls: 'stun:stun2.l.google.com:19302' }
-        ]
+        ],
+        iceCandidatePoolSize: 10
     };
 
     // =============================================
@@ -824,7 +858,7 @@
     }
 
     // =============================================
-    //  NOTIFICATIONS (ВКЛЮЧЕНЫ СРАЗУ)
+    //  NOTIFICATIONS - ВКЛЮЧЕНЫ СРАЗУ
     // =============================================
     function requestNotificationPermission() {
         if ('Notification' in window && Notification.permission === 'default') {
@@ -838,20 +872,38 @@
         }
     }
 
-    // ВКЛЮЧАЕМ УВЕДОМЛЕНИЯ СРАЗУ ПРИ ЗАГРУЗКЕ
+    // Включаем уведомления сразу
     setTimeout(() => {
         requestNotificationPermission();
     }, 1000);
 
     function sendNotification(title, body) {
         if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification(title, { body: body, icon: '📱' });
+            try {
+                const notif = new Notification(title, { 
+                    body: body, 
+                    icon: '📱',
+                    tag: 'guru_message',
+                    requireInteraction: true
+                });
+                
+                // Звук уведомления
+                const audio = new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqNkZOVlpeXmJeWlZSTkI6LiYeFgoB9ent5d3Z1dXRzc3Nzc3N0dXZ3eHl6fHx9f3+BgoSFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp+goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2+v8DBwsPExcbHyMnKy8zNzs/Q0dLT1NXW19jZ2tvc3d7f4OHi4+Tl5ufo6err7O3u7/Dx8vP09fb3+Pn6+/z9/v8=');
+                audio.volume = 0.5;
+                audio.play().catch(() => {});
+                
+                // Клик по уведомлению - открываем приложение
+                notif.onclick = () => {
+                    window.focus();
+                    // Если есть чат - открываем его
+                    if (currentChatId) {
+                        // уже открыто
+                    }
+                };
+            } catch(e) {
+                console.log('Notification error:', e);
+            }
         }
-        try {
-            const audio = new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqNkZOVlpeXmJeWlZSTkI6LiYeFgoB9ent5d3Z1dXRzc3Nzc3N0dXZ3eHl6fHx9f3+BgoSFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp+goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2+v8DBwsPExcbHyMnKy8zNzs/Q0dLT1NXW19jZ2tvc3d7f4OHi4+Tl5ufo6err7O3u7/Dx8vP09fb3+Pn6+/z9/v8=');
-            audio.volume = 0.3;
-            audio.play().catch(() => {});
-        } catch(e) {}
     }
 
     // =============================================
@@ -892,7 +944,7 @@
     });
 
     // =============================================
-    //  VIDEO MESSAGES (КРУЖКИ) - ИСПРАВЛЕНЫ
+    //  VIDEO MESSAGES
     // =============================================
     videoMsgBtn.addEventListener('click', function() {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -953,7 +1005,6 @@
                     recordingVideoStream = null;
                     videoRecorder = null;
                     
-                    // АВТОМАТИЧЕСКАЯ ОТПРАВКА
                     if (videoRecordedBlob && videoRecordedBlob.size > 1000) {
                         sendVideoRound(currentChatId, currentUser.username, videoRecordedBlob, recordingVideoSeconds);
                     } else {
@@ -1300,31 +1351,349 @@
     }
 
     // =============================================
-    //  CALL FUNCTIONS (АУДИО + ВИДЕО)
+    //  CALL FUNCTIONS - ПОЛНОСТЬЮ ПЕРЕПИСАНЫ
     // =============================================
-    function showCallModal(name, avatar, status, showAnswer = false, video = false) {
-        callModal.classList.add('active');
-        callName.textContent = name || 'Неизвестный';
-        callAvatar.textContent = avatar || '?';
-        callStatus.textContent = status || 'Соединение...';
-        callAnswerBtn.style.display = showAnswer ? 'flex' : 'none';
-        callVideoToggle.style.display = video ? 'flex' : 'none';
-        callVideoContainer.classList.remove('active');
-        document.querySelector('.call-sub').textContent = video ? 'Видеозвонок' : 'Аудиозвонок';
-        isVideoCall = video;
-        remoteVideoCall.srcObject = null;
-        localVideoCall.srcObject = null;
+    
+    // --- ПОКАЗАТЬ ВХОДЯЩИЙ ЗВОНОК ---
+    function showIncomingCall(from, video = false) {
+        callIncoming.classList.add('active');
+        incomingAvatar.textContent = from.charAt(0).toUpperCase();
+        incomingName.textContent = from;
+        incomingStatus.textContent = video ? '📹 Видеозвонок...' : '📞 Аудиозвонок...';
+        incomingAnswerBtn.onclick = () => {
+            callIncoming.classList.remove('active');
+            if (incomingCallData) {
+                answerCall(incomingCallData.callId, incomingCallData.ref);
+            }
+        };
+        incomingDeclineBtn.onclick = () => {
+            callIncoming.classList.remove('active');
+            if (incomingCallData && incomingCallData.ref) {
+                incomingCallData.ref.update({ status: 'rejected' });
+                showNotification('❌ Звонок отклонён');
+            }
+            incomingCallData = null;
+        };
     }
 
-    function hideCallModal() {
+    function hideIncomingCall() {
+        callIncoming.classList.remove('active');
+        incomingCallData = null;
+    }
+
+    // --- НАЧАТЬ ЗВОНОК ---
+    async function startCall(targetUser, video = false) {
+        if (!currentUser) return showNotification('❌ Войдите в аккаунт');
+        if (!targetUser) return showNotification('❌ Нет собеседника');
+        if (currentCallId) return showNotification('❌ Уже в звонке');
+
+        try {
+            // Получаем медиа
+            const constraints = video ? { 
+                audio: true, 
+                video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } 
+            } : { audio: true };
+            
+            localStream = await navigator.mediaDevices.getUserMedia(constraints);
+            console.log('✅ Медиа получено');
+            
+            // Показываем локальное видео
+            if (video) {
+                localVideoCall.srcObject = localStream;
+                callVideoContainer.classList.add('active');
+            }
+            document.getElementById('localVideo').srcObject = localStream;
+
+            // Показываем модалку
+            callModal.classList.add('active');
+            callAvatar.textContent = targetUser.charAt(0).toUpperCase();
+            callName.textContent = targetUser;
+            callStatus.textContent = '🔄 Вызов...';
+            callAnswerBtn.style.display = 'none';
+            callVideoToggle.style.display = 'none';
+            document.querySelector('.call-sub').textContent = video ? 'Видеозвонок' : 'Аудиозвонок';
+            isCaller = true;
+            isVideoCall = video;
+
+            // Создаем PeerConnection
+            peerConnection = new RTCPeerConnection(rtcConfig);
+            
+            // Добавляем треки
+            localStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, localStream);
+                console.log('📤 Добавлен трек:', track.kind);
+            });
+
+            // Обработка входящего потока
+            peerConnection.ontrack = (event) => {
+                console.log('📥 Получен трек:', event.track.kind);
+                
+                if (event.track.kind === 'audio') {
+                    // Аудио
+                    if (audioElement) {
+                        audioElement.pause();
+                        audioElement.srcObject = null;
+                        audioElement.remove();
+                    }
+                    audioElement = new Audio();
+                    audioElement.srcObject = event.streams[0];
+                    audioElement.autoplay = true;
+                    audioElement.volume = 1.0;
+                    audioElement.play().catch(e => console.log('Audio play error:', e));
+                    console.log('🔊 Аудио воспроизводится');
+                }
+                
+                if (event.track.kind === 'video') {
+                    // Видео
+                    remoteVideoCall.srcObject = event.streams[0];
+                    callVideoContainer.classList.add('active');
+                    console.log('🎥 Видео получено');
+                }
+                
+                callStatus.textContent = '🔊 В разговоре';
+                startCallTimer();
+            };
+
+            // ICE кандидаты
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate && signalRef) {
+                    signalRef.update({
+                        type: 'candidate',
+                        candidate: event.candidate
+                    });
+                    console.log('📤 ICE кандидат отправлен');
+                }
+            };
+
+            // Создаем Offer
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            console.log('📤 Offer создан');
+
+            // Сохраняем в Firebase
+            currentCallId = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            signalRef = database.ref('calls/' + currentCallId);
+            await signalRef.set({
+                from: currentUser.username,
+                to: targetUser,
+                type: 'offer',
+                sdp: offer,
+                status: 'calling',
+                time: Date.now(),
+                video: video
+            });
+
+            // Слушаем ответ
+            signalRef.on('value', async (snap) => {
+                const data = snap.val();
+                if (!data) return;
+
+                if (data.type === 'answer' && peerConnection) {
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    callStatus.textContent = '🔊 В разговоре';
+                    startCallTimer();
+                    console.log('📥 Answer получен');
+                }
+
+                if (data.type === 'candidate' && peerConnection) {
+                    try {
+                        await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+                        console.log('✅ ICE кандидат добавлен');
+                    } catch(e) {
+                        console.log('❌ ICE ошибка:', e);
+                    }
+                }
+
+                if (data.status === 'ended' || data.status === 'rejected') {
+                    const duration = Math.floor((Date.now() - callStartTime) / 1000);
+                    if (duration > 0 && isCaller) {
+                        saveCallHistory(currentUser.username, targetUser, duration);
+                        showNotification('📞 Звонок: ' + duration + ' сек');
+                    }
+                    endCall('Звонок завершён');
+                }
+            });
+
+            callData = { ref: signalRef, callId: currentCallId };
+
+        } catch (e) {
+            console.error('❌ Call error:', e);
+            showNotification('❌ Ошибка звонка: ' + e.message);
+            endCall();
+        }
+    }
+
+    // --- ОТВЕТИТЬ НА ЗВОНОК ---
+    async function answerCall(callId, ref) {
+        try {
+            const snap = await ref.once('value');
+            const data = snap.val();
+            if (!data || data.type !== 'offer') return;
+
+            const video = data.video || false;
+            isVideoCall = video;
+            
+            // Получаем медиа
+            const constraints = video ? { 
+                audio: true, 
+                video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } 
+            } : { audio: true };
+            localStream = await navigator.mediaDevices.getUserMedia(constraints);
+            console.log('✅ Медиа получено');
+            
+            // Показываем локальное видео
+            if (video) {
+                localVideoCall.srcObject = localStream;
+                callVideoContainer.classList.add('active');
+            }
+            document.getElementById('localVideo').srcObject = localStream;
+
+            // Показываем модалку
+            callModal.classList.add('active');
+            callAvatar.textContent = data.from.charAt(0).toUpperCase();
+            callName.textContent = data.from;
+            callStatus.textContent = '🔄 Соединение...';
+            callAnswerBtn.style.display = 'none';
+            callVideoToggle.style.display = 'none';
+            document.querySelector('.call-sub').textContent = video ? 'Видеозвонок' : 'Аудиозвонок';
+            isCaller = false;
+            isVideoCall = video;
+
+            // Создаем PeerConnection
+            peerConnection = new RTCPeerConnection(rtcConfig);
+            
+            // Добавляем треки
+            localStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, localStream);
+                console.log('📤 Добавлен трек:', track.kind);
+            });
+
+            // Обработка входящего потока
+            peerConnection.ontrack = (event) => {
+                console.log('📥 Получен трек:', event.track.kind);
+                
+                if (event.track.kind === 'audio') {
+                    if (audioElement) {
+                        audioElement.pause();
+                        audioElement.srcObject = null;
+                        audioElement.remove();
+                    }
+                    audioElement = new Audio();
+                    audioElement.srcObject = event.streams[0];
+                    audioElement.autoplay = true;
+                    audioElement.volume = 1.0;
+                    audioElement.play().catch(e => console.log('Audio play error:', e));
+                    console.log('🔊 Аудио воспроизводится');
+                }
+                
+                if (event.track.kind === 'video') {
+                    remoteVideoCall.srcObject = event.streams[0];
+                    callVideoContainer.classList.add('active');
+                    console.log('🎥 Видео получено');
+                }
+                
+                callStatus.textContent = '🔊 В разговоре';
+                startCallTimer();
+            };
+
+            // ICE кандидаты
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate && ref) {
+                    ref.update({
+                        type: 'candidate',
+                        candidate: event.candidate
+                    });
+                    console.log('📤 ICE кандидат отправлен');
+                }
+            };
+
+            // Отвечаем
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+
+            await ref.update({
+                type: 'answer',
+                sdp: answer,
+                status: 'connected'
+            });
+            console.log('📤 Answer отправлен');
+
+            // Слушаем дальше
+            ref.on('value', async (snap) => {
+                const d = snap.val();
+                if (!d) return;
+
+                if (d.type === 'candidate' && peerConnection) {
+                    try {
+                        await peerConnection.addIceCandidate(new RTCIceCandidate(d.candidate));
+                        console.log('✅ ICE кандидат добавлен');
+                    } catch(e) {
+                        console.log('❌ ICE ошибка:', e);
+                    }
+                }
+
+                if (d.status === 'ended') {
+                    const duration = Math.floor((Date.now() - callStartTime) / 1000);
+                    if (duration > 0) {
+                        saveCallHistory(data.from, currentUser.username, duration);
+                        showNotification('📞 Звонок: ' + duration + ' сек');
+                    }
+                    endCall('Звонок завершён');
+                }
+            });
+
+            signalRef = ref;
+            currentCallId = callId;
+            callData = { ref: ref, callId: callId };
+
+        } catch (e) {
+            console.error('❌ Answer error:', e);
+            showNotification('❌ Ошибка ответа: ' + e.message);
+            endCall();
+        }
+    }
+
+    // --- ЗАВЕРШИТЬ ЗВОНОК ---
+    function endCall(message = 'Звонок завершён') {
+        if (signalRef) {
+            signalRef.update({ status: 'ended' });
+            signalRef.off();
+            signalRef = null;
+        }
+        if (peerConnection) {
+            peerConnection.close();
+            peerConnection = null;
+        }
+        if (localStream) {
+            localStream.getTracks().forEach(track => track.stop());
+            localStream = null;
+        }
+        if (remoteStream) {
+            remoteStream.getTracks().forEach(track => track.stop());
+            remoteStream = null;
+        }
+        if (audioElement) {
+            audioElement.pause();
+            audioElement.srcObject = null;
+            audioElement.remove();
+            audioElement = null;
+        }
         callModal.classList.remove('active');
         callVideoContainer.classList.remove('active');
+        callIncoming.classList.remove('active');
         if (callTimerInterval) {
             clearInterval(callTimerInterval);
             callTimerInterval = null;
         }
+        document.getElementById('localVideo').srcObject = null;
         remoteVideoCall.srcObject = null;
         localVideoCall.srcObject = null;
+        if (message) showNotification('📞 ' + message);
+        currentCallId = null;
+        callData = null;
+        isVideoCall = false;
+        incomingCallData = null;
     }
 
     function startCallTimer() {
@@ -1352,271 +1721,7 @@
         database.ref('calls_history/' + to + '/' + callId).set(data);
     }
 
-    async function startCall(targetUser, video = false) {
-        if (!currentUser) return showNotification('❌ Войдите в аккаунт');
-        if (!targetUser) return showNotification('❌ Нет собеседника');
-        if (currentCallId) return showNotification('❌ Уже в звонке');
-
-        try {
-            const constraints = video ? { audio: true, video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } } : { audio: true };
-            localStream = await navigator.mediaDevices.getUserMedia(constraints);
-            
-            if (video) {
-                localVideoCall.srcObject = localStream;
-                callVideoContainer.classList.add('active');
-            }
-            document.getElementById('localVideo').srcObject = localStream;
-
-            showCallModal(targetUser, targetUser.charAt(0).toUpperCase(), '🔄 Вызов...', false, video);
-            isCaller = true;
-            isVideoCall = video;
-
-            peerConnection = new RTCPeerConnection(rtcConfig);
-            
-            localStream.getTracks().forEach(track => {
-                peerConnection.addTrack(track, localStream);
-                console.log('📤 Добавлен трек:', track.kind);
-            });
-
-            peerConnection.ontrack = (event) => {
-                console.log('📥 Получен трек:', event.track.kind);
-                
-                if (event.track.kind === 'audio') {
-                    if (remoteAudioElement) {
-                        remoteAudioElement.pause();
-                        remoteAudioElement.srcObject = null;
-                        remoteAudioElement.remove();
-                    }
-                    remoteAudioElement = document.createElement('audio');
-                    remoteAudioElement.autoplay = true;
-                    remoteAudioElement.style.display = 'none';
-                    remoteAudioElement.srcObject = event.streams[0];
-                    document.body.appendChild(remoteAudioElement);
-                    remoteAudioElement.play().catch(e => console.log('Audio play error:', e));
-                    console.log('🔊 Аудио поток получен');
-                }
-                
-                if (event.track.kind === 'video') {
-                    remoteVideoCall.srcObject = event.streams[0];
-                    callVideoContainer.classList.add('active');
-                    console.log('🎥 Видео поток получен');
-                }
-                
-                callStatus.textContent = '🔊 В разговоре';
-                startCallTimer();
-            };
-
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate && signalRef) {
-                    signalRef.update({
-                        type: 'candidate',
-                        candidate: event.candidate
-                    });
-                    console.log('📤 Отправлен ICE кандидат');
-                }
-            };
-
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            console.log('📤 Offer создан');
-
-            currentCallId = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            signalRef = database.ref('calls/' + currentCallId);
-            await signalRef.set({
-                from: currentUser.username,
-                to: targetUser,
-                type: 'offer',
-                sdp: offer,
-                status: 'calling',
-                time: Date.now(),
-                video: video
-            });
-
-            signalRef.on('value', async (snap) => {
-                const data = snap.val();
-                if (!data) return;
-
-                if (data.type === 'answer' && peerConnection && isCaller) {
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-                    callStatus.textContent = '🔊 В разговоре';
-                    startCallTimer();
-                    if (video) callVideoContainer.classList.add('active');
-                    console.log('📥 Answer получен');
-                }
-
-                if (data.type === 'candidate' && peerConnection) {
-                    try {
-                        await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-                        console.log('✅ ICE кандидат добавлен');
-                    } catch(e) {
-                        console.log('❌ Candidate error:', e);
-                    }
-                }
-
-                if (data.status === 'ended' || data.status === 'rejected') {
-                    const duration = Math.floor((Date.now() - callStartTime) / 1000);
-                    if (duration > 0 && isCaller) {
-                        saveCallHistory(currentUser.username, targetUser, duration);
-                        showNotification('📞 Звонок: ' + duration + ' сек');
-                    }
-                    endCall('Звонок завершён');
-                }
-            });
-
-            callData = { ref: signalRef, callId: currentCallId };
-
-        } catch (e) {
-            console.error('❌ Call error:', e);
-            showNotification('❌ Ошибка звонка: ' + e.message);
-            endCall();
-        }
-    }
-
-    async function answerCall(callId, ref) {
-        try {
-            const snap = await ref.once('value');
-            const data = snap.val();
-            if (!data || data.type !== 'offer') return;
-
-            const video = data.video || false;
-            isVideoCall = video;
-            
-            const constraints = video ? { audio: true, video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } } : { audio: true };
-            localStream = await navigator.mediaDevices.getUserMedia(constraints);
-            
-            if (video) {
-                localVideoCall.srcObject = localStream;
-                callVideoContainer.classList.add('active');
-            }
-            document.getElementById('localVideo').srcObject = localStream;
-
-            showCallModal('Входящий звонок', '📞', '🔄 Соединение...', false, video);
-            isCaller = false;
-
-            peerConnection = new RTCPeerConnection(rtcConfig);
-            
-            localStream.getTracks().forEach(track => {
-                peerConnection.addTrack(track, localStream);
-                console.log('📤 Добавлен трек:', track.kind);
-            });
-
-            peerConnection.ontrack = (event) => {
-                console.log('📥 Получен трек:', event.track.kind);
-                
-                if (event.track.kind === 'audio') {
-                    if (remoteAudioElement) {
-                        remoteAudioElement.pause();
-                        remoteAudioElement.srcObject = null;
-                        remoteAudioElement.remove();
-                    }
-                    remoteAudioElement = document.createElement('audio');
-                    remoteAudioElement.autoplay = true;
-                    remoteAudioElement.style.display = 'none';
-                    remoteAudioElement.srcObject = event.streams[0];
-                    document.body.appendChild(remoteAudioElement);
-                    remoteAudioElement.play().catch(e => console.log('Audio play error:', e));
-                    console.log('🔊 Аудио поток получен');
-                }
-                
-                if (event.track.kind === 'video') {
-                    remoteVideoCall.srcObject = event.streams[0];
-                    callVideoContainer.classList.add('active');
-                    console.log('🎥 Видео поток получен');
-                }
-                
-                callStatus.textContent = '🔊 В разговоре';
-                startCallTimer();
-            };
-
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate && ref) {
-                    ref.update({
-                        type: 'candidate',
-                        candidate: event.candidate
-                    });
-                    console.log('📤 Отправлен ICE кандидат');
-                }
-            };
-
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-
-            await ref.update({
-                type: 'answer',
-                sdp: answer,
-                status: 'connected'
-            });
-            console.log('📤 Answer отправлен');
-
-            ref.on('value', async (snap) => {
-                const d = snap.val();
-                if (!d) return;
-
-                if (d.type === 'candidate' && peerConnection) {
-                    try {
-                        await peerConnection.addIceCandidate(new RTCIceCandidate(d.candidate));
-                        console.log('✅ ICE кандидат добавлен');
-                    } catch(e) {
-                        console.log('❌ Candidate error:', e);
-                    }
-                }
-
-                if (d.status === 'ended') {
-                    const duration = Math.floor((Date.now() - callStartTime) / 1000);
-                    if (duration > 0) {
-                        saveCallHistory(data.from, currentUser.username, duration);
-                        showNotification('📞 Звонок: ' + duration + ' сек');
-                    }
-                    endCall('Звонок завершён');
-                }
-            });
-
-            signalRef = ref;
-            currentCallId = callId;
-            callData = { ref: ref, callId: callId };
-
-        } catch (e) {
-            console.error('❌ Answer error:', e);
-            showNotification('❌ Ошибка ответа: ' + e.message);
-            endCall();
-        }
-    }
-
-    function endCall(message = 'Звонок завершён') {
-        if (signalRef) {
-            signalRef.update({ status: 'ended' });
-            signalRef.off();
-            signalRef = null;
-        }
-        if (peerConnection) {
-            peerConnection.close();
-            peerConnection = null;
-        }
-        if (localStream) {
-            localStream.getTracks().forEach(track => track.stop());
-            localStream = null;
-        }
-        if (remoteStream) {
-            remoteStream.getTracks().forEach(track => track.stop());
-            remoteStream = null;
-        }
-        if (remoteAudioElement) {
-            remoteAudioElement.pause();
-            remoteAudioElement.srcObject = null;
-            remoteAudioElement.remove();
-            remoteAudioElement = null;
-        }
-        hideCallModal();
-        document.getElementById('localVideo').srcObject = null;
-        remoteVideoCall.srcObject = null;
-        localVideoCall.srcObject = null;
-        if (message) showNotification('📞 ' + message);
-        currentCallId = null;
-        callData = null;
-        isVideoCall = false;
-    }
-
+    // --- СЛУШАТЬ ВХОДЯЩИЕ ЗВОНКИ ---
     function listenForCalls() {
         if (!currentUser) return;
 
@@ -1627,29 +1732,28 @@
             if (data.to !== currentUser.username) return;
             if (currentCallId) return;
 
-            const video = data.video || false;
-            showCallModal(data.from, data.from.charAt(0).toUpperCase(), '📞 ' + data.from + ' звонит...', true, video);
-
-            callAnswerBtn.onclick = async function() {
-                this.style.display = 'none';
-                currentCallId = snap.key;
-                await answerCall(snap.key, snap.ref);
-            };
-
-            callEndBtn.onclick = function() {
-                snap.ref.update({ status: 'rejected' });
-                endCall('Вы отклонили звонок');
-            };
-
+            // Сохраняем данные звонка
+            incomingCallData = { callId: snap.key, ref: snap.ref };
+            
+            // Показываем входящий звонок
+            showIncomingCall(data.from, data.video || false);
+            
+            // Уведомление
+            const type = data.video ? 'Видеозвонок' : 'Аудиозвонок';
+            sendNotification('📞 ' + type + ' от ' + data.from, 'Входящий вызов...');
+            
+            // Автоотказ через 30 секунд
             setTimeout(() => {
-                if (callModal.classList.contains('active') && !callData) {
+                if (callIncoming.classList.contains('active')) {
                     snap.ref.update({ status: 'rejected' });
-                    endCall('Звонок не отвечен');
+                    hideIncomingCall();
+                    showNotification('❌ Звонок не отвечен');
                 }
             }, 30000);
         });
     }
 
+    // --- КНОПКИ ЗВОНКОВ ---
     callBtn.addEventListener('click', function() {
         if (!currentChatId || !currentUser) {
             showNotification('❌ Откройте чат');
