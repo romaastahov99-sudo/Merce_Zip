@@ -621,13 +621,17 @@ body.light-theme{background:#e8e8e8}
 </div>
 
 <script>
-// ====== FIREBASE ======
+// =============================================
+// FIREBASE
+// =============================================
 const firebaseConfig={databaseURL:"https://guromessenger-ef076-default-rtdb.firebaseio.com/",storageBucket:"guromessenger-ef076.appspot.com"};
 firebase.initializeApp(firebaseConfig);
 const database=firebase.database();
 const ADMINS=['Merce','Merce_Zip'];
 
-// ====== ПЕРЕМЕННЫЕ ======
+// =============================================
+// ПЕРЕМЕННЫЕ
+// =============================================
 let currentUser=null,isLoginMode=true,userGifts={},userShowcase=[],userTasks={};
 let adminClicks=0,adminTimer=null,currentChatId=null,currentChatData=null,currentOtherUser=null;
 let messageListener=null,typingListener=null,onlineListener=null,replyToMessage=null,lastMessageTime=0;
@@ -637,8 +641,12 @@ let isCaller=false,callTimerInterval=null,callSecondsTimer=0,callStartTime=0,cur
 let isVideoCall=false,incomingCallData=null,audioElement=null,isMuted=false,isSpeakerOn=false;
 let voiceChatStream=null,voiceChatActive=false,voiceChatMuted=false,voiceChatParticipants=[],voiceChatRef=null,voiceChatId=null;
 let recordingInterval=null,recordingSeconds=0,recordingVideoSeconds=0,recordingVideoInterval=null;
+let isRecordingVoice=false,voiceRecorder=null,voiceChunks=[],voiceStream=null,voiceRecordInterval=null,voiceSeconds=0;
+let isRecordingVideoMsg=false,videoRecorderMsg=null,videoChunksMsg=[],videoStreamMsg=null,videoRecordIntervalMsg=null,videoSecondsMsg=0;
 
-// ====== КОНСТАНТЫ ======
+// =============================================
+// КОНСТАНТЫ
+// =============================================
 const rtcConfig={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}],iceCandidatePoolSize:10};
 const STICKERS=['😊','😂','❤️','🔥','🎉','💀','🐱','🐶','🍕','🚀','⭐','🌈','💪','🤣','😍','🥰','😘','💋','👋','🙌','🤝','✨','💯'];
 
@@ -705,7 +713,9 @@ const GIFTS=[
 {id:'guru_absolute',name:'GURU абсолют',emoji:'💠',rarity:'exclusive'}
 ];
 
-// ====== ПРАЗДНИКИ ======
+// =============================================
+// ПРАЗДНИКИ
+// =============================================
 const HOLIDAYS = {
     '12-25': { name: '🎄 Новый год', emoji: '🎄', date: '01-01', duration: 7 },
     '02-07': { name: '❤️ День Валентина', emoji: '❤️', date: '02-14', duration: 7 },
@@ -717,14 +727,16 @@ const HOLIDAYS = {
     '10-24': { name: '🎃 Хэллоуин', emoji: '🎃', date: '10-31', duration: 7 }
 };
 
-// ====== ЗАДАНИЯ ======
+// =============================================
+// ЗАДАНИЯ
+// =============================================
 const TASKS = [
-{id:'daily_messages',title:'📝 Отправить 10 сообщений',desc:'Напиши 10 сообщений',reward:'🎈 Воздушный шар',target:10,type:'messages',gift:'balloon',rarity:'common',category:'daily'},
-{id:'daily_voice',title:'🎤 Записать голосовое',desc:'Отправь 1 голосовое',reward:'🍫 Шоколад',target:1,type:'voice',gift:'chocolate',rarity:'common',category:'daily'},
+{id:'daily_messages',title:'📝 Отправить 10 сообщений',desc:'Напиши 10 сообщений в чатах',reward:'🎈 Воздушный шар',target:10,type:'messages',gift:'balloon',rarity:'common',category:'daily'},
+{id:'daily_voice',title:'🎤 Записать голосовое',desc:'Отправь 1 голосовое сообщение',reward:'🍫 Шоколад',target:1,type:'voice',gift:'chocolate',rarity:'common',category:'daily'},
 {id:'daily_call',title:'📞 Совершить звонок',desc:'Позвони кому-нибудь',reward:'🎁 Подарок',target:1,type:'call',gift:'gift_box',rarity:'common',category:'daily'},
 {id:'daily_photo',title:'📸 Отправить фото',desc:'Отправь 3 фото',reward:'💐 Цветы',target:3,type:'photo',gift:'flowers',rarity:'common',category:'daily'},
 {id:'daily_sticker',title:'😊 Отправить стикер',desc:'Отправь 5 стикеров',reward:'🧸 Мишка',target:5,type:'sticker',gift:'bear',rarity:'common',category:'daily'},
-{id:'weekly_active',title:'🔥 Активность 7 дней',desc:'Заходи 7 дней подряд',reward:'⭐ Звезда',target:7,type:'login',gift:'star',rarity:'rare',category:'weekly'},
+{id:'weekly_active',title:'🔥 Активность 7 дней',desc:'Заходи в приложение 7 дней подряд',reward:'⭐ Звезда',target:7,type:'login',gift:'star',rarity:'rare',category:'weekly'},
 {id:'weekly_sharing',title:'📤 Переслать 5 сообщений',desc:'Перешли 5 сообщений',reward:'💎 Бриллиант',target:5,type:'forward',gift:'diamond',rarity:'rare',category:'weekly'},
 {id:'weekly_groups',title:'👥 Создать группу',desc:'Создай группу с 5+ участниками',reward:'🔥 Феникс',target:1,type:'create_group',gift:'phoenix',rarity:'epic',category:'weekly'},
 {id:'monthly_premium',title:'💎 Получить Premium',desc:'Получи Premium статус',reward:'👑 Корона + Premium 7 дней',target:1,type:'premium',gift:'crown',rarity:'legendary',category:'monthly',premiumReward:7},
@@ -732,7 +744,9 @@ const TASKS = [
 {id:'monthly_gifts',title:'🎁 Собрать 10 подарков',desc:'Собери 10 разных подарков',reward:'🐉 Дракон',target:10,type:'collect_gifts',gift:'dragon',rarity:'legendary',category:'monthly'}
 ];
 
-// ====== ОБЩИЕ ФУНКЦИИ ======
+// =============================================
+// ОБЩИЕ ФУНКЦИИ
+// =============================================
 function encryptMessage(t){let r='';const k='GURU_SECRET_KEY_2024';for(let i=0;i<t.length;i++)r+=String.fromCharCode(t.charCodeAt(i)^k.charCodeAt(i%k.length));return btoa(r);}
 function decryptMessage(e){try{const t=atob(e);let r='';const k='GURU_SECRET_KEY_2024';for(let i=0;i<t.length;i++)r+=String.fromCharCode(t.charCodeAt(i)^k.charCodeAt(i%k.length));return r;}catch(e){return e;}}
 function isPremium(u){if(!u)return false;if(ADMINS.includes(u.username))return true;const p=u.premium;if(!p||!p.active)return false;if(p.expires==='forever')return true;if(p.expires>Date.now())return true;return false;}
@@ -746,32 +760,40 @@ function generateRaffles(){const now=new Date();const today=now.toISOString().sl
 function checkRafflesUpdate(){database.ref('raffles').once('value',snap=>{const existing=snap.val()||{};const newRaffles=generateRaffles();let needUpdate=false;Object.keys(newRaffles).forEach(key=>{if(!existing[key])needUpdate=true;});if(needUpdate||Object.keys(existing).length===0){database.ref('raffles').set(newRaffles).then(()=>{loadRaffles();});}});}
 function checkTasksUpdate(){if(!currentUser)return;const lastUpdate=localStorage.getItem('guru_tasks_update_'+currentUser.username);const now=Date.now();const weekMs=7*24*60*60*1000;if(!lastUpdate||now-parseInt(lastUpdate)>weekMs){const tasks={};TASKS.forEach(t=>{tasks[t.id]={progress:0,completed:false};});database.ref('users/'+currentUser.username+'/tasks').set(tasks).then(()=>{localStorage.setItem('guru_tasks_update_'+currentUser.username,String(now));loadTasks();showNotification('🔄 Задания обновлены!');});}}
 
-// ====== ПОДАРКИ ======
+// =============================================
+// ПОДАРКИ
+// =============================================
 function loadGifts(){if(!currentUser)return;database.ref('users/'+currentUser.username+'/gifts').once('value',s=>{userGifts=s.val()||{};updateGiftsBadge();renderGifts();});database.ref('users/'+currentUser.username+'/showcase').once('value',s=>{userShowcase=s.val()||[];if(userShowcase.length===0){const g=Object.keys(userGifts);if(g.length>0){userShowcase=g.slice(0,3);database.ref('users/'+currentUser.username+'/showcase').set(userShowcase);}}});}
 function updateGiftsBadge(){if(!giftsBadge)return;const c=Object.keys(userGifts).length;giftsBadge.textContent=c;giftsBadge.style.display=c>0?'inline':'none';}
 function renderGifts(){const c=document.getElementById('giftsList');if(!c)return;const a=getAllGifts();let h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div style="color:#f1c40f;font-weight:600;">🎁 Твои подарки: '+Object.keys(userGifts).length+'</div><button class="create-group-btn" onclick="showEditShowcase()">📦 Витрина</button></div><div class="gift-grid">';a.forEach(g=>{const has=userGifts[g.id];const cnt=has?has.count||1:0;const rn={common:'Обычный',rare:'Редкий',epic:'Эпический',legendary:'Легендарный',exclusive:'Эксклюзивный'};h+='<div class="gift-item '+(has?'':'locked')+'" onclick="'+(has?'showGiftActions(\''+g.id+'\')':'')+'"><span class="emoji">'+g.emoji+'</span><span class="name">'+g.name+'</span><span class="rarity '+g.rarity+'">'+rn[g.rarity]+'</span>'+(has?'<span class="owned">'+cnt+'</span>':'')+'</div>';});h+='</div>';c.innerHTML=h;}
 function showGiftActions(id){const g=getAllGifts().find(x=>x.id===id);if(!g)return;const h='<div style="text-align:center;padding:10px 0;"><div style="font-size:48px;">'+g.emoji+'</div><div style="font-size:18px;font-weight:600;color:#f0f0f0;margin:8px 0;">'+g.name+'</div><div style="color:#6a6a6a;font-size:13px;margin-bottom:12px;">Редкость: '+g.rarity+'</div><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;"><button class="admin-btn primary" onclick="keepGift(\''+id+'\')">💾 Оставить себе</button><button class="admin-btn success" onclick="showGiftSend(\''+id+'\')">📤 Подарить другу</button></div></div>';showModal('🎁 '+g.name,h);}
-function keepGift(id){closeModal();showNotification('✅ Подарок сохранён!');loadGifts();}
-function showGiftSend(id){const g=getAllGifts().find(x=>x.id===id);if(!g)return;loadContacts(currentUser.username).then(c=>{const n=Object.keys(c);if(n.length===0){showNotification('❌ Нет контактов');return;}let h='<div style="text-align:center;padding:10px 0;"><div style="font-size:32px;">'+g.emoji+'</div><div style="font-size:16px;font-weight:600;color:#f0f0f0;margin:8px 0;">Отправить '+g.name+'</div><div style="color:#6a6a6a;font-size:13px;margin-bottom:12px;">Выбери друга:</div><div style="max-height:200px;overflow-y:auto;">';n.forEach(name=>{h+='<div class="participant-item" onclick="sendGiftTo(\''+id+'\',\''+name+'\')"><div class="participant-avatar">'+name.charAt(0).toUpperCase()+'</div><span class="participant-name">'+name+'</span></div>';});h+='</div></div>';showModal('📤 Отправить подарок',h);});}
+function keepGift(id){closeModal();showNotification('✅ Подарок сохранён в коллекции!');loadGifts();}
+function showGiftSend(id){const g=getAllGifts().find(x=>x.id===id);if(!g)return;loadContacts(currentUser.username).then(c=>{const n=Object.keys(c);if(n.length===0){showNotification('❌ Нет контактов для отправки');return;}let h='<div style="text-align:center;padding:10px 0;"><div style="font-size:32px;">'+g.emoji+'</div><div style="font-size:16px;font-weight:600;color:#f0f0f0;margin:8px 0;">Отправить '+g.name+'</div><div style="color:#6a6a6a;font-size:13px;margin-bottom:12px;">Выбери друга:</div><div style="max-height:200px;overflow-y:auto;">';n.forEach(name=>{h+='<div class="participant-item" onclick="sendGiftTo(\''+id+'\',\''+name+'\')"><div class="participant-avatar">'+name.charAt(0).toUpperCase()+'</div><span class="participant-name">'+name+'</span></div>';});h+='</div></div>';showModal('📤 Отправить подарок',h);});}
 function sendGiftTo(id,to){closeModal();const g=getAllGifts().find(x=>x.id===id);if(!g)return;const c='private_'+[currentUser.username,to].sort().join('_');database.ref('chats/'+c).once('value',s=>{if(!s.exists()){database.ref('chats/'+c).set({participants:[currentUser.username,to],created:Date.now(),isGroup:false,isChannel:false,messages:{}}).then(()=>{const u={};u['users/'+currentUser.username+'/chats/'+c]=true;u['users/'+to+'/chats/'+c]=true;database.ref().update(u).then(()=>{sendGiftMessage(c,g,to);});});}else{sendGiftMessage(c,g,to);}});}
 function sendGiftMessage(c,g,t){const id=Date.now()+'_'+Math.random().toString(36).substr(2,6);database.ref('chats/'+c+'/messages/'+id).set({type:'gift',data:g.emoji,giftId:g.id,giftName:g.name,from:currentUser.username,to:t,time:Date.now(),read:false,readBy:{}}).then(()=>{showNotification('🎁 '+g.name+' отправлен '+t+'!');database.ref('users/'+currentUser.username+'/gifts/'+g.id).remove();loadGifts();loadChatsList();});}
-function showEditShowcase(){const a=getAllGifts(),o=Object.keys(userGifts);if(o.length===0){showNotification('❌ Нет подарков для витрины');return;}let h='<div style="color:#6a6a6a;margin-bottom:12px;">Выбери до 5 подарков для витрины<div style="font-size:12px;margin-top:4px;">✅ Выбери и нажми "Сохранить"</div></div><div class="showcase-grid" id="showcaseGrid">';o.forEach(id=>{const g=a.find(x=>x.id===id);if(!g)return;const sel=userShowcase.includes(id);h+='<div class="showcase-item '+(sel?'selected':'')+'" data-gift-id="'+id+'" onclick="toggleShowcaseItem(\''+id+'\')">'+g.emoji+(sel?'<div class="remove-btn">✕</div>':'')+'</div>';});h+='</div><div style="display:flex;gap:10px;margin-top:12px;"><button class="admin-btn primary" style="flex:1;" onclick="saveShowcase()">💾 Сохранить</button><button class="admin-btn danger" style="flex:1;" onclick="clearShowcase()">🗑️ Очистить</button></div><div style="margin-top:8px;color:#6a6a6a;font-size:11px;">📦 Выбрано: <span id="showcaseCount">'+userShowcase.length+'</span>/5</div>';showModal('📦 Витрина подарков',h);}
-function toggleShowcaseItem(id){const idx=userShowcase.indexOf(id);if(idx!==-1)userShowcase.splice(idx,1);else{if(userShowcase.length>=5){showNotification('❌ Максимум 5 подарков');return;}userShowcase.push(id);}const g=document.getElementById('showcaseGrid');if(g){const items=g.querySelectorAll('.showcase-item');items.forEach(item=>{const iid=item.dataset.giftId;if(userShowcase.includes(iid)){item.classList.add('selected');if(!item.querySelector('.remove-btn')){const b=document.createElement('div');b.className='remove-btn';b.textContent='✕';item.appendChild(b);}}else{item.classList.remove('selected');const b=item.querySelector('.remove-btn');if(b)b.remove();}});}const ce=document.getElementById('showcaseCount');if(ce)ce.textContent=userShowcase.length;}
+function showEditShowcase(){const a=getAllGifts(),o=Object.keys(userGifts);if(o.length===0){showNotification('❌ У тебя нет подарков для витрины');return;}let h='<div style="color:#6a6a6a;margin-bottom:12px;">Выбери до 5 подарков для витрины<div style="font-size:12px;margin-top:4px;">✅ Выбери подарки и нажми "Сохранить"</div></div><div class="showcase-grid" id="showcaseGrid">';o.forEach(id=>{const g=a.find(x=>x.id===id);if(!g)return;const sel=userShowcase.includes(id);h+='<div class="showcase-item '+(sel?'selected':'')+'" data-gift-id="'+id+'" onclick="toggleShowcaseItem(\''+id+'\')">'+g.emoji+(sel?'<div class="remove-btn">✕</div>':'')+'</div>';});h+='</div><div style="display:flex;gap:10px;margin-top:12px;"><button class="admin-btn primary" style="flex:1;" onclick="saveShowcase()">💾 Сохранить</button><button class="admin-btn danger" style="flex:1;" onclick="clearShowcase()">🗑️ Очистить</button></div><div style="margin-top:8px;color:#6a6a6a;font-size:11px;">📦 Выбрано: <span id="showcaseCount">'+userShowcase.length+'</span>/5</div>';showModal('📦 Витрина подарков',h);}
+function toggleShowcaseItem(id){const idx=userShowcase.indexOf(id);if(idx!==-1)userShowcase.splice(idx,1);else{if(userShowcase.length>=5){showNotification('❌ Можно выбрать максимум 5 подарков!');return;}userShowcase.push(id);}const g=document.getElementById('showcaseGrid');if(g){const items=g.querySelectorAll('.showcase-item');items.forEach(item=>{const iid=item.dataset.giftId;if(userShowcase.includes(iid)){item.classList.add('selected');if(!item.querySelector('.remove-btn')){const b=document.createElement('div');b.className='remove-btn';b.textContent='✕';item.appendChild(b);}}else{item.classList.remove('selected');const b=item.querySelector('.remove-btn');if(b)b.remove();}});}const ce=document.getElementById('showcaseCount');if(ce)ce.textContent=userShowcase.length;}
 function saveShowcase(){database.ref('users/'+currentUser.username+'/showcase').set(userShowcase).then(()=>{closeModal();showNotification('✅ Витрина сохранена!');loadGifts();});}
 function clearShowcase(){userShowcase=[];database.ref('users/'+currentUser.username+'/showcase').set([]).then(()=>{closeModal();showNotification('✅ Витрина очищена!');loadGifts();});}
 
-// ====== ЗАДАНИЯ ======
+// =============================================
+// ЗАДАНИЯ
+// =============================================
 function loadTasks(){if(!currentUser)return;database.ref('users/'+currentUser.username+'/tasks').once('value',s=>{userTasks=s.val()||{};updateTasksBadge();renderTasks();});}
 function updateTasksBadge(){if(!tasksBadge)return;const a=Object.keys(TASKS).filter(id=>{const t=userTasks[id];return!t||!t.completed;}).length;tasksBadge.textContent=a;tasksBadge.style.display=a>0?'inline':'none';}
 function renderTasks(){const c=document.getElementById('tasksList');if(!c)return;let h='<div style="color:#6a6a6a;margin-bottom:12px;font-size:13px;">📋 Задания обновляются раз в неделю</div>';TASKS.forEach(t=>{const ut=userTasks[t.id]||{progress:0,completed:false};const isC=ut.completed;const p=ut.progress||0;const per=Math.min((p/t.target)*100,100);const catNames={daily:'📅 Ежедневное',weekly:'📆 Еженедельное',monthly:'📅 Ежемесячное'};h+='<div class="task-item"><div class="task-info"><div class="task-title">'+t.title+'</div><div class="task-desc">'+t.desc+' ('+p+'/'+t.target+') <span style="color:#6a6a6a;font-size:10px;">'+catNames[t.category]+'</span></div><div style="width:100%;height:4px;background:#2a2a2a;border-radius:2px;margin-top:4px;"><div style="width:'+per+'%;height:100%;background:#2b6b9c;border-radius:2px;"></div></div><div style="font-size:11px;color:#f1c40f;margin-top:2px;">🎁 Награда: '+t.reward+' (Редкость: '+t.rarity+')</div></div><button class="task-btn '+(isC?'completed':'pending')+'" onclick="completeTask(\''+t.id+'\')" '+(isC?'disabled':'')+'>'+(isC?'✅ Выполнено':'▶️ Выполнить')+'</button></div>';});c.innerHTML=h;}
 function completeTask(id){if(!currentUser)return;const t=TASKS.find(x=>x.id===id);if(!t)return;const ut=userTasks[id]||{progress:0,completed:false};if(ut.completed)return;let can=false;switch(t.type){case'messages':can=ut.progress>=t.target;break;case'voice':can=ut.progress>=t.target;break;case'call':can=ut.progress>=t.target;break;case'photo':can=ut.progress>=t.target;break;case'sticker':can=ut.progress>=t.target;break;case'login':can=ut.progress>=t.target;break;case'forward':can=ut.progress>=t.target;break;case'create_group':can=ut.progress>=t.target;break;case'premium':can=ut.progress>=t.target;break;case'raffle_win':can=ut.progress>=t.target;break;case'collect_gifts':can=ut.progress>=t.target;break;default:can=true;}if(!can){showNotification('❌ Выполните задание до конца!');return;}ut.completed=true;ut.completedAt=Date.now();database.ref('users/'+currentUser.username+'/tasks/'+id).set(ut);if(t.gift){database.ref('users/'+currentUser.username+'/gifts/'+t.gift).set({count:1,receivedAt:Date.now()});showNotification('🎉 Задание выполнено! Получен '+t.reward+'!');}if(t.premiumReward){const expires=Date.now()+t.premiumReward*86400000;database.ref('users/'+currentUser.username+'/premium').set({active:true,expires:expires,givenBy:'task',givenAt:Date.now()});showNotification('💎 Premium на '+t.premiumReward+' дней получен!');}loadTasks();loadGifts();updatePremiumDisplay();}
 function trackTaskProgress(type,count=1){if(!currentUser)return;const t=TASKS.find(x=>x.type===type);if(!t)return;const ut=userTasks[t.id]||{progress:0,completed:false};if(ut.completed)return;ut.progress=(ut.progress||0)+count;database.ref('users/'+currentUser.username+'/tasks/'+t.id).set(ut);loadTasks();}
 
-// ====== РОЗЫГРЫШИ ======
+// =============================================
+// РОЗЫГРЫШИ
+// =============================================
 function loadRaffles(){const c=document.getElementById('rafflesList');if(!c)return;database.ref('raffles').once('value',s=>{const r=s.val()||{};let h='',cnt=0;const typeNames={daily:'📅 Ежедневный',weekly:'📆 Еженедельный',monthly:'📅 Ежемесячный',holiday:'🎉 Праздничный'};Object.keys(r).forEach(id=>{const raffle=r[id];if(raffle.ended)return;cnt++;const left=raffle.endTime-Date.now();if(left<0){if(!raffle.winner && raffle.participants && raffle.participants.length>0){const winner=raffle.participants[Math.floor(Math.random()*raffle.participants.length)];database.ref('raffles/'+id+'/winner').set(winner);database.ref('raffles/'+id+'/ended').set(true);const prizeGift=GIFTS.find(g=>raffle.prizes.some(p=>p.includes(g.name)));if(prizeGift && winner){database.ref('users/'+winner+'/gifts/'+prizeGift.id).set({count:1,receivedAt:Date.now(),fromRaffle:id});showNotification('🎉 '+winner+' выиграл '+prizeGift.emoji+' '+prizeGift.name+'!');if(winner===currentUser.username)trackTaskProgress('raffle_win');}}return;}const d=Math.floor(left/86400000),h2=Math.floor((left%86400000)/3600000),m=Math.floor((left%3600000)/60000);const timer=d>0?d+'д '+h2+'ч '+m+'м':h2+'ч '+m+'м';h+='<div class="raffle-card"><div class="raffle-title">'+raffle.emoji+' '+raffle.title+'</div><div class="raffle-type">'+typeNames[raffle.type]+'</div><div class="raffle-timer">⏰ '+timer+'</div><div class="raffle-prizes">'+(raffle.prizes||['🎁']).map(p=>'<span class="prize">'+p+'</span>').join('')+'</div><div class="raffle-info">👥 Участников: '+(raffle.participants||[]).length+'</div><button class="raffle-btn" onclick="joinRaffle(\''+id+'\')" '+(raffle.participants&&raffle.participants.includes(currentUser?.username)?'disabled':'')+'>'+(raffle.participants&&raffle.participants.includes(currentUser?.username)?'✅ Вы участвуете':'🎯 Участвовать')+'</button></div>';});if(cnt===0)h='<div style="color:#6a6a6a;text-align:center;padding:20px;">Нет активных розыгрышей</div>';if(rafflesBadge){rafflesBadge.textContent=cnt;rafflesBadge.style.display=cnt>0?'inline':'none';}c.innerHTML=h;});}
 function joinRaffle(id){if(!currentUser)return;database.ref('raffles/'+id+'/participants').once('value',s=>{const p=s.val()||[];if(p.includes(currentUser.username)){showNotification('✅ Вы уже участвуете');return;}p.push(currentUser.username);database.ref('raffles/'+id+'/participants').set(p).then(()=>{showNotification('🎯 Вы участвуете в розыгрыше!');loadRaffles();});});}
 
-// ====== UI ХЕЛПЕРЫ ======
+// =============================================
+// UI ХЕЛПЕРЫ
+// =============================================
 function toggleMenu(){if(!currentUser)return;sideMenu.classList.toggle('open');menuOverlay.classList.toggle('active');}
 function closeMenu(){sideMenu.classList.remove('open');menuOverlay.classList.remove('active');}
 burgerBtn.addEventListener('click',toggleMenu);menuOverlay.addEventListener('click',closeMenu);
@@ -785,7 +807,9 @@ function toggleTheme(){isDarkTheme=!isDarkTheme;document.body.classList.toggle('
 function toggleMode(){isLoginMode=!isLoginMode;if(isLoginMode){authBtn.textContent='Войти';authSwitchLink.textContent='Создать';document.querySelector('.subtitle').textContent='Войдите в свой аккаунт';}else{authBtn.textContent='Зарегистрироваться';authSwitchLink.textContent='Войти';document.querySelector('.subtitle').textContent='Создайте новый аккаунт';}usernameInput.value='';passwordInput.value='';authError.style.display='none';authSuccess.style.display='none';}
 authSwitchLink.addEventListener('click',toggleMode);
 
-// ====== FIREBASE ФУНКЦИИ ======
+// =============================================
+// FIREBASE ФУНКЦИИ
+// =============================================
 function checkUserExists(username){return new Promise(r=>{database.ref('users/'+username).once('value',s=>{r(s.exists());});});}
 function registerUser(username,password){return new Promise((r,rej)=>{database.ref('users/'+username).set({password:password,created:Date.now(),chats:{},online:false,lastSeen:Date.now(),privacy:{lastSeen:'everyone',status:'everyone',profilePhoto:'everyone'},username:'@'+username}).then(r).catch(rej);});}
 function checkPassword(username,password){return new Promise((r,rej)=>{database.ref('users/'+username+'/password').once('value',s=>{r(s.exists()&&s.val()===password);}).catch(rej);});}
@@ -800,9 +824,11 @@ function createGroup(creator,members,name){return new Promise((r,rej)=>{const id
 function updateOnlineStatus(username,isOnline){database.ref('users/'+username+'/online').set(isOnline);database.ref('users/'+username+'/lastSeen').set(Date.now());}
 function getUserStatus(username){return new Promise(r=>{database.ref('users/'+username).once('value',s=>{if(s.exists()){const d=s.val();r({online:d.online||false,lastSeen:d.lastSeen||0});}else{r({online:false,lastSeen:0});}});});}
 function getUserAvatar(user){return new Promise(r=>{database.ref('users/'+user+'/avatar').once('value',s=>{r(s.exists()?s.val():null);});});}
-function deleteChat(chatId,username){return new Promise((r,rej)=>{database.ref('chats/'+chatId).once('value',s=>{if(!s.exists()){rej('Чат не найден');return;}const chat=s.val();if(!chat.participants.includes(username)){rej('Вы не участник');return;}const u={};chat.participants.forEach(user=>{u['users/'+user+'/chats/'+chatId]=null;});u['chats/'+chatId]=null;database.ref().update(u).then(r).catch(rej);});});}
+function deleteChat(chatId,username){return new Promise((r,rej)=>{database.ref('chats/'+chatId).once('value',s=>{if(!s.exists()){rej('Чат не найден');return;}const chat=s.val();if(!chat.participants.includes(username)){rej('Вы не участник этого чата');return;}const u={};chat.participants.forEach(user=>{u['users/'+user+'/chats/'+chatId]=null;});u['chats/'+chatId]=null;database.ref().update(u).then(r).catch(rej);});});}
 
-// ====== ЗАГЛУШКИ ======
+// =============================================
+// ЗАГЛУШКИ
+// =============================================
 function loadSupport(){}
 function loadPrivacySettings(){}
 function loadCallsHistory(){}
@@ -812,11 +838,15 @@ function formatMessageText(t){return t;}
 function initStickers(){stickerPicker.innerHTML='';STICKERS.forEach(e=>{const b=document.createElement('button');b.className='sticker';b.textContent=e;b.onclick=()=>{if(currentChatId&&currentUser){const id=Date.now()+'_'+Math.random().toString(36).substr(2,4);database.ref('chats/'+currentChatId+'/messages/'+id).set({type:'sticker',data:e,from:currentUser.username,time:Date.now(),read:false,readBy:{}}).then(()=>{loadChatsList();trackTaskProgress('sticker');});stickerPicker.classList.remove('active');}};stickerPicker.appendChild(b);});}
 stickerBtn.addEventListener('click',()=>{stickerPicker.classList.toggle('active');});
 
-// ====== СТРАНИЦЫ ======
+// =============================================
+// СТРАНИЦЫ
+// =============================================
 function showPage(page){if(!currentUser)return;chatList.style.display='none';bottomNav.style.display='none';searchArea.style.display='none';chatWindow.classList.remove('active');searchChat.classList.remove('active');pageContainer.classList.add('active');closeMenu();const pages={profile:{title:'Мой профиль',content:'<div id="avatarPreview" class="avatar-preview">'+currentUser.username.charAt(0).toUpperCase()+'</div><div style="text-align:center;margin-bottom:16px;"><button class="avatar-upload-btn" id="uploadAvatarBtn"><i class="fas fa-camera"></i> Сменить аватар</button><input type="file" id="avatarInput" accept="image/*" style="display:none;"><div id="avatarStatus" class="avatar-status"></div></div><div class="page-item"><i class="fas fa-user-circle"></i> '+currentUser.username+'</div><div class="page-item"><i class="fas fa-at"></i> @'+currentUser.username+'</div><div class="page-item"><i class="fas fa-calendar"></i> Аккаунт создан</div><div class="page-item" style="color:#f1c40f;"><i class="fas fa-crown"></i> '+getPremiumStatus(currentUser)+'</div><div class="page-item" style="color:#ff6b6b;cursor:pointer;" id="logoutPageBtn"><i class="fas fa-sign-out-alt"></i> Выйти</div>'},contacts:{title:'Контакты',content:'<div class="page-item" style="cursor:pointer;" id="addContactBtn"><i class="fas fa-user-plus"></i> Добавить контакт</div><div id="contactsList"></div>'},calls:{title:'Звонки',content:'<div id="callsHistoryList"></div>'},channels:{title:'Каналы',content:'<div id="channelsList"></div>'},gifts:{title:'🎁 Подарки',content:'<div style="color:#6a6a6a;margin-bottom:12px;font-size:13px;">Собирай подарки за выполнение заданий!<div style="font-size:11px;color:#4a4a4a;margin-top:2px;">💎 Подарки можно дарить друзьям</div></div><div id="giftsList"></div>'},raffles:{title:'🎰 Розыгрыши',content:'<div id="rafflesList"></div>'},tasks:{title:'📋 Задания',content:'<div id="tasksList"></div>'},support:{title:'💬 Поддержка',content:'<div style="color:#6a6a6a;margin-bottom:12px;font-size:13px;">Напиши в поддержку</div><div id="supportMessages"></div><div style="display:flex;gap:8px;margin-top:12px;"><input type="text" id="supportInput" placeholder="Напиши сообщение..." style="flex:1;padding:10px;border-radius:12px;border:1px solid #2a2a2a;background:#1a1a1a;color:#eaeaea;font-size:14px;"><button class="admin-btn primary" onclick="sendSupportMessage()">📤</button></div>'},saved:{title:'Сохранённое',content:'<div class="page-item"><i class="fas fa-bookmark"></i> Сохранённые сообщения</div>'},settings:{title:'Настройки',content:'<div class="page-item" id="themeToggle"><i class="fas fa-moon"></i> Тёмная тема<div class="toggle-switch '+(isDarkTheme?'active':'')+'" id="themeSwitch"><div class="toggle-knob"></div></div></div><div class="page-item" id="privacyItem"><i class="fas fa-lock"></i> Конфиденциальность</div><div class="page-item" id="blockedItem"><i class="fas fa-ban"></i> Заблокированные</div><div class="page-item" id="encryptionItem"><i class="fas fa-shield-alt"></i> Все сообщения шифруются 🔒</div><div style="margin-top:20px;padding-top:12px;border-top:1px solid #2a2a2a;text-align:center;color:#6a6a6a;font-size:12px;">GURU v5.0</div>'},faq:{title:'Вопросы',content:'<div class="page-item"><i class="fas fa-question-circle"></i> Как создать аккаунт?</div><div class="page-item"><i class="fas fa-question-circle"></i> Как добавить контакт?</div><div class="page-item"><i class="fas fa-headset"></i> Поддержка</div>'}};if(pages[page]){pageTitle.textContent=pages[page].title;pageContent.innerHTML=pages[page].content;if(page==='profile'){getUserAvatar(currentUser.username).then(url=>{const p=document.getElementById('avatarPreview');if(url)p.innerHTML='<img src="'+url+'" alt="avatar">';});document.getElementById('logoutPageBtn')?.addEventListener('click',logout);}if(page==='contacts'){loadContactsList();document.getElementById('addContactBtn')?.addEventListener('click',function(){const name=prompt('Введите ник контакта:');if(name?.trim()){checkUserExists(name).then(exists=>{if(!exists){showError('❌ Пользователь не найден');return;}addContact(currentUser.username,name.trim()).then(()=>{showSuccess('Контакт добавлен!');loadContactsList();}).catch(()=>showError('Ошибка'));});}});}if(page==='calls')loadCallsHistory();if(page==='channels')loadChannels();if(page==='gifts')loadGifts();if(page==='tasks')loadTasks();if(page==='raffles')loadRaffles();if(page==='support')loadSupport();if(page==='settings'){document.getElementById('themeSwitch')?.addEventListener('click',function(e){e.stopPropagation();toggleTheme();this.classList.toggle('active');});document.getElementById('privacyItem')?.addEventListener('click',()=>showPrivacySettings());document.getElementById('blockedItem')?.addEventListener('click',()=>showBlockedUsers());document.getElementById('encryptionItem')?.addEventListener('click',()=>{showModal('🔒 Шифрование','Все сообщения в GURU шифруются с помощью XOR шифрования.');});}}}
 function loadContactsList(){if(!currentUser)return;loadContacts(currentUser.username).then(contacts=>{const list=document.getElementById('contactsList');if(!list)return;const cnt=Object.keys(contacts).length;if(contactsBadge)contactsBadge.textContent=cnt;if(cnt===0){list.innerHTML='<div class="page-item" style="color:#6a6a6a;">Нет контактов</div>';}else{list.innerHTML='';for(const[contact,data]of Object.entries(contacts)){const div=document.createElement('div');div.className='page-item';div.innerHTML='<i class="fas fa-user"></i> '+contact+' <span style="margin-left:auto;color:#4a4a4a;font-size:12px;">'+new Date(data.added).toLocaleDateString()+'</span>';div.style.cursor='pointer';div.addEventListener('click',function(){createPrivateChat(currentUser.username,contact).then(id=>{showNotification('Чат с '+contact+' создан!');loadChatsList();openChat(id);});});list.appendChild(div);}}});}
 
-// ====== ЧАТЫ ======
+// =============================================
+// ЧАТЫ
+// =============================================
 function loadChatsList(){if(!currentUser)return;loadUserChats(currentUser.username).then(chats=>{chatItems.innerHTML='';if(Object.keys(chats).length===0){emptyChats.style.display='flex';return;}emptyChats.style.display='none';let hasToday=false,hasYesterday=false,hasEarlier=false;const today=new Date(),yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);for(const[chatId,chat]of Object.entries(chats)){if(chat.isChannel)continue;const isGroup=chat.isGroup||false,participants=chat.participants||[],other=participants.find(p=>p!==currentUser.username),chatDate=new Date(chat.created);let divr='';if(chatDate.toDateString()===today.toDateString()){if(!hasToday){divr='<div class="chat-divider">СЕГОДНЯ</div>';hasToday=true;}}else if(chatDate.toDateString()===yesterday.toDateString()){if(!hasYesterday){divr='<div class="chat-divider">ВЧЕРА</div>';hasYesterday=true;}}else{if(!hasEarlier){divr='<div class="chat-divider">РАНЕЕ</div>';hasEarlier=true;}}let dname,icon='';if(isGroup){icon='👥 ';dname=icon+(chat.groupName||participants.join(', '));}else{dname=other||'Чат';}const firstLetter=isGroup?'👥':(other?other.charAt(0).toUpperCase():'?'),messages=chat.messages||{},msgKeys=Object.keys(messages);let lastMsg={text:'Нет сообщений',from:other},unread=0;if(msgKeys.length>0){const sorted=msgKeys.sort((a,b)=>(messages[a].time||0)-(messages[b].time||0)),lastKey=sorted[sorted.length-1];lastMsg=messages[lastKey]||{text:'Нет сообщений',from:other};msgKeys.forEach(key=>{const m=messages[key];if(m.from!==currentUser.username&&!m.read&&!m.deleted)unread++;});}let preview=lastMsg.text;if(lastMsg.deleted)preview='🗑️ Сообщение удалено';else if(lastMsg.type==='voice'){const m=Math.floor(lastMsg.duration/60),s=Math.floor(lastMsg.duration%60);preview='🎤 Голосовое ('+m+':'+String(s).padStart(2,'0')+')';}else if(lastMsg.type==='image')preview='📷 Фото';else if(lastMsg.type==='video')preview='🎬 Видео';else if(lastMsg.type==='video_round')preview='🎬 Видеосообщение';else if(lastMsg.type==='sticker')preview='😊 Стикер';else if(lastMsg.forwarded)preview='↪ Пересланное: '+preview;if(lastMsg.from==='system')preview='📢 '+preview;if(lastMsg.from===currentUser.username)preview='Вы: '+preview;const div=document.createElement('div');div.innerHTML=divr+'<div class="chat-item" data-chat="'+chatId+'"><div class="chat-avatar" id="avatar_'+chatId+'">'+firstLetter+'</div><div class="chat-info"><div class="chat-name"><span class="name">'+dname+'</span><span class="time">'+new Date(chat.created).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'</span></div><div class="chat-preview"><span class="message">'+preview+'</span>'+(isGroup?'':other?'<div class="chat-status" id="status_'+chatId+'">⏳</div>':'')+(unread>0?'<span class="badge-unread">'+unread+'</span>':'')+'</div></div></div>';chatItems.appendChild(div);if(!isGroup&&other){getUserAvatar(other).then(url=>{const el=document.getElementById('avatar_'+chatId);if(el&&url){el.innerHTML='<img src="'+url+'" alt="avatar">';el.style.background='none';}});getUserStatus(other).then(st=>{const el=document.getElementById('status_'+chatId);if(el){if(st.online){el.textContent='🟢 Онлайн';el.className='chat-status online';}else if(st.lastSeen){el.textContent='🕒 '+formatLastSeen(st.lastSeen);el.className='chat-status';}else{el.textContent='🕒 недавно';el.className='chat-status';}}});}}document.querySelectorAll('.chat-item').forEach(item=>{item.addEventListener('click',function(){const id=this.dataset.chat;if(id)openChat(id);});});});}
 
 function openChat(chatId){if(messageListener){database.ref('chats/'+currentChatId+'/messages').off();messageListener=null;}currentChatId=chatId;chatWindow.classList.add('active');chatList.style.display='none';bottomNav.style.display='none';searchArea.style.display='none';pageContainer.classList.remove('active');stickerPicker.classList.remove('active');searchChat.classList.remove('active');searchChatInput.value='';clearReply();loadWallpaper(chatId);database.ref('chats/'+chatId).once('value',s=>{if(s.exists()){currentChatData=s.val();const isGroup=currentChatData.isGroup||false,participants=currentChatData.participants||[];if(isGroup){chatWindowTitle.textContent='👥 '+(currentChatData.groupName||participants.join(', '));chatWindowSubtitle.textContent=participants.length+' участников';chatWindowSubtitle.className='chat-window-subtitle';currentOtherUser=null;}else{const other=participants.find(p=>p!==currentUser.username);chatWindowTitle.textContent=other||'Чат';currentOtherUser=other;if(other){onlineListener=database.ref('users/'+other);onlineListener.on('value',sn=>{if(sn.exists()){const d=sn.val();if(d.online){chatWindowSubtitle.textContent='🟢 Онлайн';chatWindowSubtitle.className='chat-window-subtitle online';}else if(d.lastSeen){chatWindowSubtitle.textContent='🕒 Был(а) '+formatLastSeen(d.lastSeen);chatWindowSubtitle.className='chat-window-subtitle';}else{chatWindowSubtitle.textContent='🕒 Недавно';chatWindowSubtitle.className='chat-window-subtitle';}}});typingListener=database.ref('users/'+other+'/typing');typingListener.on('value',sn=>{if(sn.val()){chatWindowSubtitle.textContent='✏️ печатает...';chatWindowSubtitle.className='chat-window-subtitle typing';}else{if(onlineListener){onlineListener.once('value',s2=>{if(s2.exists()){const d=s2.val();if(d.online){chatWindowSubtitle.textContent='🟢 Онлайн';chatWindowSubtitle.className='chat-window-subtitle online';}else if(d.lastSeen){chatWindowSubtitle.textContent='🕒 Был(а) '+formatLastSeen(d.lastSeen);chatWindowSubtitle.className='chat-window-subtitle';}else{chatWindowSubtitle.textContent='🕒 Недавно';chatWindowSubtitle.className='chat-window-subtitle';}}});}}});}}}});chatMessages.innerHTML='';loadMessages(chatId,(msgs)=>{renderMessages(msgs);});}
@@ -841,17 +871,20 @@ searchIcon.addEventListener('click',function(){searchChat.classList.toggle('acti
 function logout(){if(currentUser){updateOnlineStatus(currentUser.username,false);clearSession(currentUser.username);}currentUser=null;showApp(false);usernameInput.value='';passwordInput.value='';authError.style.display='none';authSuccess.style.display='none';if(!isLoginMode)toggleMode();closeMenu();pageContainer.classList.remove('active');chatWindow.classList.remove('active');searchChat.classList.remove('active');if(messageListener){database.ref('chats/'+currentChatId+'/messages').off();messageListener=null;}currentChatId=null;currentOtherUser=null;chatList.style.display='block';bottomNav.style.display='flex';searchArea.style.display='block';document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));document.querySelector('[data-tab="chats"]').classList.add('active');chatItems.innerHTML='';emptyChats.style.display='flex';burgerBtn.classList.add('disabled');}
 function showApp(auth){if(auth){authContainer.style.display='none';chatList.style.display='block';bottomNav.style.display='flex';searchArea.style.display='block';menuUsername.textContent=currentUser.username;menuUsernameDisplay.textContent='@'+currentUser.username;menuStatus.textContent='🟢 Онлайн';menuAvatar.textContent=currentUser.username.charAt(0).toUpperCase();getUserAvatar(currentUser.username).then(url=>{if(url)menuAvatar.innerHTML='<img src="'+url+'" alt="avatar">';});updatePremiumDisplay();}else{authContainer.style.display='flex';chatList.style.display='none';bottomNav.style.display='none';searchArea.style.display='none';menuUsername.textContent='Гость';menuUsernameDisplay.textContent='';menuStatus.textContent='Не авторизован';menuAvatar.textContent='G';if(menuPremiumBadge)menuPremiumBadge.textContent='';}}
 function loginUser(un){currentUser={username:un};saveSession(un);localStorage.setItem('guru_session',un);updateOnlineStatus(un,true);showApp(true);loadChatsList();loadGifts();loadTasks();loadSupport();loadPrivacySettings();updatePremiumDisplay();burgerBtn.classList.remove('disabled');loadRaffles();authBtn.disabled=false;showSuccess('Добро пожаловать, '+un+'!');checkTasksUpdate();checkRafflesUpdate();
-// Стартовые подарки
 database.ref('users/'+un+'/gifts').once('value', s => {
 if(!s.exists()){
 const startGifts={balloon:{count:1,receivedAt:Date.now()},cake:{count:1,receivedAt:Date.now()},gift_box:{count:1,receivedAt:Date.now()}};
 database.ref('users/'+un+'/gifts').set(startGifts).then(()=>{loadGifts();});
 }});}
 
-// ====== АВТОРИЗАЦИЯ ======
+// =============================================
+// АВТОРИЗАЦИЯ
+// =============================================
 authBtn.addEventListener('click',function(){const un=usernameInput.value.trim(),pw=passwordInput.value.trim();if(!un||!pw){showError('Заполните все поля');return;}if(un.length<3||un.length>20){showError('Ник от 3 до 20 символов');return;}if(!/^[a-zA-Z0-9_]+$/.test(un)){showError('Ник только буквы, цифры и _');return;}authBtn.disabled=true;if(isLoginMode){checkUserExists(un).then(exists=>{if(!exists){showError('Пользователь не найден');authBtn.disabled=false;return;}checkPassword(un,pw).then(correct=>{if(!correct){showError('Неверный пароль');authBtn.disabled=false;return;}loginUser(un);}).catch(()=>{showError('Ошибка');authBtn.disabled=false;});}).catch(()=>{showError('Ошибка');authBtn.disabled=false;});}else{checkUserExists(un).then(exists=>{if(exists){showError('Пользователь уже существует');authBtn.disabled=false;return;}registerUser(un,pw).then(()=>{showSuccess('Аккаунт создан!');setTimeout(()=>{loginUser(un);},1000);}).catch(err=>{showError('Ошибка: '+err.message);authBtn.disabled=false;});});}});
 
-// ====== АДМИНКА ======
+// =============================================
+// АДМИНКА
+// =============================================
 guruBrand.addEventListener('click', function(e) {
     if (!currentUser || !ADMINS.includes(currentUser.username)) return;
     adminClicks++;
@@ -889,15 +922,9 @@ function banUser(username,reason='Нарушение правил'){if(!ADMINS.i
 function unbanUser(username){if(!ADMINS.includes(currentUser.username)){showNotification('🚫 Только админы');return;}database.ref('users/'+username+'/banned').remove().then(()=>{showNotification('✅ '+username+' разбанен!');loadBannedUsers();});}
 function loadBannedUsers(){const c=document.getElementById('bannedUsersList');if(!c)return;database.ref('users').once('value',s=>{const u=s.val()||{};let h='',cnt=0;Object.keys(u).forEach(un=>{const user=u[un];if(user.banned&&user.banned.banned===true){cnt++;h+='<div class="banned-user-item"><div><span class="name">🚫 '+un+'</span><div class="reason">Причина: '+(user.banned.reason||'Нарушение правил')+'</div><div style="font-size:10px;color:#6a6a6a;">Забанил: '+(user.banned.bannedBy||'Админ')+'</div></div><button class="unban-btn" onclick="unbanUser(\''+un+'\')">✅ Разбанить</button></div>';}});if(cnt===0)h='<div style="color:#6a6a6a;padding:12px;">Нет забаненных</div>';c.innerHTML=h;});}
 
-// ====== ГОЛОСОВЫЕ И ВИДЕОСООБЩЕНИЯ ======
-// === ГОЛОСОВОЕ (зажми и говори) ===
-let isRecordingVoice = false;
-let voiceRecorder = null;
-let voiceChunks = [];
-let voiceStream = null;
-let voiceRecordInterval = null;
-let voiceSeconds = 0;
-
+// =============================================
+// ГОЛОСОВЫЕ И ВИДЕОСООБЩЕНИЯ
+// =============================================
 voiceBtn.addEventListener('mousedown', function(e) {
     e.preventDefault();
     if (!currentUser || !currentChatId) { showNotification('❌ Войдите и выберите чат'); return; }
@@ -941,74 +968,11 @@ voiceBtn.addEventListener('mousedown', function(e) {
         }, 1000);
     }).catch(() => { showNotification('❌ Нет доступа к микрофону'); isRecordingVoice = false; voiceBtn.classList.remove('recording'); });
 });
-
-voiceBtn.addEventListener('mouseup', function(e) {
-    e.preventDefault();
-    if(!isRecordingVoice) return;
-    isRecordingVoice = false;
-    if(voiceRecorder && voiceRecorder.state === 'recording') {
-        voiceRecorder.stop();
-    }
-    if(voiceRecordInterval) clearInterval(voiceRecordInterval);
-});
-
-voiceBtn.addEventListener('mouseleave', function(e) {
-    if(isRecordingVoice) {
-        isRecordingVoice = false;
-        if(voiceRecorder && voiceRecorder.state === 'recording') {
-            voiceRecorder.stop();
-        }
-        if(voiceRecordInterval) clearInterval(voiceRecordInterval);
-        voiceControls.classList.remove('active');
-        voiceBtn.style.display = 'flex';
-        voiceBtn.classList.remove('recording');
-        voiceTimer.textContent = '00:00';
-        voiceSeconds = 0;
-    }
-});
-
-voiceCancelBtn.addEventListener('click', function() {
-    isRecordingVoice = false;
-    if(voiceRecorder && voiceRecorder.state === 'recording') voiceRecorder.stop();
-    if(voiceRecordInterval) clearInterval(voiceRecordInterval);
-    voiceControls.classList.remove('active');
-    voiceBtn.style.display = 'flex';
-    voiceBtn.classList.remove('recording');
-    voiceTimer.textContent = '00:00';
-    voiceSeconds = 0;
-});
-
-voiceSendBtn.addEventListener('click', function() {
-    if(voiceRecorder && voiceRecorder.state === 'recording') {
-        voiceRecorder.stop();
-    }
-});
-
-function sendVoiceMessageFinal(blob) {
-    if(!currentChatId || !currentUser) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const id = Date.now()+'_'+Math.random().toString(36).substr(2,4);
-        const duration = voiceSeconds || 1;
-        database.ref('chats/'+currentChatId+'/messages/'+id).set({
-            type:'voice', data:e.target.result, duration:duration,
-            from:currentUser.username, time:Date.now(), read:false, readBy:{}
-        }).then(() => {
-            showNotification('🎤 Голосовое отправлено!');
-            loadChatsList();
-            trackTaskProgress('voice');
-        });
-    };
-    reader.readAsDataURL(blob);
-}
-
-// === ВИДЕОСООБЩЕНИЕ (кружок) ===
-let isRecordingVideoMsg = false;
-let videoRecorderMsg = null;
-let videoChunksMsg = [];
-let videoStreamMsg = null;
-let videoRecordIntervalMsg = null;
-let videoSecondsMsg = 0;
+voiceBtn.addEventListener('mouseup', function(e) { e.preventDefault(); if(!isRecordingVoice) return; isRecordingVoice = false; if(voiceRecorder && voiceRecorder.state === 'recording') voiceRecorder.stop(); if(voiceRecordInterval) clearInterval(voiceRecordInterval); });
+voiceBtn.addEventListener('mouseleave', function(e) { if(isRecordingVoice) { isRecordingVoice = false; if(voiceRecorder && voiceRecorder.state === 'recording') voiceRecorder.stop(); if(voiceRecordInterval) clearInterval(voiceRecordInterval); voiceControls.classList.remove('active'); voiceBtn.style.display = 'flex'; voiceBtn.classList.remove('recording'); voiceTimer.textContent = '00:00'; voiceSeconds = 0; } });
+voiceCancelBtn.addEventListener('click', function() { isRecordingVoice = false; if(voiceRecorder && voiceRecorder.state === 'recording') voiceRecorder.stop(); if(voiceRecordInterval) clearInterval(voiceRecordInterval); voiceControls.classList.remove('active'); voiceBtn.style.display = 'flex'; voiceBtn.classList.remove('recording'); voiceTimer.textContent = '00:00'; voiceSeconds = 0; });
+voiceSendBtn.addEventListener('click', function() { if(voiceRecorder && voiceRecorder.state === 'recording') voiceRecorder.stop(); });
+function sendVoiceMessageFinal(blob) { if(!currentChatId || !currentUser) return; const reader = new FileReader(); reader.onload = function(e) { const id = Date.now()+'_'+Math.random().toString(36).substr(2,4); const duration = voiceSeconds || 1; database.ref('chats/'+currentChatId+'/messages/'+id).set({ type:'voice', data:e.target.result, duration:duration, from:currentUser.username, time:Date.now(), read:false, readBy:{} }).then(() => { showNotification('🎤 Голосовое отправлено!'); loadChatsList(); trackTaskProgress('voice'); }); }; reader.readAsDataURL(blob); }
 
 videoMsgBtn.addEventListener('click', function() {
     if (!currentUser || !currentChatId) { showNotification('❌ Войдите и выберите чат'); return; }
@@ -1057,206 +1021,34 @@ videoMsgBtn.addEventListener('click', function() {
         }, 1000);
     }).catch(() => { showNotification('❌ Нет доступа к камере'); isRecordingVideoMsg = false; videoMsgBtn.classList.remove('recording'); recordingOverlay.classList.remove('active'); });
 });
+recordingStopBtn.addEventListener('click', function() { if(videoRecorderMsg && videoRecorderMsg.state === 'recording') { videoRecorderMsg.stop(); isRecordingVideoMsg = false; if(videoRecordIntervalMsg) clearInterval(videoRecordIntervalMsg); } });
+recordingCancelBtn.addEventListener('click', function() { if(videoRecorderMsg && videoRecorderMsg.state === 'recording') { videoRecorderMsg.stop(); isRecordingVideoMsg = false; if(videoRecordIntervalMsg) clearInterval(videoRecordIntervalMsg); } else { if(videoStreamMsg) { videoStreamMsg.getTracks().forEach(t => t.stop()); videoStreamMsg = null; } recordingOverlay.classList.remove('active'); recordingPreview.srcObject = null; videoMsgBtn.classList.remove('recording'); recordingTimer.textContent = '0:00'; videoSecondsMsg = 0; } });
+function sendVideoMsgFinal(blob) { if(!currentChatId || !currentUser) return; const reader = new FileReader(); reader.onload = function(e) { const id = Date.now()+'_'+Math.random().toString(36).substr(2,4); const duration = videoSecondsMsg || 60; database.ref('chats/'+currentChatId+'/messages/'+id).set({ type:'video_round', data:e.target.result, duration:duration, from:currentUser.username, time:Date.now(), read:false, readBy:{} }).then(() => { showNotification('📹 Видеосообщение отправлено!'); loadChatsList(); trackTaskProgress('photo'); }); }; reader.readAsDataURL(blob); }
+videoMsgInput.addEventListener('change', function(e) { const file = e.target.files[0]; if(file && currentChatId && currentUser) { const reader = new FileReader(); reader.onload = function(ev) { const id = Date.now()+'_'+Math.random().toString(36).substr(2,4); const isV = file.type.startsWith('video/'); const type = isV ? 'video' : 'video_round'; database.ref('chats/'+currentChatId+'/messages/'+id).set({ type:type, data:ev.target.result, fileName:file.name, from:currentUser.username, time:Date.now(), read:false, readBy:{} }).then(() => { showNotification('📹 Видео отправлено!'); loadChatsList(); trackTaskProgress('photo'); }); }; reader.readAsDataURL(file); } this.value = ''; });
 
-recordingStopBtn.addEventListener('click', function() {
-    if(videoRecorderMsg && videoRecorderMsg.state === 'recording') {
-        videoRecorderMsg.stop();
-        isRecordingVideoMsg = false;
-        if(videoRecordIntervalMsg) clearInterval(videoRecordIntervalMsg);
-    }
-});
-
-recordingCancelBtn.addEventListener('click', function() {
-    if(videoRecorderMsg && videoRecorderMsg.state === 'recording') {
-        videoRecorderMsg.stop();
-        isRecordingVideoMsg = false;
-        if(videoRecordIntervalMsg) clearInterval(videoRecordIntervalMsg);
-    } else {
-        if(videoStreamMsg) { videoStreamMsg.getTracks().forEach(t => t.stop()); videoStreamMsg = null; }
-        recordingOverlay.classList.remove('active');
-        recordingPreview.srcObject = null;
-        videoMsgBtn.classList.remove('recording');
-        recordingTimer.textContent = '0:00';
-        videoSecondsMsg = 0;
-    }
-});
-
-function sendVideoMsgFinal(blob) {
-    if(!currentChatId || !currentUser) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const id = Date.now()+'_'+Math.random().toString(36).substr(2,4);
-        const duration = videoSecondsMsg || 60;
-        database.ref('chats/'+currentChatId+'/messages/'+id).set({
-            type:'video_round', data:e.target.result, duration:duration,
-            from:currentUser.username, time:Date.now(), read:false, readBy:{}
-        }).then(() => {
-            showNotification('📹 Видеосообщение отправлено!');
-            loadChatsList();
-            trackTaskProgress('photo');
-        });
-    };
-    reader.readAsDataURL(blob);
-}
-
-videoMsgInput.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if(file && currentChatId && currentUser) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            const id = Date.now()+'_'+Math.random().toString(36).substr(2,4);
-            const isV = file.type.startsWith('video/');
-            const type = isV ? 'video' : 'video_round';
-            database.ref('chats/'+currentChatId+'/messages/'+id).set({
-                type:type, data:ev.target.result, fileName:file.name,
-                from:currentUser.username, time:Date.now(), read:false, readBy:{}
-            }).then(() => {
-                showNotification('📹 Видео отправлено!');
-                loadChatsList();
-                trackTaskProgress('photo');
-            });
-        };
-        reader.readAsDataURL(file);
-    }
-    this.value = '';
-});
-
-// ====== ЗВОНКИ ======
-let currentCallId = null;
-let localStreamCall = null;
-let remoteStreamCall = null;
-let peerConnectionCall = null;
-let callTimerInterval = null;
-let callSeconds = 0;
-
-callBtn.addEventListener('click', function() {
-    if(!currentChatId || !currentUser) { showNotification('❌ Выберите чат'); return; }
-    if(currentChatData && currentChatData.isGroup) { showNotification('❌ Групповые звонки пока не поддерживаются'); return; }
-    if(!currentOtherUser) { showNotification('❌ Собеседник не найден'); return; }
-    startCall(currentOtherUser, false);
-});
-
-videoCallBtn.addEventListener('click', function() {
-    if(!currentChatId || !currentUser) { showNotification('❌ Выберите чат'); return; }
-    if(currentChatData && currentChatData.isGroup) { showNotification('❌ Групповые звонки пока не поддерживаются'); return; }
-    if(!currentOtherUser) { showNotification('❌ Собеседник не найден'); return; }
-    startCall(currentOtherUser, true);
-});
-
-async function startCall(toUser, video) {
-    try {
-        isVideoCall = video;
-        currentCallId = 'call_'+Date.now()+'_'+Math.random().toString(36).substr(2,4);
-        const constraints = { audio: true };
-        if(video) constraints.video = true;
-        localStreamCall = await navigator.mediaDevices.getUserMedia(constraints);
-        if(video) {
-            localVideoCall.srcObject = localStreamCall;
-            callVideoContainer.classList.add('active');
-            document.querySelector('.call-sub').textContent = '📹 Видеозвонок';
-        }
-        peerConnectionCall = new RTCPeerConnection(rtcConfig);
-        localStreamCall.getTracks().forEach(t => { peerConnectionCall.addTrack(t, localStreamCall); });
-        peerConnectionCall.ontrack = event => {
-            remoteStreamCall = event.streams[0];
-            remoteVideoCall.srcObject = remoteStreamCall;
-            if(video) callVideoContainer.classList.add('active');
-            callStatus.textContent = '📞 Соединено';
-            callStartTime = Date.now();
-            startCallTimer();
-        };
-        const offer = await peerConnectionCall.createOffer();
-        await peerConnectionCall.setLocalDescription(offer);
-        const callData = { from: currentUser.username, to: toUser, type: video ? 'video' : 'audio', offer: offer, time: Date.now(), status: 'calling' };
-        await database.ref('calls/'+currentCallId).set(callData);
-        database.ref('calls/'+currentCallId+'/answer').on('value', async snap => {
-            if(snap.exists()) {
-                const ans = snap.val();
-                await peerConnectionCall.setRemoteDescription(new RTCSessionDescription(ans));
-                callStatus.textContent = '📞 Соединено';
-                callStartTime = Date.now();
-                startCallTimer();
-            }
-        });
-        database.ref('calls/'+currentCallId+'/candidates').on('child_added', snap => {
-            const cand = snap.val();
-            if(peerConnectionCall && cand) peerConnectionCall.addIceCandidate(new RTCIceCandidate(cand));
-        });
-        peerConnectionCall.onicecandidate = event => {
-            if(event.candidate) database.ref('calls/'+currentCallId+'/candidates').push(event.candidate.toJSON());
-        };
-        callName.textContent = toUser;
-        callAvatar.textContent = toUser.charAt(0).toUpperCase();
-        getUserAvatar(toUser).then(url => { if(url) callAvatar.innerHTML = '<img src="'+url+'" alt="avatar">'; });
-        callStatus.textContent = '📞 Вызов...';
-        callModal.classList.add('active');
-        showNotification('📞 Звонок '+toUser+'...');
-        setTimeout(() => { if(callStatus.textContent === '📞 Вызов...') endCall('⏰ Звонок не отвечен'); }, 30000);
-    } catch(err) { showNotification('❌ Ошибка звонка: '+err.message); endCall('Ошибка'); }
-}
-
-database.ref('calls').on('child_added', snap => {
-    const call = snap.val();
-    if(call.to === currentUser?.username && call.status === 'calling') {
-        incomingCallData = { id: snap.key, ...call };
-        showIncomingCall(call.from, call.type === 'video');
-    }
-});
-
-database.ref('calls').on('child_changed', snap => {
-    const call = snap.val();
-    if(call.status === 'ended' && (call.from === currentUser?.username || call.to === currentUser?.username)) endCall('Звонок завершён');
-});
-
-function showIncomingCall(fromUser, video) {
-    incomingName.textContent = fromUser;
-    incomingAvatar.textContent = fromUser.charAt(0).toUpperCase();
-    getUserAvatar(fromUser).then(url => { if(url) incomingAvatar.innerHTML = '<img src="'+url+'" alt="avatar">'; });
-    incomingStatus.textContent = video ? '📹 Входящий видеозвонок...' : '📞 Входящий вызов...';
-    callIncoming.classList.add('active');
-    try { const a = new Audio('data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAABVd3d3dycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJw=='); a.loop = true; a.play(); audioElement = a; } catch(e) {}
-}
-
-incomingAnswerBtn.addEventListener('click', function() {
-    if(incomingCallData) { answerCall(incomingCallData.id); callIncoming.classList.remove('active'); if(audioElement){ audioElement.pause(); audioElement=null; } }
-});
-incomingDeclineBtn.addEventListener('click', function() {
-    if(incomingCallData) { database.ref('calls/'+incomingCallData.id+'/status').set('ended'); callIncoming.classList.remove('active'); if(audioElement){ audioElement.pause(); audioElement=null; } showNotification('❌ Вызов отклонён'); incomingCallData=null; }
-});
-
-async function answerCall(callId) {
-    try {
-        const cd = await database.ref('calls/'+callId).once('value');
-        const data = cd.val();
-        if(!data) return;
-        isCaller = false; currentCallId = callId; isVideoCall = data.type === 'video';
-        const constraints = { audio: true }; if(isVideoCall) constraints.video = true;
-        localStreamCall = await navigator.mediaDevices.getUserMedia(constraints);
-        if(isVideoCall) { localVideoCall.srcObject = localStreamCall; callVideoContainer.classList.add('active'); document.querySelector('.call-sub').textContent = '📹 Видеозвонок'; }
-        peerConnectionCall = new RTCPeerConnection(rtcConfig);
-        localStreamCall.getTracks().forEach(t => { peerConnectionCall.addTrack(t, localStreamCall); });
-        peerConnectionCall.ontrack = event => { remoteStreamCall = event.streams[0]; remoteVideoCall.srcObject = remoteStreamCall; if(isVideoCall) callVideoContainer.classList.add('active'); callStatus.textContent = '📞 Соединено'; callStartTime = Date.now(); startCallTimer(); };
-        await peerConnectionCall.setRemoteDescription(new RTCSessionDescription(data.offer));
-        const answer = await peerConnectionCall.createAnswer();
-        await peerConnectionCall.setLocalDescription(answer);
-        await database.ref('calls/'+callId+'/answer').set(answer);
-        await database.ref('calls/'+callId+'/status').set('connected');
-        database.ref('calls/'+callId+'/candidates').on('child_added', snap => { const cand = snap.val(); if(peerConnectionCall && cand) peerConnectionCall.addIceCandidate(new RTCIceCandidate(cand)); });
-        peerConnectionCall.onicecandidate = event => { if(event.candidate) database.ref('calls/'+callId+'/candidates').push(event.candidate.toJSON()); };
-        const fromUser = data.from; callName.textContent = fromUser; callAvatar.textContent = fromUser.charAt(0).toUpperCase(); getUserAvatar(fromUser).then(url => { if(url) callAvatar.innerHTML = '<img src="'+url+'" alt="avatar">'; });
-        callStatus.textContent = '📞 Соединение...'; callModal.classList.add('active');
-    } catch(err) { showNotification('❌ Ошибка ответа: '+err.message); endCall('Ошибка'); }
-}
-
+// =============================================
+// ЗВОНКИ
+// =============================================
+let localStreamCall = null, remoteStreamCall = null, peerConnectionCall = null;
+callBtn.addEventListener('click', function() { if(!currentChatId || !currentUser) { showNotification('❌ Выберите чат'); return; } if(currentChatData && currentChatData.isGroup) { showNotification('❌ Групповые звонки пока не поддерживаются'); return; } if(!currentOtherUser) { showNotification('❌ Собеседник не найден'); return; } startCall(currentOtherUser, false); });
+videoCallBtn.addEventListener('click', function() { if(!currentChatId || !currentUser) { showNotification('❌ Выберите чат'); return; } if(currentChatData && currentChatData.isGroup) { showNotification('❌ Групповые звонки пока не поддерживаются'); return; } if(!currentOtherUser) { showNotification('❌ Собеседник не найден'); return; } startCall(currentOtherUser, true); });
+async function startCall(toUser, video) { try { isVideoCall = video; currentCallId = 'call_'+Date.now()+'_'+Math.random().toString(36).substr(2,4); const constraints = { audio: true }; if(video) constraints.video = true; localStreamCall = await navigator.mediaDevices.getUserMedia(constraints); if(video) { localVideoCall.srcObject = localStreamCall; callVideoContainer.classList.add('active'); document.querySelector('.call-sub').textContent = '📹 Видеозвонок'; } peerConnectionCall = new RTCPeerConnection(rtcConfig); localStreamCall.getTracks().forEach(t => { peerConnectionCall.addTrack(t, localStreamCall); }); peerConnectionCall.ontrack = event => { remoteStreamCall = event.streams[0]; remoteVideoCall.srcObject = remoteStreamCall; if(video) callVideoContainer.classList.add('active'); callStatus.textContent = '📞 Соединено'; callStartTime = Date.now(); startCallTimer(); }; const offer = await peerConnectionCall.createOffer(); await peerConnectionCall.setLocalDescription(offer); const callData = { from: currentUser.username, to: toUser, type: video ? 'video' : 'audio', offer: offer, time: Date.now(), status: 'calling' }; await database.ref('calls/'+currentCallId).set(callData); database.ref('calls/'+currentCallId+'/answer').on('value', async snap => { if(snap.exists()) { const ans = snap.val(); await peerConnectionCall.setRemoteDescription(new RTCSessionDescription(ans)); callStatus.textContent = '📞 Соединено'; callStartTime = Date.now(); startCallTimer(); } }); database.ref('calls/'+currentCallId+'/candidates').on('child_added', snap => { const cand = snap.val(); if(peerConnectionCall && cand) peerConnectionCall.addIceCandidate(new RTCIceCandidate(cand)); }); peerConnectionCall.onicecandidate = event => { if(event.candidate) database.ref('calls/'+currentCallId+'/candidates').push(event.candidate.toJSON()); }; callName.textContent = toUser; callAvatar.textContent = toUser.charAt(0).toUpperCase(); getUserAvatar(toUser).then(url => { if(url) callAvatar.innerHTML = '<img src="'+url+'" alt="avatar">'; }); callStatus.textContent = '📞 Вызов...'; callModal.classList.add('active'); showNotification('📞 Звонок '+toUser+'...'); setTimeout(() => { if(callStatus.textContent === '📞 Вызов...') endCall('⏰ Звонок не отвечен'); }, 30000); } catch(err) { showNotification('❌ Ошибка звонка: '+err.message); endCall('Ошибка'); } }
+database.ref('calls').on('child_added', snap => { const call = snap.val(); if(call.to === currentUser?.username && call.status === 'calling') { incomingCallData = { id: snap.key, ...call }; showIncomingCall(call.from, call.type === 'video'); } });
+database.ref('calls').on('child_changed', snap => { const call = snap.val(); if(call.status === 'ended' && (call.from === currentUser?.username || call.to === currentUser?.username)) endCall('Звонок завершён'); });
+function showIncomingCall(fromUser, video) { incomingName.textContent = fromUser; incomingAvatar.textContent = fromUser.charAt(0).toUpperCase(); getUserAvatar(fromUser).then(url => { if(url) incomingAvatar.innerHTML = '<img src="'+url+'" alt="avatar">'; }); incomingStatus.textContent = video ? '📹 Входящий видеозвонок...' : '📞 Входящий вызов...'; callIncoming.classList.add('active'); try { const a = new Audio('data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAABVd3d3dycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJycnJw=='); a.loop = true; a.play(); audioElement = a; } catch(e) {} }
+incomingAnswerBtn.addEventListener('click', function() { if(incomingCallData) { answerCall(incomingCallData.id); callIncoming.classList.remove('active'); if(audioElement){ audioElement.pause(); audioElement=null; } } });
+incomingDeclineBtn.addEventListener('click', function() { if(incomingCallData) { database.ref('calls/'+incomingCallData.id+'/status').set('ended'); callIncoming.classList.remove('active'); if(audioElement){ audioElement.pause(); audioElement=null; } showNotification('❌ Вызов отклонён'); incomingCallData=null; } });
+async function answerCall(callId) { try { const cd = await database.ref('calls/'+callId).once('value'); const data = cd.val(); if(!data) return; isCaller = false; currentCallId = callId; isVideoCall = data.type === 'video'; const constraints = { audio: true }; if(isVideoCall) constraints.video = true; localStreamCall = await navigator.mediaDevices.getUserMedia(constraints); if(isVideoCall) { localVideoCall.srcObject = localStreamCall; callVideoContainer.classList.add('active'); document.querySelector('.call-sub').textContent = '📹 Видеозвонок'; } peerConnectionCall = new RTCPeerConnection(rtcConfig); localStreamCall.getTracks().forEach(t => { peerConnectionCall.addTrack(t, localStreamCall); }); peerConnectionCall.ontrack = event => { remoteStreamCall = event.streams[0]; remoteVideoCall.srcObject = remoteStreamCall; if(isVideoCall) callVideoContainer.classList.add('active'); callStatus.textContent = '📞 Соединено'; callStartTime = Date.now(); startCallTimer(); }; await peerConnectionCall.setRemoteDescription(new RTCSessionDescription(data.offer)); const answer = await peerConnectionCall.createAnswer(); await peerConnectionCall.setLocalDescription(answer); await database.ref('calls/'+callId+'/answer').set(answer); await database.ref('calls/'+callId+'/status').set('connected'); database.ref('calls/'+callId+'/candidates').on('child_added', snap => { const cand = snap.val(); if(peerConnectionCall && cand) peerConnectionCall.addIceCandidate(new RTCIceCandidate(cand)); }); peerConnectionCall.onicecandidate = event => { if(event.candidate) database.ref('calls/'+callId+'/candidates').push(event.candidate.toJSON()); }; const fromUser = data.from; callName.textContent = fromUser; callAvatar.textContent = fromUser.charAt(0).toUpperCase(); getUserAvatar(fromUser).then(url => { if(url) callAvatar.innerHTML = '<img src="'+url+'" alt="avatar">'; }); callStatus.textContent = '📞 Соединение...'; callModal.classList.add('active'); } catch(err) { showNotification('❌ Ошибка ответа: '+err.message); endCall('Ошибка'); } }
 callEndBtn.addEventListener('click', function() { endCall('Звонок завершён'); });
 callMuteBtn.addEventListener('click', function() { if(!localStreamCall) return; isMuted = !isMuted; localStreamCall.getAudioTracks().forEach(t => t.enabled = !isMuted); this.classList.toggle('active'); this.innerHTML = isMuted ? '<i class="fas fa-microphone-slash"></i>' : '<i class="fas fa-microphone"></i>'; });
 callSpeakerBtn.addEventListener('click', function() { isSpeakerOn = !isSpeakerOn; this.classList.toggle('active'); if(remoteVideoCall) remoteVideoCall.muted = !isSpeakerOn; this.innerHTML = isSpeakerOn ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-off"></i>'; });
 callVideoToggleBtn.addEventListener('click', function() { if(!localStreamCall) return; const vt = localStreamCall.getVideoTracks(); if(vt.length > 0){ const en = vt[0].enabled; vt[0].enabled = !en; this.classList.toggle('active'); this.innerHTML = !en ? '<i class="fas fa-video"></i>' : '<i class="fas fa-video-slash"></i>'; if(!en) localVideoCall.srcObject = null; else localVideoCall.srcObject = localStreamCall; } });
+function startCallTimer() { if(callTimerInterval) clearInterval(callTimerInterval); callSecondsTimer = 0; callTimerInterval = setInterval(() => { callSecondsTimer++; const m = Math.floor(callSecondsTimer/60); const s = callSecondsTimer%60; const dur = document.querySelector('.call-sub'); if(dur) dur.textContent = (isVideoCall ? '📹 Видеозвонок' : '📞 Аудиозвонок') + ' '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }, 1000); }
+function endCall(reason) { if(callTimerInterval) clearInterval(callTimerInterval); if(peerConnectionCall){ peerConnectionCall.close(); peerConnectionCall=null; } if(localStreamCall){ localStreamCall.getTracks().forEach(t=>t.stop()); localStreamCall=null; } if(remoteStreamCall){ remoteStreamCall.getTracks().forEach(t=>t.stop()); remoteStreamCall=null; } if(currentCallId){ database.ref('calls/'+currentCallId+'/status').set('ended'); database.ref('calls/'+currentCallId+'/candidates').off(); database.ref('calls/'+currentCallId+'/answer').off(); } callModal.classList.remove('active'); callVideoContainer.classList.remove('active'); callIncoming.classList.remove('active'); if(audioElement){ audioElement.pause(); audioElement=null; } currentCallId=null; callStartTime=0; callSecondsTimer=0; showNotification('📞 '+reason); }
 
-function startCallTimer() { if(callTimerInterval) clearInterval(callTimerInterval); callSeconds = 0; callTimerInterval = setInterval(() => { callSeconds++; const m = Math.floor(callSeconds/60); const s = callSeconds%60; const dur = document.querySelector('.call-sub'); if(dur) dur.textContent = (isVideoCall ? '📹 Видеозвонок' : '📞 Аудиозвонок') + ' '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }, 1000); }
-function endCall(reason) { if(callTimerInterval) clearInterval(callTimerInterval); if(peerConnectionCall){ peerConnectionCall.close(); peerConnectionCall=null; } if(localStreamCall){ localStreamCall.getTracks().forEach(t=>t.stop()); localStreamCall=null; } if(remoteStreamCall){ remoteStreamCall.getTracks().forEach(t=>t.stop()); remoteStreamCall=null; } if(currentCallId){ database.ref('calls/'+currentCallId+'/status').set('ended'); database.ref('calls/'+currentCallId+'/candidates').off(); database.ref('calls/'+currentCallId+'/answer').off(); } callModal.classList.remove('active'); callVideoContainer.classList.remove('active'); callIncoming.classList.remove('active'); if(audioElement){ audioElement.pause(); audioElement=null; } currentCallId=null; callStartTime=0; callSeconds=0; showNotification('📞 '+reason); }
-
-// ====== ЗАПУСК ======
+// =============================================
+// ЗАПУСК
+// =============================================
 function init(){
 initStickers();
 const st=localStorage.getItem('guru_theme');
