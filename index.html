@@ -2,198 +2,105 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>GURU</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   html, body { height: 100%; overflow: hidden; background: #0e1621; color: #fff; }
-
-  #auth-screen {
-    display: flex; align-items: center; justify-content: center;
-    height: 100vh;
-    background: radial-gradient(circle at 30% 20%, #17212b, #0e1621);
-  }
-  .auth-box {
-    background: #17212b; padding: 40px; border-radius: 12px;
-    width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  .auth-logo {
-    font-size: 34px; font-weight: 800; letter-spacing: 4px;
-    background: linear-gradient(135deg, #5288c1, #7bc862);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-bottom: 6px;
-  }
+  #auth-screen { display: flex; align-items: center; justify-content: center; height: 100vh; background: radial-gradient(circle at 30% 20%, #17212b, #0e1621); }
+  .auth-box { background: #17212b; padding: 40px; border-radius: 12px; width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .auth-logo { font-size: 34px; font-weight: 800; letter-spacing: 4px; background: linear-gradient(135deg, #5288c1, #7bc862); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
   .auth-box h2 { font-size: 16px; color: #7f91a4; font-weight: 400; margin-bottom: 24px; }
-  .auth-box input {
-    width: 100%; padding: 12px 14px; margin-bottom: 12px;
-    background: #242f3d; border: 1px solid #2b3a4d; border-radius: 8px;
-    color: #fff; font-size: 15px; outline: none;
-  }
+  .auth-box input { width: 100%; padding: 12px 14px; margin-bottom: 12px; background: #242f3d; border: 1px solid #2b3a4d; border-radius: 8px; color: #fff; font-size: 15px; outline: none; }
   .auth-box input:focus { border-color: #5288c1; }
   .input-prefix { position: relative; }
-  .input-prefix span {
-    position: absolute; left: 14px; top: 22px; transform: translateY(-50%);
-    color: #6b7c8e; font-size: 15px; pointer-events: none;
-  }
+  .input-prefix span { position: absolute; left: 14px; top: 22px; transform: translateY(-50%); color: #6b7c8e; font-size: 15px; pointer-events: none; }
   .input-prefix input { padding-left: 28px; }
-  .auth-box button {
-    width: 100%; padding: 13px; background: #5288c1; color: #fff;
-    border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
-    cursor: pointer; transition: background .15s;
-  }
+  .auth-box button { width: 100%; padding: 13px; background: #5288c1; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s; }
   .auth-box button:hover { background: #4679ae; }
   .auth-box button:disabled { opacity: .6; cursor: wait; }
   .auth-switch { text-align: center; margin-top: 16px; font-size: 14px; color: #7f91a4; }
   .auth-switch a { color: #5288c1; cursor: pointer; text-decoration: none; }
   .auth-error { color: #ef5350; font-size: 13px; margin-bottom: 10px; min-height: 16px; line-height: 1.3; }
-
   #app { display: none; height: 100vh; }
-
-  #sidebar {
-    width: 380px; height: 100vh; background: #17212b;
-    border-right: 1px solid #0e1621;
-    display: flex; flex-direction: column;
-  }
-  #sidebar-header {
-    padding: 12px 16px; display: flex; align-items: center; gap: 10px;
-    border-bottom: 1px solid #0e1621;
-  }
-  #sidebar-header .logo {
-    font-size: 20px; font-weight: 800; letter-spacing: 2px; flex: 1;
-    background: linear-gradient(135deg, #5288c1, #7bc862);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  #me-info {
-    display: flex; align-items: center; gap: 8px; cursor: pointer;
-    padding: 6px 10px; border-radius: 8px; transition: background .15s;
-  }
+  #sidebar { width: 380px; height: 100vh; background: #17212b; border-right: 1px solid #0e1621; display: flex; flex-direction: column; }
+  #sidebar-header { padding: 12px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #0e1621; }
+  #sidebar-header .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; flex: 1; background: linear-gradient(135deg, #5288c1, #7bc862); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  #me-info { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: background .15s; }
   #me-info:hover { background: #242f3d; }
   #me-info .me-name { font-size: 13px; color: #7f91a4; }
-
-  #search-input {
-    margin: 10px 12px; padding: 10px 14px;
-    background: #242f3d; border: none; border-radius: 20px;
-    color: #fff; font-size: 14px; outline: none;
-  }
+  #search-input { margin: 10px 12px; padding: 10px 14px; background: #242f3d; border: none; border-radius: 20px; color: #fff; font-size: 14px; outline: none; }
   #search-input::placeholder { color: #6b7c8e; }
-
   #chat-list, #search-results { flex: 1; overflow-y: auto; }
   #chat-list::-webkit-scrollbar, #search-results::-webkit-scrollbar, #messages::-webkit-scrollbar { width: 6px; }
   #chat-list::-webkit-scrollbar-thumb, #search-results::-webkit-scrollbar-thumb, #messages::-webkit-scrollbar-thumb { background: #2b3a4d; border-radius: 3px; }
-
-  .chat-item {
-    display: flex; padding: 12px 16px; cursor: pointer;
-    align-items: center; gap: 12px; transition: background .1s;
-  }
+  .chat-item { display: flex; padding: 12px 16px; cursor: pointer; align-items: center; gap: 12px; transition: background .1s; }
   .chat-item:hover { background: #202b36; }
   .chat-item.active { background: #2b5278; }
-  .avatar {
-    width: 48px; height: 48px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 600; color: #fff; font-size: 18px; flex-shrink: 0;
-    position: relative;
-  }
-  .avatar-wrap { position: relative; display: inline-block; }
-  .online-dot {
-    position: absolute; bottom: 0; right: 0;
-    width: 13px; height: 13px; border-radius: 50%;
-    background: #4dcd5e; border: 2px solid #17212b;
-    display: none;
-  }
+  .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 18px; flex-shrink: 0; position: relative; }
+  .avatar-wrap { position: relative; display: inline-block; flex-shrink: 0; }
+  .online-dot { position: absolute; bottom: 0; right: 0; width: 13px; height: 13px; border-radius: 50%; background: #4dcd5e; border: 2px solid #17212b; display: none; }
   .online-dot.on { display: block; }
-
   .chat-item-info { flex: 1; min-width: 0; }
   .chat-item-name { font-size: 15px; font-weight: 500; margin-bottom: 3px; }
-  .chat-item-last {
-    font-size: 13px; color: #7f91a4;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
+  .chat-item-last { font-size: 13px; color: #7f91a4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .empty-list { padding: 30px 20px; text-align: center; color: #6b7c8e; font-size: 14px; }
-
-  #chat-area {
-    flex: 1; display: flex; flex-direction: column;
-    background: #0e1621;
-    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0);
-    background-size: 20px 20px;
-    position: relative;
-  }
-  #empty-state {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; color: #6b7c8e;
-  }
+  #chat-area { flex: 1; display: flex; flex-direction: column; background: #0e1621; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0); background-size: 20px 20px; position: relative; }
+  #empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6b7c8e; }
   #empty-state .big { font-size: 60px; margin-bottom: 16px; opacity: .3; }
-
   #chat-view { display: none; flex: 1; flex-direction: column; height: 100vh; }
-
-  #chat-header {
-    padding: 10px 20px; background: #17212b;
-    border-bottom: 1px solid #0e1621;
-    display: flex; align-items: center; gap: 12px;
-  }
-  #back-btn {
-    display: none;
-    background: none; border: none; color: #5288c1;
-    font-size: 26px; cursor: pointer; padding: 0 6px;
-    line-height: 1; flex-shrink: 0;
-  }
+  #chat-header { padding: 10px 20px; background: #17212b; border-bottom: 1px solid #0e1621; display: flex; align-items: center; gap: 12px; }
+  #back-btn { display: none; background: none; border: none; color: #5288c1; font-size: 26px; cursor: pointer; padding: 0 6px; line-height: 1; flex-shrink: 0; }
   #back-btn:hover { color: #7ba7d6; }
   #chat-header .name { font-size: 16px; font-weight: 600; }
   #chat-header .status { font-size: 13px; color: #7f91a4; transition: color .2s; }
   #chat-header .status.typing { color: #5288c1; }
   #chat-header .status.online { color: #4dcd5e; }
-
-  #messages {
-    flex: 1; overflow-y: auto; padding: 20px 5%;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .msg {
-    max-width: 60%; padding: 8px 12px 6px;
-    border-radius: 12px; font-size: 15px; line-height: 1.35;
-    word-wrap: break-word; position: relative;
-    animation: pop .15s ease;
-  }
+  #messages { flex: 1; overflow-y: auto; padding: 20px 5%; display: flex; flex-direction: column; gap: 4px; }
+  .msg { max-width: 65%; padding: 8px 12px 6px; border-radius: 12px; font-size: 15px; line-height: 1.35; word-wrap: break-word; position: relative; animation: pop .15s ease; cursor: pointer; }
   @keyframes pop { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-  .msg.own {
-    align-self: flex-end; background: #2b5278;
-    border-bottom-right-radius: 4px;
-  }
-  .msg.other {
-    align-self: flex-start; background: #182533;
-    border-bottom-left-radius: 4px;
-  }
-  .msg .time {
-    font-size: 11px; color: rgba(255,255,255,.5);
-    float: right; margin: 6px 0 0 8px;
-    display: inline-flex; align-items: center; gap: 3px;
-  }
-  .check {
-    display: inline-block;
-    font-size: 12px; letter-spacing: -3px;
-    color: rgba(255,255,255,.55);
-    transition: color .2s;
-  }
+  .msg.own { align-self: flex-end; background: #2b5278; border-bottom-right-radius: 4px; }
+  .msg.other { align-self: flex-start; background: #182533; border-bottom-left-radius: 4px; }
+  .msg .time { font-size: 11px; color: rgba(255,255,255,.5); float: right; margin: 6px 0 0 8px; display: inline-flex; align-items: center; gap: 3px; }
+  .msg .msg-text { white-space: pre-wrap; }
+  .check { display: inline-block; font-size: 12px; letter-spacing: -3px; color: rgba(255,255,255,.55); transition: color .2s; }
   .check.read { color: #4dcd5e; }
-
-  #input-area {
-    padding: 12px 20px; background: #17212b;
-    border-top: 1px solid #0e1621;
-    display: flex; align-items: flex-end; gap: 10px;
-  }
-  #message-input {
-    flex: 1; padding: 12px 16px; background: #242f3d;
-    border: none; border-radius: 12px; color: #fff;
-    font-size: 15px; outline: none; resize: none;
-    max-height: 150px; font-family: inherit;
-    line-height: 1.4;
-  }
-  #send-btn {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: #5288c1; border: none; color: #fff;
-    font-size: 20px; cursor: pointer; flex-shrink: 0;
-    transition: background .15s;
-  }
+  .msg-image { max-width: 100%; max-height: 320px; border-radius: 8px; display: block; cursor: zoom-in; margin-bottom: 4px; }
+  .msg-reply { background: rgba(0,0,0,.25); border-left: 3px solid #5288c1; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; font-size: 13px; }
+  .msg-reply-name { color: #5288c1; font-weight: 600; margin-bottom: 1px; }
+  .msg-reply-text { color: rgba(255,255,255,.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+  .voice-player { display: flex; align-items: center; gap: 8px; padding: 4px 0; min-width: 180px; }
+  .voice-play { width: 34px; height: 34px; border-radius: 50%; background: #5288c1; border: none; color: #fff; font-size: 14px; cursor: pointer; flex-shrink: 0; }
+  .voice-bar { flex: 1; height: 3px; background: rgba(255,255,255,.2); border-radius: 2px; position: relative; }
+  .voice-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: #5288c1; border-radius: 2px; width: 0%; transition: width .1s linear; }
+  .voice-time { font-size: 11px; color: rgba(255,255,255,.6); }
+  #reply-preview { display: none; padding: 8px 20px; background: #1c2836; border-top: 1px solid #0e1621; align-items: center; gap: 10px; }
+  #reply-preview .rp-line { width: 3px; height: 34px; background: #5288c1; border-radius: 2px; flex-shrink: 0; }
+  #reply-preview .rp-info { flex: 1; min-width: 0; }
+  #reply-preview .rp-name { font-size: 13px; color: #5288c1; font-weight: 600; }
+  #reply-preview .rp-text { font-size: 13px; color: rgba(255,255,255,.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #reply-preview .rp-close { background: none; border: none; color: #7f91a4; font-size: 20px; cursor: pointer; padding: 4px 8px; }
+  #input-area { padding: 12px 20px; background: #17212b; border-top: 1px solid #0e1621; display: flex; align-items: flex-end; gap: 8px; }
+  #message-input { flex: 1; padding: 12px 16px; background: #242f3d; border: none; border-radius: 12px; color: #fff; font-size: 15px; outline: none; resize: none; max-height: 150px; font-family: inherit; line-height: 1.4; }
+  .icon-btn { width: 40px; height: 40px; border-radius: 50%; background: transparent; border: none; color: #7f91a4; font-size: 20px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s; }
+  .icon-btn:hover { background: #242f3d; color: #5288c1; }
+  #send-btn { width: 44px; height: 44px; border-radius: 50%; background: #5288c1; border: none; color: #fff; font-size: 20px; cursor: pointer; flex-shrink: 0; transition: background .15s; display: none; }
+  #send-btn.visible { display: flex; align-items: center; justify-content: center; }
   #send-btn:hover { background: #4679ae; }
-
+  #mic-btn.recording { background: #e53935; color: #fff; animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity: .7; } }
+  #msg-menu { position: fixed; background: #1c2836; border: 1px solid #2b3a4d; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,.6); padding: 6px; z-index: 100; display: none; min-width: 180px; }
+  #msg-menu button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 14px; background: none; border: none; color: #fff; font-size: 14px; text-align: left; cursor: pointer; border-radius: 6px; }
+  #msg-menu button:hover { background: #2b5278; }
+  #msg-menu button.danger { color: #ef5350; }
+  #recording-indicator { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #e53935; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 14px; z-index: 200; display: none; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(0,0,0,.5); }
+  #recording-indicator.on { display: flex; }
+  #recording-dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: pulse 1s infinite; }
+  #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.9); display: none; align-items: center; justify-content: center; z-index: 300; cursor: zoom-out; }
+  #lightbox.on { display: flex; }
+  #lightbox img { max-width: 95%; max-height: 95%; border-radius: 8px; }
+  #upload-progress { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #2b5278; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 14px; z-index: 200; display: none; }
+  #upload-progress.on { display: block; }
   @media (max-width: 768px) {
     #sidebar { width: 100%; position: absolute; z-index: 10; }
     #sidebar.hidden { display: none; }
@@ -210,16 +117,10 @@
     <div class="auth-logo">GURU</div>
     <h2 id="auth-subtitle">Войди, чтобы начать общаться</h2>
     <div class="auth-error" id="auth-error"></div>
-    <div class="input-prefix">
-      <span>@</span>
-      <input id="auth-nick" type="text" placeholder="ник" autocomplete="username" maxlength="20">
-    </div>
+    <div class="input-prefix"><span>@</span><input id="auth-nick" type="text" placeholder="ник" autocomplete="username" maxlength="20"></div>
     <input id="auth-pass" type="password" placeholder="Пароль (от 6 символов)" autocomplete="current-password">
     <button id="auth-btn">Войти</button>
-    <div class="auth-switch">
-      <span id="auth-switch-text">Нет аккаунта?</span>
-      <a id="auth-switch-link">Зарегистрироваться</a>
-    </div>
+    <div class="auth-switch"><span id="auth-switch-text">Нет аккаунта?</span> <a id="auth-switch-link">Зарегистрироваться</a></div>
   </div>
 </div>
 
@@ -238,32 +139,42 @@
   </aside>
 
   <main id="chat-area">
-    <div id="empty-state">
-      <div class="big">💬</div>
-      <div>Выбери чат или найди друга через поиск</div>
-    </div>
+    <div id="empty-state"><div class="big">💬</div><div>Выбери чат или найди друга через поиск</div></div>
     <div id="chat-view">
       <div id="chat-header"></div>
       <div id="messages"></div>
+      <div id="reply-preview">
+        <div class="rp-line"></div>
+        <div class="rp-info"><div class="rp-name"></div><div class="rp-text"></div></div>
+        <button class="rp-close" id="rp-close">✕</button>
+      </div>
       <div id="input-area">
+        <button class="icon-btn" id="attach-btn" title="Фото">🖼</button>
         <textarea id="message-input" rows="1" placeholder="Написать сообщение..."></textarea>
+        <button class="icon-btn" id="mic-btn" title="Голосовое (зажми)">🎤</button>
         <button id="send-btn">➤</button>
       </div>
     </div>
   </main>
 </div>
 
+<input type="file" id="file-input" accept="image/*" style="display:none">
+
+<div id="msg-menu">
+  <button data-action="reply">↩️ Ответить</button>
+  <button data-action="copy">📋 Копировать</button>
+  <button data-action="delete" class="danger">🗑 Удалить у всех</button>
+</div>
+
+<div id="recording-indicator"><div id="recording-dot"></div><span id="rec-time">0:00</span> <span style="opacity:.7">← отпусти для отправки</span></div>
+<div id="upload-progress">⏳ Отправка...</div>
+
+<div id="lightbox"><img id="lightbox-img" src=""></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  onAuthStateChanged, signOut, updateProfile
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-  getFirestore, collection, doc, setDoc, getDoc, getDocs,
-  query, where, orderBy, onSnapshot, addDoc, serverTimestamp,
-  limit, updateDoc, Timestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, limit, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAU1d1L946PF9lrLKoaE6TQ5fzUE1CR1ws",
@@ -277,34 +188,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 const DOMAIN = "@guru.app";
 
-let currentUser = null;
-let currentNick = null;
-let currentChatId = null;
-let currentChatUser = null;
-let currentChatData = null;
+let currentUser = null, currentNick = null;
+let currentChatId = null, currentChatUser = null, currentChatData = null;
 let lastMsgs = [];
-let unsubMessages = null;
-let unsubChats = null;
-let unsubChatDoc = null;
-let unsubOtherUser = null;
+let unsubMessages, unsubChats, unsubChatDoc, unsubOtherUser;
 let usersCache = {};
-let lastTypingSent = 0;
-let heartbeatTimer = null;
+let lastTypingSent = 0, heartbeatTimer = null;
+let replyTo = null;
 
 const $ = id => document.getElementById(id);
-
-const authScreen = $("auth-screen");
-const appScreen = $("app");
-const authBtn = $("auth-btn");
-const authNick = $("auth-nick");
-const authPass = $("auth-pass");
-const authError = $("auth-error");
-const authSubtitle = $("auth-subtitle");
-const authSwitchText = $("auth-switch-text");
-const authSwitchLink = $("auth-switch-link");
+const authScreen = $("auth-screen"), appScreen = $("app");
+const authBtn = $("auth-btn"), authNick = $("auth-nick"), authPass = $("auth-pass");
+const authError = $("auth-error"), authSubtitle = $("auth-subtitle");
+const authSwitchText = $("auth-switch-text"), authSwitchLink = $("auth-switch-link");
 
 let isRegister = false;
 
@@ -318,7 +216,6 @@ authSwitchLink.onclick = () => {
 };
 
 const NICK_RE = /^[a-zA-Z0-9_]{3,20}$/;
-
 function translateError(code) {
   const map = {
     "auth/invalid-email": "Ник: только латиница, цифры и _",
@@ -328,8 +225,7 @@ function translateError(code) {
     "auth/email-already-in-use": "Этот ник уже занят 😔",
     "auth/weak-password": "Пароль слишком слабый",
     "auth/operation-not-allowed": "Включи Email/Password в Firebase",
-    "auth/network-request-failed": "Нет интернета или Firebase недоступен",
-    "auth/too-many-requests": "Слишком много попыток, подожди минуту",
+    "auth/network-request-failed": "Нет интернета",
     "permission-denied": "Firestore Rules не настроены",
   };
   return map[code] || ("Ошибка: " + code);
@@ -337,74 +233,47 @@ function translateError(code) {
 
 authBtn.onclick = async () => {
   authError.textContent = "";
-  const nick = authNick.value.trim();
-  const pass = authPass.value;
-
+  const nick = authNick.value.trim(), pass = authPass.value;
   if (!nick || !pass) { authError.textContent = "Заполни ник и пароль"; return; }
   if (!NICK_RE.test(nick)) { authError.textContent = "Ник: 3-20 символов, латиница/цифры/_"; return; }
   if (pass.length < 6) { authError.textContent = "Пароль минимум 6 символов"; return; }
-
   const email = nick.toLowerCase() + DOMAIN;
   authBtn.disabled = true;
   const oldText = authBtn.textContent;
   authBtn.textContent = "Подожди...";
-
   try {
     if (isRegister) {
       const cred = await createUserWithEmailAndPassword(auth, email, pass);
       await updateProfile(cred.user, { displayName: nick });
       await setDoc(doc(db, "users", cred.user.uid), {
-        uid: cred.user.uid,
-        nick: nick,
-        nickLower: nick.toLowerCase(),
-        lastSeen: Timestamp.now(),
-        createdAt: serverTimestamp()
+        uid: cred.user.uid, nick, nickLower: nick.toLowerCase(),
+        lastSeen: Timestamp.now(), createdAt: serverTimestamp()
       });
     } else {
       await signInWithEmailAndPassword(auth, email, pass);
     }
   } catch (e) {
-    console.error("Auth error:", e.code, e.message);
     authError.textContent = translateError(e.code);
     authBtn.disabled = false;
     authBtn.textContent = oldText;
   }
 };
 
-[authNick, authPass].forEach(inp => {
-  inp.addEventListener("keydown", e => { if (e.key === "Enter") authBtn.click(); });
-});
+[authNick, authPass].forEach(inp => inp.addEventListener("keydown", e => { if (e.key === "Enter") authBtn.click(); }));
 
-// ============ HEARTBEAT (онлайн) ============
 async function updateLastSeen() {
   if (!currentUser) return;
-  try {
-    await setDoc(doc(db, "users", currentUser.uid), {
-      lastSeen: Timestamp.now()
-    }, { merge: true });
-  } catch (e) {}
+  try { await setDoc(doc(db, "users", currentUser.uid), { lastSeen: Timestamp.now() }, { merge: true }); } catch (e) {}
 }
-
 function startHeartbeat() {
   stopHeartbeat();
   updateLastSeen();
-  heartbeatTimer = setInterval(() => {
-    if (!document.hidden) updateLastSeen();
-  }, 30000);
+  heartbeatTimer = setInterval(() => { if (!document.hidden) updateLastSeen(); }, 30000);
 }
+function stopHeartbeat() { if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null; } }
+document.addEventListener("visibilitychange", () => { if (!document.hidden && currentUser) updateLastSeen(); });
+window.addEventListener("beforeunload", () => { if (currentUser) updateLastSeen(); });
 
-function stopHeartbeat() {
-  if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null; }
-}
-
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && currentUser) updateLastSeen();
-});
-window.addEventListener("beforeunload", () => {
-  if (currentUser) updateLastSeen();
-});
-
-// ============ АВТОРИЗАЦИЯ ============
 onAuthStateChanged(auth, async user => {
   if (user) {
     currentUser = user;
@@ -416,40 +285,28 @@ onAuthStateChanged(auth, async user => {
         const nick = user.displayName || ("user" + user.uid.slice(0, 5));
         data = { uid: user.uid, nick, nickLower: nick.toLowerCase(), lastSeen: Timestamp.now(), createdAt: serverTimestamp() };
         await setDoc(userRef, data);
-      } else {
-        data = snap.data();
-      }
+      } else data = snap.data();
       currentNick = data.nick;
       usersCache[user.uid] = data;
-
       $("me-avatar").textContent = initials(currentNick);
       $("me-avatar").style.background = colorFromId(user.uid);
       $("me-name").textContent = "@" + currentNick;
-
       authScreen.style.display = "none";
       appScreen.style.display = "flex";
       authBtn.disabled = false;
       authBtn.textContent = isRegister ? "Создать аккаунт" : "Войти";
-
       startHeartbeat();
       loadChats();
     } catch (e) {
-      console.error("Init error:", e);
       authError.textContent = translateError(e.code || "unknown");
       await signOut(auth);
     }
   } else {
-    currentUser = null;
-    currentNick = null;
-    currentChatId = null;
-    currentChatUser = null;
-    currentChatData = null;
-    lastMsgs = [];
+    currentUser = null; currentNick = null; currentChatId = null; currentChatUser = null;
+    currentChatData = null; lastMsgs = [];
     stopHeartbeat();
-    if (unsubChats) { unsubChats(); unsubChats = null; }
-    if (unsubMessages) { unsubMessages(); unsubMessages = null; }
-    if (unsubChatDoc) { unsubChatDoc(); unsubChatDoc = null; }
-    if (unsubOtherUser) { unsubOtherUser(); unsubOtherUser = null; }
+    [unsubChats, unsubMessages, unsubChatDoc, unsubOtherUser].forEach(u => u && u());
+    unsubChats = unsubMessages = unsubChatDoc = unsubOtherUser = null;
     authScreen.style.display = "flex";
     appScreen.style.display = "none";
     $("chat-list").innerHTML = "";
@@ -458,31 +315,20 @@ onAuthStateChanged(auth, async user => {
   }
 });
 
-$("me-info").onclick = () => {
-  if (confirm("Выйти из GURU?")) {
-    updateLastSeen().finally(() => signOut(auth));
-  }
-};
+$("me-info").onclick = () => { if (confirm("Выйти из GURU?")) updateLastSeen().finally(() => signOut(auth)); };
 
-// ============ УТИЛИТЫ ============
-function initials(name) {
-  if (!name) return "?";
-  return name.trim().slice(0, 2).toUpperCase();
-}
+function initials(n) { return n ? n.trim().slice(0, 2).toUpperCase() : "?"; }
 function colorFromId(id) {
-  const colors = ["#e17076","#7bc862","#e5ca77","#65aadd","#a695e7","#ee7aae","#6ec9cb","#faa774"];
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) | 0;
-  return colors[Math.abs(hash) % colors.length];
+  const c = ["#e17076","#7bc862","#e5ca77","#65aadd","#a695e7","#ee7aae","#6ec9cb","#faa774"];
+  let h = 0; for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+  return c[Math.abs(h) % c.length];
 }
 function formatTime(ts) {
   if (!ts) return "";
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   const now = new Date();
-  const sameDay = d.toDateString() === now.toDateString();
-  if (sameDay) return d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
-  return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" }) + " " +
-         d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+  if (d.toDateString() === now.toDateString()) return d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" }) + " " + d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
 }
 function formatLastSeen(ts) {
   if (!ts) return "недавно";
@@ -495,33 +341,70 @@ function formatLastSeen(ts) {
   if (days === 1) return "был(а) вчера";
   return `был(а) ${days} дн. назад`;
 }
-function chatIdFor(uid1, uid2) {
-  return [uid1, uid2].sort().join("_");
+function chatIdFor(a, b) { return [a, b].sort().join("_"); }
+function formatDuration(sec) {
+  sec = Math.floor(sec);
+  return `${Math.floor(sec / 60)}:${(sec % 60).toString().padStart(2, "0")}`;
 }
 async function getUserData(uid) {
   if (usersCache[uid]) return usersCache[uid];
   try {
     const snap = await getDoc(doc(db, "users", uid));
-    if (snap.exists()) {
-      usersCache[uid] = snap.data();
-      return usersCache[uid];
-    }
-  } catch (e) { console.error(e); }
+    if (snap.exists()) { usersCache[uid] = snap.data(); return usersCache[uid]; }
+  } catch (e) {}
   return { uid, nick: "unknown" };
 }
 function escapeHtml(s) {
   if (!s) return "";
-  return String(s).replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
+  return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 }
-function isOnline(userData) {
-  if (!userData?.lastSeen) return false;
-  const ts = userData.lastSeen.toMillis ? userData.lastSeen.toMillis() : new Date(userData.lastSeen).getTime();
+function isOnline(u) {
+  if (!u?.lastSeen) return false;
+  const ts = u.lastSeen.toMillis ? u.lastSeen.toMillis() : new Date(u.lastSeen).getTime();
   return (Date.now() - ts) < 60000;
 }
 
-// ============ СПИСОК ЧАТОВ ============
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX = 1000;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        let quality = 0.75;
+        let dataUrl = canvas.toDataURL("image/jpeg", quality);
+        while (dataUrl.length > 900000 && quality > 0.3) {
+          quality -= 0.15;
+          dataUrl = canvas.toDataURL("image/jpeg", quality);
+        }
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
 function loadChats() {
   if (unsubChats) unsubChats();
   const q = query(collection(db, "chats"), where("members", "array-contains", currentUser.uid));
@@ -533,23 +416,19 @@ function loadChats() {
       const other = await getUserData(otherUid);
       chats.push({ id: d.id, ...data, other });
     }
-    chats.sort((a, b) => {
-      const at = a.lastMessageAt?.toMillis?.() || 0;
-      const bt = b.lastMessageAt?.toMillis?.() || 0;
-      return bt - at;
-    });
+    chats.sort((a, b) => (b.lastMessageAt?.toMillis?.() || 0) - (a.lastMessageAt?.toMillis?.() || 0));
     renderChatList(chats);
   }, err => console.error("Chats error:", err));
 }
 
 function renderChatList(chats) {
   const list = $("chat-list");
-  if (chats.length === 0) {
-    list.innerHTML = `<div class="empty-list">Пока нет чатов.<br>Найди друга через поиск выше 👆</div>`;
-    return;
-  }
+  if (chats.length === 0) { list.innerHTML = `<div class="empty-list">Пока нет чатов.<br>Найди друга через поиск выше 👆</div>`; return; }
   list.innerHTML = chats.map(c => {
     const online = isOnline(c.other);
+    let last = c.lastMessage || "Нет сообщений";
+    if (c.lastMessageType === "image") last = "🖼 Фото";
+    else if (c.lastMessageType === "voice") last = "🎤 Голосовое";
     return `
       <div class="chat-item ${c.id === currentChatId ? 'active' : ''}" data-id="${c.id}" data-uid="${c.other.uid}">
         <div class="avatar-wrap">
@@ -558,49 +437,30 @@ function renderChatList(chats) {
         </div>
         <div class="chat-item-info">
           <div class="chat-item-name">${escapeHtml(c.other.nick)}</div>
-          <div class="chat-item-last">${escapeHtml(c.lastMessage || "Нет сообщений")}</div>
+          <div class="chat-item-last">${escapeHtml(last)}</div>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join("");
-  list.querySelectorAll(".chat-item").forEach(el => {
-    el.onclick = () => openChat(el.dataset.id, el.dataset.uid);
-  });
+  list.querySelectorAll(".chat-item").forEach(el => el.onclick = () => openChat(el.dataset.id, el.dataset.uid));
 }
 
-// ============ ПОИСК ============
-const searchInput = $("search-input");
-const searchResults = $("search-results");
-const chatListEl = $("chat-list");
+const searchInput = $("search-input"), searchResults = $("search-results"), chatListEl = $("chat-list");
 
 searchInput.addEventListener("input", async () => {
   const q = searchInput.value.trim().toLowerCase().replace(/^@/, "");
-  if (!q) {
-    searchResults.style.display = "none";
-    chatListEl.style.display = "block";
-    return;
-  }
+  if (!q) { searchResults.style.display = "none"; chatListEl.style.display = "block"; return; }
   chatListEl.style.display = "none";
   searchResults.style.display = "block";
   searchResults.innerHTML = `<div class="empty-list">Поиск...</div>`;
-
   try {
     const snap = await getDocs(query(collection(db, "users"), limit(200)));
     const found = [];
     snap.forEach(d => {
       const u = d.data();
       if (u.uid === currentUser.uid) return;
-      const nl = (u.nickLower || u.nick || "").toLowerCase();
-      if (nl.includes(q)) {
-        usersCache[u.uid] = u;
-        found.push(u);
-      }
+      if ((u.nickLower || u.nick || "").toLowerCase().includes(q)) { usersCache[u.uid] = u; found.push(u); }
     });
-
-    if (found.length === 0) {
-      searchResults.innerHTML = `<div class="empty-list">Никого не найдено</div>`;
-      return;
-    }
+    if (found.length === 0) { searchResults.innerHTML = `<div class="empty-list">Никого не найдено</div>`; return; }
     searchResults.innerHTML = found.map(u => {
       const online = isOnline(u);
       return `
@@ -609,12 +469,8 @@ searchInput.addEventListener("input", async () => {
             <div class="avatar" style="background:${colorFromId(u.uid)}">${initials(u.nick)}</div>
             <div class="online-dot ${online ? 'on' : ''}"></div>
           </div>
-          <div class="chat-item-info">
-            <div class="chat-item-name">${escapeHtml(u.nick)}</div>
-            <div class="chat-item-last">@${escapeHtml(u.nick)}</div>
-          </div>
-        </div>
-      `;
+          <div class="chat-item-info"><div class="chat-item-name">${escapeHtml(u.nick)}</div><div class="chat-item-last">@${escapeHtml(u.nick)}</div></div>
+        </div>`;
     }).join("");
     searchResults.querySelectorAll(".chat-item").forEach(el => {
       el.onclick = async () => {
@@ -624,53 +480,39 @@ searchInput.addEventListener("input", async () => {
         try {
           const existing = await getDoc(chatRef);
           if (!existing.exists()) {
-            await setDoc(chatRef, {
-              members: [currentUser.uid, uid],
-              lastMessage: "",
-              lastMessageAt: serverTimestamp(),
-              createdAt: serverTimestamp()
-            });
+            await setDoc(chatRef, { members: [currentUser.uid, uid], lastMessage: "", lastMessageAt: serverTimestamp(), createdAt: serverTimestamp() });
           }
-        } catch (e) { console.error(e); }
+        } catch (e) {}
         searchInput.value = "";
         searchResults.style.display = "none";
         chatListEl.style.display = "block";
         openChat(cid, uid);
       };
     });
-  } catch (e) {
-    console.error(e);
-    searchResults.innerHTML = `<div class="empty-list">Ошибка поиска</div>`;
-  }
+  } catch (e) { searchResults.innerHTML = `<div class="empty-list">Ошибка поиска</div>`; }
 });
 
-// ============ ОТКРЫТИЕ ЧАТА ============
 async function openChat(chatId, otherUid) {
   currentChatId = chatId;
   currentChatUser = await getUserData(otherUid);
   currentChatData = null;
   lastMsgs = [];
+  replyTo = null;
+  hideReplyPreview();
 
   $("empty-state").style.display = "none";
   $("chat-view").style.display = "flex";
   $("messages").innerHTML = "";
-
   renderChatHeader();
+  if (window.innerWidth <= 768) $("sidebar").classList.add("hidden");
 
-  // Скрываем сайдбар на мобиле
-  if (window.innerWidth <= 768) {
-    $("sidebar").classList.add("hidden");
-  }
-
-  // Подписка на документ чата (для typing и lastRead)
   if (unsubChatDoc) unsubChatDoc();
   unsubChatDoc = onSnapshot(doc(db, "chats", chatId), snap => {
     currentChatData = snap.data() || {};
     updateCheckmarks();
     updateChatStatus();
-  }, err => console.error("Chat doc error:", err));
+  });
 
-  // Подписка на собеседника (для онлайна)
   if (unsubOtherUser) unsubOtherUser();
   unsubOtherUser = onSnapshot(doc(db, "users", otherUid), snap => {
     if (snap.exists()) {
@@ -678,15 +520,14 @@ async function openChat(chatId, otherUid) {
       currentChatUser = usersCache[otherUid];
       updateChatStatus();
     }
-  }, err => console.error("User doc error:", err));
+  });
 
-  // Подписка на сообщения
   if (unsubMessages) unsubMessages();
-  const q = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"), limit(500));
+  const q = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"), limit(200));
   unsubMessages = onSnapshot(q, snap => {
     const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderMessages(msgs);
-  }, err => console.error("Messages error:", err));
+  });
 
   $("message-input").focus();
 }
@@ -702,57 +543,35 @@ function renderChatHeader() {
     <div style="flex:1;min-width:0">
       <div class="name">${escapeHtml(currentChatUser.nick)}</div>
       <div class="status" id="chat-status">${online ? 'онлайн' : formatLastSeen(currentChatUser.lastSeen)}</div>
-    </div>
-  `;
+    </div>`;
   $("back-btn").onclick = closeChat;
 }
 
 function closeChat() {
-  if (unsubMessages) { unsubMessages(); unsubMessages = null; }
-  if (unsubChatDoc) { unsubChatDoc(); unsubChatDoc = null; }
-  if (unsubOtherUser) { unsubOtherUser(); unsubOtherUser = null; }
-  currentChatId = null;
-  currentChatUser = null;
-  currentChatData = null;
-  lastMsgs = [];
+  [unsubMessages, unsubChatDoc, unsubOtherUser].forEach(u => u && u());
+  unsubMessages = unsubChatDoc = unsubOtherUser = null;
+  currentChatId = null; currentChatUser = null; currentChatData = null;
+  lastMsgs = []; replyTo = null;
+  hideReplyPreview();
   $("chat-view").style.display = "none";
   $("empty-state").style.display = "flex";
   $("sidebar").classList.remove("hidden");
 }
 
-// Закрытие чата по Escape
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape" && currentChatId && window.innerWidth > 768) closeChat();
-});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && currentChatId && window.innerWidth > 768) closeChat(); });
 
 function updateChatStatus() {
   const status = $("chat-status");
   if (!status || !currentChatData || !currentChatUser) return;
-
-  // Проверка: печатает ли собеседник
   const typingTs = currentChatData.typing?.[currentChatUser.uid];
   if (typingTs) {
     const ts = typingTs.toMillis ? typingTs.toMillis() : new Date(typingTs).getTime();
-    if (Date.now() - ts < 3500) {
-      status.textContent = "печатает...";
-      status.className = "status typing";
-      return;
-    }
+    if (Date.now() - ts < 3500) { status.textContent = "печатает..."; status.className = "status typing"; return; }
   }
-
-  // Онлайн / был недавно
   const online = isOnline(currentChatUser);
-  if (online) {
-    status.textContent = "онлайн";
-    status.className = "status online";
-  } else {
-    status.textContent = formatLastSeen(currentChatUser.lastSeen);
-    status.className = "status";
-  }
-
-  // Точка на аватаре в шапке
-  const dot = $("header-dot");
-  if (dot) dot.classList.toggle("on", online);
+  if (online) { status.textContent = "онлайн"; status.className = "status online"; }
+  else { status.textContent = formatLastSeen(currentChatUser.lastSeen); status.className = "status"; }
+  const dot = $("header-dot"); if (dot) dot.classList.toggle("on", online);
 }
 
 function renderMessages(msgs) {
@@ -763,41 +582,124 @@ function renderMessages(msgs) {
   box.innerHTML = msgs.map(m => {
     const own = m.senderId === currentUser.uid;
     const ts = m.createdAt?.toMillis?.() || 0;
-    let check = "";
-    if (own) {
-      check = `<span class="check" data-ts="${ts}">✓</span>`;
+    let content = "";
+    if (m.type === "image" && m.imageData) {
+      content = `<img class="msg-image" src="${m.imageData}" data-full="${m.imageData}" alt="">`;
+      if (m.text) content += `<div class="msg-text">${escapeHtml(m.text)}</div>`;
+    } else if (m.type === "voice" && m.voiceData) {
+      content = `<div class="voice-player" data-url="${m.voiceData}" data-dur="${m.duration || 0}">
+        <button class="voice-play">▶</button>
+        <div class="voice-bar"><div class="voice-bar-fill"></div></div>
+        <span class="voice-time">${formatDuration(m.duration || 0)}</span>
+      </div>`;
+    } else {
+      content = `<div class="msg-text">${escapeHtml(m.text)}</div>`;
     }
-    return `
-      <div class="msg ${own ? 'own' : 'other'}" data-ts="${ts}">
-        <div>${escapeHtml(m.text)}</div>
-        <span class="time">${formatTime(m.createdAt)}${check ? ' ' + check : ''}</span>
-      </div>
-    `;
+
+    let replyBlock = "";
+    if (m.replyTo) {
+      replyBlock = `<div class="msg-reply">
+        <div class="msg-reply-name">${escapeHtml(m.replyTo.senderNick || "")}</div>
+        <div class="msg-reply-text">${escapeHtml(m.replyTo.text || "")}</div>
+      </div>`;
+    }
+
+    const check = own ? `<span class="check" data-ts="${ts}">✓</span>` : "";
+    return `<div class="msg ${own ? 'own' : 'other'}" data-id="${m.id}" data-ts="${ts}" data-own="${own ? 1 : 0}">
+      ${replyBlock}${content}
+      <span class="time">${formatTime(m.createdAt)}${check ? ' ' + check : ''}</span>
+    </div>`;
   }).join("");
 
-  if (wasNearBottom || msgs.length <= 1) {
-    box.scrollTop = box.scrollHeight;
-  }
+  if (wasNearBottom || msgs.length <= 1) box.scrollTop = box.scrollHeight;
 
+  bindMessageEvents();
+  bindVoicePlayers();
   updateCheckmarks();
   markChatRead();
 }
 
+function bindMessageEvents() {
+  document.querySelectorAll(".msg").forEach(el => {
+    el.addEventListener("contextmenu", e => { e.preventDefault(); showMenu(e.clientX, e.clientY, el); });
+    let pressTimer;
+    el.addEventListener("touchstart", e => {
+      const touch = e.touches[0];
+      pressTimer = setTimeout(() => { showMenu(touch.clientX, touch.clientY, el); }, 500);
+    }, { passive: true });
+    el.addEventListener("touchend", () => clearTimeout(pressTimer));
+    el.addEventListener("touchmove", () => clearTimeout(pressTimer));
+  });
+  document.querySelectorAll(".msg-image").forEach(img => {
+    img.onclick = () => { $("lightbox-img").src = img.dataset.full; $("lightbox").classList.add("on"); };
+  });
+}
+
+$("lightbox").onclick = () => $("lightbox").classList.remove("on");
+
+function showMenu(x, y, msgEl) {
+  const menu = $("msg-menu");
+  const msgId = msgEl.dataset.id;
+  const isOwn = msgEl.dataset.own === "1";
+  const msg = lastMsgs.find(m => m.id === msgId);
+  if (!msg) return;
+
+  menu.querySelector('[data-action="delete"]').style.display = isOwn ? "flex" : "none";
+  menu.style.display = "block";
+  const rect = menu.getBoundingClientRect();
+  const w = rect.width || 200, h = rect.height || 150;
+  let left = x, top = y;
+  if (left + w > window.innerWidth) left = window.innerWidth - w - 10;
+  if (top + h > window.innerHeight) top = window.innerHeight - h - 10;
+  if (left < 10) left = 10;
+  if (top < 10) top = 10;
+  menu.style.left = left + "px";
+  menu.style.top = top + "px";
+
+  menu.querySelectorAll("button").forEach(btn => {
+    btn.onclick = async () => {
+      const action = btn.dataset.action;
+      menu.style.display = "none";
+      if (action === "reply") {
+        let preview = msg.text || "";
+        if (msg.type === "image") preview = "🖼 Фото";
+        else if (msg.type === "voice") preview = "🎤 Голосовое";
+        const senderData = await getUserData(msg.senderId);
+        replyTo = { id: msg.id, text: preview.slice(0, 100), senderNick: senderData.nick };
+        showReplyPreview();
+      } else if (action === "copy") {
+        const text = msg.text || "";
+        if (text) navigator.clipboard.writeText(text).catch(() => {});
+      } else if (action === "delete") {
+        if (confirm("Удалить сообщение у всех?")) {
+          try { await deleteDoc(doc(db, "chats", currentChatId, "messages", msgId)); } catch (e) { alert("Ошибка: " + e.message); }
+        }
+      }
+    };
+  });
+}
+document.addEventListener("click", e => { if (!e.target.closest("#msg-menu") && !e.target.closest(".msg")) $("msg-menu").style.display = "none"; });
+
+function showReplyPreview() {
+  if (!replyTo) return;
+  $("reply-preview").style.display = "flex";
+  $("reply-preview").querySelector(".rp-name").textContent = replyTo.senderNick;
+  $("reply-preview").querySelector(".rp-text").textContent = replyTo.text;
+}
+function hideReplyPreview() {
+  $("reply-preview").style.display = "none";
+  replyTo = null;
+}
+$("rp-close").onclick = hideReplyPreview;
+
 function updateCheckmarks() {
   if (!currentChatUser || !currentChatData) return;
-  const otherUid = currentChatUser.uid;
-  const otherRead = currentChatData.lastRead?.[otherUid];
+  const otherRead = currentChatData.lastRead?.[currentChatUser.uid];
   const readTs = otherRead?.toMillis?.() || 0;
-
   document.querySelectorAll(".msg.own .check").forEach(el => {
     const msgTs = parseInt(el.dataset.ts || "0");
-    if (msgTs > 0 && readTs >= msgTs) {
-      el.textContent = "✓✓";
-      el.classList.add("read");
-    } else {
-      el.textContent = "✓";
-      el.classList.remove("read");
-    }
+    if (msgTs > 0 && readTs >= msgTs) { el.textContent = "✓✓"; el.classList.add("read"); }
+    else { el.textContent = "✓"; el.classList.remove("read"); }
   });
 }
 
@@ -807,29 +709,26 @@ async function markChatRead() {
   const lastTs = lastMsg.createdAt?.toMillis?.() || 0;
   if (lastTs === 0) return;
   const myRead = currentChatData.lastRead?.[currentUser.uid];
-  const readTs = myRead?.toMillis?.() || 0;
-  if (readTs >= lastTs) return;
-  try {
-    await updateDoc(doc(db, "chats", currentChatId), {
-      [`lastRead.${currentUser.uid}`]: Timestamp.now()
-    });
-  } catch (e) { /* silent */ }
+  if ((myRead?.toMillis?.() || 0) >= lastTs) return;
+  try { await updateDoc(doc(db, "chats", currentChatId), { [`lastRead.${currentUser.uid}`]: Timestamp.now() }); } catch (e) {}
 }
 
-// ============ ОТПРАВКА ============
-const msgInput = $("message-input");
-const sendBtn = $("send-btn");
+const msgInput = $("message-input"), sendBtn = $("send-btn"), micBtn = $("mic-btn"), attachBtn = $("attach-btn"), fileInput = $("file-input");
+
+function updateSendBtn() {
+  const hasText = msgInput.value.trim().length > 0;
+  sendBtn.classList.toggle("visible", hasText);
+  micBtn.style.display = hasText ? "none" : "flex";
+}
 
 msgInput.addEventListener("input", () => {
   msgInput.style.height = "auto";
   msgInput.style.height = Math.min(msgInput.scrollHeight, 150) + "px";
+  updateSendBtn();
   sendTypingSignal();
 });
 msgInput.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendBtn.click();
-  }
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendBtn.click(); }
 });
 
 function sendTypingSignal() {
@@ -837,50 +736,150 @@ function sendTypingSignal() {
   const now = Date.now();
   if (now - lastTypingSent < 1500) return;
   lastTypingSent = now;
-  updateDoc(doc(db, "chats", currentChatId), {
-    [`typing.${currentUser.uid}`]: Timestamp.now()
-  }).catch(() => {});
+  updateDoc(doc(db, "chats", currentChatId), { [`typing.${currentUser.uid}`]: Timestamp.now() }).catch(() => {});
+}
+
+async function sendMessage(data) {
+  if (!currentChatId || !currentUser) return;
+  const msg = { senderId: currentUser.uid, createdAt: serverTimestamp(), ...data };
+  if (replyTo) { msg.replyTo = { id: replyTo.id, text: replyTo.text, senderNick: replyTo.senderNick }; }
+  await addDoc(collection(db, "chats", currentChatId, "messages"), msg);
+  let preview = data.text || "";
+  if (data.type === "image") preview = "🖼 Фото";
+  else if (data.type === "voice") preview = "🎤 Голосовое";
+  await updateDoc(doc(db, "chats", currentChatId), {
+    lastMessage: preview.slice(0, 60),
+    lastMessageType: data.type || "text",
+    lastMessageAt: serverTimestamp(),
+    [`lastRead.${currentUser.uid}`]: Timestamp.now()
+  });
+  hideReplyPreview();
 }
 
 sendBtn.onclick = async () => {
   const text = msgInput.value.trim();
-  if (!text || !currentChatId) return;
+  if (!text) return;
   msgInput.value = "";
   msgInput.style.height = "auto";
-
-  try {
-    await addDoc(collection(db, "chats", currentChatId, "messages"), {
-      text,
-      senderId: currentUser.uid,
-      createdAt: serverTimestamp()
-    });
-    await updateDoc(doc(db, "chats", currentChatId), {
-      lastMessage: text,
-      lastMessageAt: serverTimestamp(),
-      [`lastRead.${currentUser.uid}`]: Timestamp.now()
-    });
-  } catch (e) {
-    console.error("Send error:", e);
-  }
+  updateSendBtn();
+  try { await sendMessage({ text, type: "text" }); } catch (e) { alert("Ошибка: " + e.message); }
 };
 
-// ============ ОБНОВЛЕНИЕ СТАТУСА (раз в 15 сек) ============
-setInterval(() => {
-  if (currentChatUser && currentChatData) {
-    updateChatStatus();
-    // Перерисовать список чатов для свежих зелёных точек
-    if (!currentChatId) return;
+attachBtn.onclick = () => fileInput.click();
+fileInput.onchange = async () => {
+  const file = fileInput.files[0];
+  fileInput.value = "";
+  if (!file) return;
+  $("upload-progress").classList.add("on");
+  $("upload-progress").textContent = "⏳ Сжимаю фото...";
+  try {
+    const base64 = await compressImage(file);
+    $("upload-progress").textContent = "⏳ Отправка...";
+    await sendMessage({ type: "image", imageData: base64, text: "" });
+  } catch (e) { alert("Ошибка: " + e.message); }
+  $("upload-progress").classList.remove("on");
+};
+
+let mediaRecorder = null, audioChunks = [], recStartTime = 0, recTimerInterval = null;
+
+micBtn.addEventListener("mousedown", startRecording);
+micBtn.addEventListener("mouseup", stopRecording);
+micBtn.addEventListener("mouseleave", () => { if (mediaRecorder && mediaRecorder.state === "recording") stopRecording(); });
+micBtn.addEventListener("touchstart", e => { e.preventDefault(); startRecording(); }, { passive: false });
+micBtn.addEventListener("touchend", e => { e.preventDefault(); stopRecording(); });
+
+async function startRecording() {
+  if (mediaRecorder && mediaRecorder.state === "recording") return;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const options = { audioBitsPerSecond: 16000 };
+    mediaRecorder = new MediaRecorder(stream, options);
+    audioChunks = [];
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      const dur = (Date.now() - recStartTime) / 1000;
+      if (dur < 1) return;
+      const blob = new Blob(audioChunks, { type: "audio/webm" });
+      if (blob.size > 550000) {
+        alert("Голосовое слишком длинное. Ограничение ~3.5 минуты.");
+        return;
+      }
+      $("upload-progress").classList.add("on");
+      $("upload-progress").textContent = "⏳ Отправка голосового...";
+      try {
+        const base64 = await blobToBase64(blob);
+        await sendMessage({ type: "voice", voiceData: base64, duration: dur, text: "" });
+      } catch (e) { alert("Ошибка: " + e.message); }
+      $("upload-progress").classList.remove("on");
+    };
+    mediaRecorder.start();
+    recStartTime = Date.now();
+    micBtn.classList.add("recording");
+    $("recording-indicator").classList.add("on");
+    recTimerInterval = setInterval(() => {
+      const sec = Math.floor((Date.now() - recStartTime) / 1000);
+      $("rec-time").textContent = formatDuration(sec);
+      if (sec >= 210) stopRecording();
+    }, 200);
+  } catch (e) { alert("Нет доступа к микрофону: " + e.message); }
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state === "recording") {
+    mediaRecorder.stop();
+    micBtn.classList.remove("recording");
+    $("recording-indicator").classList.remove("on");
+    if (recTimerInterval) { clearInterval(recTimerInterval); recTimerInterval = null; }
   }
-  // Обновить точки в списке чатов
+}
+
+let currentAudio = null;
+function bindVoicePlayers() {
+  document.querySelectorAll(".voice-player").forEach(player => {
+    const btn = player.querySelector(".voice-play");
+    const fill = player.querySelector(".voice-bar-fill");
+    const timeEl = player.querySelector(".voice-time");
+    const totalDur = parseFloat(player.dataset.dur) || 0;
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const url = player.dataset.url;
+      if (currentAudio && currentAudio.dataset.url === url) {
+        if (currentAudio.paused) { currentAudio.play(); btn.textContent = "⏸"; }
+        else { currentAudio.pause(); btn.textContent = "▶"; }
+        return;
+      }
+      if (currentAudio) currentAudio.pause();
+      document.querySelectorAll(".voice-play").forEach(b => b.textContent = "▶");
+      document.querySelectorAll(".voice-bar-fill").forEach(f => f.style.width = "0%");
+      const audio = new Audio(url);
+      audio.dataset.url = url;
+      currentAudio = audio;
+      audio.play();
+      btn.textContent = "⏸";
+      audio.ontimeupdate = () => {
+        if (audio.duration) {
+          fill.style.width = (audio.currentTime / audio.duration * 100) + "%";
+          timeEl.textContent = formatDuration(audio.currentTime);
+        }
+      };
+      audio.onended = () => { btn.textContent = "▶"; fill.style.width = "0%"; timeEl.textContent = formatDuration(totalDur); };
+    };
+  });
+}
+
+setInterval(() => {
+  if (currentChatUser && currentChatData) updateChatStatus();
   document.querySelectorAll(".chat-item").forEach(el => {
     const uid = el.dataset.uid;
     if (uid && usersCache[uid]) {
-      const online = isOnline(usersCache[uid]);
       const dot = el.querySelector(".online-dot");
-      if (dot) dot.classList.toggle("on", online);
+      if (dot) dot.classList.toggle("on", isOnline(usersCache[uid]));
     }
   });
 }, 15000);
+
+updateSendBtn();
 </script>
 </body>
 </html>
