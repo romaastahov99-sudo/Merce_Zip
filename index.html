@@ -60,13 +60,13 @@
   .chat-item.pinned .chat-item-name::after { content: " 📌"; font-size: 11px; }
   .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 18px; flex-shrink: 0; position: relative; overflow: hidden; background-size: cover; background-position: center; }
   .avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .avatar.group-avatar { border-radius: 50%; }
   .avatar-wrap { position: relative; display: inline-block; flex-shrink: 0; }
-  .online-dot { position: absolute; bottom: 0; right: 0; width: 13px; height: 13px; border-radius: 50%; background: #4dcd5e; border: 2px solid var(--bg-sidebar); display: none; z-index: 2; }
+  .online-dot { position: absolute; bottom: 0; right: 0; width: 13px; height: 13px; border-radius: 50%; background: #4dcd5e; border: 2px solid var(--bg-sidebar); display: none; z-index: 2; transition: opacity .2s; }
   .online-dot.on { display: block; }
   .chat-item-info { flex: 1; min-width: 0; }
   .chat-item-name { font-size: 15px; font-weight: 500; margin-bottom: 3px; color: var(--text-main); }
   .chat-item-last { font-size: 13px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .unread-badge { background: var(--accent); color: #fff; font-size: 12px; font-weight: 600; min-width: 22px; height: 22px; border-radius: 11px; display: flex; align-items: center; justify-content: center; padding: 0 6px; flex-shrink: 0; }
   .empty-list { padding: 30px 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
 
   #chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg-main); background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0); background-size: 20px 20px; position: relative; }
@@ -76,11 +76,21 @@
   #chat-header { padding: 10px 20px; background: var(--bg-sidebar); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
   #back-btn { display: none; background: none; border: none; color: var(--accent); font-size: 26px; cursor: pointer; padding: 0 6px; line-height: 1; flex-shrink: 0; }
   #back-btn:hover { color: var(--accent-hover); }
-  #chat-header .chat-title-wrap { flex: 1; min-width: 0; cursor: pointer; }
+  .chat-title-wrap { flex: 1; min-width: 0; cursor: pointer; }
   #chat-header .name { font-size: 16px; font-weight: 600; color: var(--text-main); }
   #chat-header .status { font-size: 13px; color: var(--text-secondary); transition: color .2s; }
   #chat-header .status.typing { color: var(--accent); }
   #chat-header .status.online { color: #4dcd5e; }
+
+  #pinned-banner { display: none; padding: 8px 20px; background: var(--bg-menu); border-bottom: 1px solid var(--border); align-items: center; gap: 10px; cursor: pointer; }
+  #pinned-banner.on { display: flex; }
+  #pinned-banner:hover { background: var(--bg-hover); }
+  #pinned-banner .pin-line { width: 3px; height: 34px; background: var(--accent); border-radius: 2px; flex-shrink: 0; }
+  #pinned-banner .pin-info { flex: 1; min-width: 0; }
+  #pinned-banner .pin-title { font-size: 12px; color: var(--accent); font-weight: 600; }
+  #pinned-banner .pin-text { font-size: 13px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #pinned-banner .pin-unpin { background: none; border: none; color: var(--text-secondary); font-size: 18px; cursor: pointer; padding: 4px 8px; }
+
   #chat-search-bar { display: none; padding: 8px 20px; background: var(--bg-sidebar); border-bottom: 1px solid var(--border); gap: 10px; align-items: center; }
   #chat-search-bar.on { display: flex; }
   #chat-search-bar input { flex: 1; padding: 8px 14px; background: var(--bg-input); border: none; border-radius: 20px; color: var(--text-main); font-size: 14px; outline: none; }
@@ -88,7 +98,7 @@
   #chat-search-bar .search-info { font-size: 13px; color: var(--text-secondary); }
 
   #messages { flex: 1; overflow-y: auto; padding: 20px 5%; display: flex; flex-direction: column; gap: 4px; }
-  .msg { max-width: 65%; padding: 8px 12px 6px; border-radius: 12px; font-size: 15px; line-height: 1.35; word-wrap: break-word; position: relative; animation: pop .15s ease; cursor: pointer; }
+  .msg { max-width: 65%; padding: 8px 12px 6px; border-radius: 12px; font-size: 15px; line-height: 1.35; word-wrap: break-word; position: relative; animation: pop .15s ease; cursor: pointer; transition: box-shadow .3s; }
   @keyframes pop { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
   .msg.own { align-self: flex-end; background: var(--bg-msg-own); border-bottom-right-radius: 4px; color: var(--text-main); }
   body[data-theme="light"] .msg.own { color: #000; }
@@ -109,7 +119,7 @@
   .voice-bar { flex: 1; height: 3px; background: rgba(128,128,128,.3); border-radius: 2px; position: relative; }
   .voice-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 2px; width: 0%; transition: width .1s linear; }
   .voice-time { font-size: 11px; color: var(--text-secondary); }
-  .msg.highlight { background: #e5ca77 !important; color: #000 !important; }
+  .msg.flash { box-shadow: 0 0 0 2px #e5ca77; }
 
   #reply-preview, #edit-preview { display: none; padding: 8px 20px; background: var(--bg-menu); border-top: 1px solid var(--border); align-items: center; gap: 10px; }
   #reply-preview .rp-line { width: 3px; height: 34px; background: var(--accent); border-radius: 2px; flex-shrink: 0; }
@@ -161,9 +171,11 @@
   .modal .btn-primary { background: var(--accent); color: #fff; }
   .modal .btn-primary:hover { background: var(--accent-hover); }
   .modal .btn-secondary { background: var(--bg-input); color: var(--text-main); }
+  .modal .btn-danger { background: #e53935; color: #fff; }
+  .modal .btn-danger:hover { background: #c62828; }
 
-  #settings-avatar, #group-avatar-big { width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 600; cursor: pointer; position: relative; overflow: hidden; background-size: cover; background-position: center; border: 3px solid var(--accent); color: #fff; }
-  #settings-avatar img, #group-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
+  #settings-avatar, #group-avatar-big, #user-profile-avatar { width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 600; cursor: pointer; position: relative; overflow: hidden; background-size: cover; background-position: center; border: 3px solid var(--accent); color: #fff; }
+  #settings-avatar img, #group-avatar-big img, #user-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
   #settings-avatar::after, #group-avatar-big::after { content: "📷"; position: absolute; bottom: 0; right: 0; background: var(--accent); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 3px solid var(--bg-modal); color: #fff; }
 
   .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
@@ -189,6 +201,9 @@
   .member-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
   .member-item .member-name { font-size: 15px; }
   .member-item .member-you { font-size: 12px; color: var(--text-muted); }
+
+  #user-profile-modal .user-profile-nick { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 6px; }
+  #user-profile-modal .user-profile-status { font-size: 14px; color: var(--text-secondary); text-align: center; margin-bottom: 22px; }
 
   @media (max-width: 768px) {
     #sidebar { width: 100%; position: absolute; z-index: 10; }
@@ -230,6 +245,11 @@
     <div id="empty-state"><div class="big">💬</div><div>Выбери чат или найди друга через поиск</div></div>
     <div id="chat-view">
       <div id="chat-header"></div>
+      <div id="pinned-banner">
+        <div class="pin-line"></div>
+        <div class="pin-info"><div class="pin-title">📌 Закреплённое сообщение</div><div class="pin-text"></div></div>
+        <button class="pin-unpin" id="pin-unpin" title="Открепить">✕</button>
+      </div>
       <div id="chat-search-bar">
         <input type="text" id="chat-search-input" placeholder="Поиск в чате...">
         <span class="search-info" id="chat-search-info"></span>
@@ -264,6 +284,7 @@
 
 <div id="msg-menu">
   <button data-action="reply">↩️ Ответить</button>
+  <button data-action="pin">📌 Закрепить</button>
   <button data-action="edit">✏️ Редактировать</button>
   <button data-action="copy">📋 Копировать</button>
   <button data-action="delete" class="danger">🗑 Удалить у всех</button>
@@ -272,6 +293,7 @@
 <div id="chat-ctx-menu">
   <button data-action="pin">📌 Закрепить</button>
   <button data-action="unpin" style="display:none">📍 Открепить</button>
+  <button data-action="delete" class="danger">🗑 Удалить чат</button>
 </div>
 
 <div id="recording-indicator"><div id="recording-dot"></div><span id="rec-time">0:00</span> <span style="opacity:.7">← отпусти для отправки</span></div>
@@ -303,7 +325,7 @@
   </div>
 </div>
 
-<!-- Модалка изменения ника -->
+<!-- Модалка ника -->
 <div id="nick-modal" class="modal-bg">
   <div class="modal">
     <h2>Изменить имя</h2>
@@ -315,7 +337,7 @@
   </div>
 </div>
 
-<!-- Модалка создания группы -->
+<!-- Модалка группы -->
 <div id="group-modal" class="modal-bg">
   <div class="modal">
     <h2>Новая группа</h2>
@@ -331,7 +353,7 @@
   </div>
 </div>
 
-<!-- Модалка информации о группе -->
+<!-- Модалка инфо о группе -->
 <div id="group-info-modal" class="modal-bg">
   <div class="modal">
     <h2>Информация о группе</h2>
@@ -346,10 +368,23 @@
   </div>
 </div>
 
+<!-- Модалка профиля собеседника -->
+<div id="user-profile-modal" class="modal-bg">
+  <div class="modal">
+    <div id="user-profile-avatar"></div>
+    <div class="user-profile-nick" id="user-profile-nick">—</div>
+    <div class="user-profile-status" id="user-profile-status"></div>
+    <div class="btn-row" style="flex-direction:column">
+      <button class="btn-danger" id="user-profile-delete">🗑 Удалить чат</button>
+      <button class="btn-secondary" id="user-profile-close">Закрыть</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, limit, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, limit, updateDoc, deleteDoc, Timestamp, increment, arrayRemove, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAU1d1L946PF9lrLKoaE6TQ5fzUE1CR1ws",
@@ -371,6 +406,7 @@ let currentChatMembers = {};
 let lastMsgs = [], allMsgs = [];
 let unsubMessages, unsubChats, unsubChatDoc, unsubOtherUser;
 let usersCache = {};
+let userSubs = {}; // uid -> unsub
 let lastTypingSent = 0, heartbeatTimer = null;
 let replyTo = null, editingMsgId = null;
 let cachedChats = [];
@@ -451,7 +487,7 @@ function startHeartbeat() {
   heartbeatTimer = setInterval(() => { if (!document.hidden) updateLastSeen(); }, 30000);
 }
 function stopHeartbeat() { if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null; } }
-document.addEventListener("visibilitychange", () => { if (!document.hidden && currentUser) { updateLastSeen(); refreshUsersCache(); } });
+document.addEventListener("visibilitychange", () => { if (!document.hidden && currentUser) updateLastSeen(); });
 window.addEventListener("beforeunload", () => { if (currentUser) updateLastSeen(); });
 
 onAuthStateChanged(auth, async user => {
@@ -474,9 +510,11 @@ onAuthStateChanged(auth, async user => {
       authBtn.disabled = false;
       authBtn.textContent = isRegister ? "Создать аккаунт" : "Войти";
       startHeartbeat();
+      subscribeUser(user.uid, () => {
+        currentNick = usersCache[user.uid].nick;
+        currentAvatar = usersCache[user.uid].avatar || null;
+      });
       loadChats();
-      // Периодически обновляем аватарки и статусы собеседников
-      setInterval(refreshUsersCache, 20000);
     } catch (e) {
       authError.textContent = translateError(e.code || "unknown");
       await signOut(auth);
@@ -487,7 +525,9 @@ onAuthStateChanged(auth, async user => {
     lastMsgs = []; allMsgs = []; currentChatMembers = {};
     stopHeartbeat();
     [unsubChats, unsubMessages, unsubChatDoc, unsubOtherUser].forEach(u => u && u());
+    Object.values(userSubs).forEach(u => u && u());
     unsubChats = unsubMessages = unsubChatDoc = unsubOtherUser = null;
+    userSubs = {};
     authScreen.style.display = "flex";
     appScreen.style.display = "none";
     $("chat-list").innerHTML = "";
@@ -496,32 +536,15 @@ onAuthStateChanged(auth, async user => {
   }
 });
 
-async function refreshUsersCache() {
-  if (!currentUser) return;
-  try {
-    const snap = await getDocs(query(collection(db, "users"), limit(500)));
-    snap.forEach(d => { usersCache[d.id] = d.data(); });
-    // Обновить my-данные
-    if (usersCache[currentUser.uid]) {
-      currentNick = usersCache[currentUser.uid].nick;
-      currentAvatar = usersCache[currentUser.uid].avatar || null;
-    }
-    // Перерисовать список чатов и текущий чат
-    if (cachedChats.length) {
-      cachedChats.forEach(c => {
-        if (c.type !== "group" && c.other?.uid) c.other = usersCache[c.other.uid] || c.other;
-      });
-      renderChatList(cachedChats);
-    }
-    if (currentChatType === "private" && currentChatUser) {
-      currentChatUser = usersCache[currentChatUser.uid] || currentChatUser;
-      renderChatHeader();
-    }
-    if (currentChatType === "group" && currentChatData) {
-      loadGroupMembers(currentChatData.members);
-    }
-    if (lastMsgs.length) renderMessages(lastMsgs);
-  } catch (e) {}
+// Живая подписка на пользователя (для аватарок, статусов)
+function subscribeUser(uid, onChange) {
+  if (userSubs[uid]) return;
+  const unsub = onSnapshot(doc(db, "users", uid), snap => {
+    if (!snap.exists()) return;
+    usersCache[uid] = snap.data();
+    onChange && onChange(usersCache[uid]);
+  }, () => {});
+  userSubs[uid] = unsub;
 }
 
 // ============ УТИЛИТЫ ============
@@ -531,16 +554,15 @@ function colorFromId(id) {
   let h = 0; for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
   return c[Math.abs(h) % c.length];
 }
-function avatarHTML(entity, size = 48, fontSize = 18, isGroup = false) {
+function avatarHTML(entity, size = 48, fontSize = 18) {
   if (!entity) return "";
   const uid = entity.uid || entity.id || "";
   const name = entity.nick || entity.name || "?";
   const av = entity.avatar;
-  const cls = isGroup ? "avatar group-avatar" : "avatar";
   if (av) {
-    return `<div class="${cls}" style="width:${size}px;height:${size}px"><img src="${av}" alt=""></div>`;
+    return `<div class="avatar" style="width:${size}px;height:${size}px"><img src="${av}" alt=""></div>`;
   }
-  return `<div class="${cls}" style="background:${colorFromId(uid)};width:${size}px;height:${size}px;font-size:${fontSize}px">${initials(name)}</div>`;
+  return `<div class="avatar" style="background:${colorFromId(uid)};width:${size}px;height:${size}px;font-size:${fontSize}px">${initials(name)}</div>`;
 }
 function formatTime(ts) {
   if (!ts) return "";
@@ -578,7 +600,7 @@ function escapeHtml(s) {
 function isOnline(u) {
   if (!u?.lastSeen) return false;
   const ts = u.lastSeen.toMillis ? u.lastSeen.toMillis() : new Date(u.lastSeen).getTime();
-  return (Date.now() - ts) < 60000;
+  return (Date.now() - ts) < 45000;
 }
 
 function compressImage(file, maxSize = 1000, quality = 0.75) {
@@ -630,6 +652,7 @@ function loadChats() {
         chats.push({ id: d.id, ...data, type: "group" });
       } else {
         const otherUid = data.members.find(u => u !== currentUser.uid);
+        if (!otherUid) continue;
         const other = await getUserData(otherUid);
         chats.push({ id: d.id, ...data, type: "private", other });
       }
@@ -647,14 +670,25 @@ function loadChats() {
 
 function getChatDisplay(chat) {
   if (chat.type === "group") {
-    return { title: chat.name || "Группа", avatar: chat.avatar, uid: chat.id, isGroup: true, nick: chat.name };
+    return { title: chat.name || "Группа", avatar: chat.avatar, uid: chat.id, nick: chat.name };
   }
-  return { title: chat.other.nick, avatar: chat.other.avatar, uid: chat.other.uid, isGroup: false, nick: chat.other.nick, user: chat.other };
+  return { title: chat.other.nick, avatar: chat.other.avatar, uid: chat.other.uid, nick: chat.other.nick };
+}
+
+function getUnreadCount(chat) {
+  const total = chat.messageCount || 0;
+  const read = (chat.lastReadCount && chat.lastReadCount[currentUser.uid]) || 0;
+  return Math.max(0, total - read);
 }
 
 function renderChatList(chats) {
   const list = $("chat-list");
   if (chats.length === 0) { list.innerHTML = `<div class="empty-list">Пока нет чатов.<br>Найди друга или создай группу 👆</div>`; return; }
+
+  // Сохраняем текущие аватарки в DOM, чтобы не мигали
+  const existingItems = {};
+  list.querySelectorAll(".chat-item").forEach(el => { existingItems[el.dataset.id] = el; });
+
   list.innerHTML = chats.map(c => {
     const disp = getChatDisplay(c);
     const online = c.type === "private" ? isOnline(c.other) : false;
@@ -663,18 +697,22 @@ function renderChatList(chats) {
     else if (c.lastMessageType === "voice") last = "🎤 Голосовое";
     const pinned = c.pinned?.[currentUser.uid] ? "pinned" : "";
     const groupPrefix = c.type === "group" ? "👥 " : "";
+    const unread = getUnreadCount(c);
+    const badge = unread > 0 ? `<div class="unread-badge">${unread > 99 ? "99+" : unread}</div>` : "";
     return `
       <div class="chat-item ${c.id === currentChatId ? 'active' : ''} ${pinned}" data-id="${c.id}" data-uid="${c.type === 'private' ? c.other.uid : ''}" data-type="${c.type}">
         <div class="avatar-wrap">
-          ${avatarHTML(disp, 48, 18, disp.isGroup)}
+          ${avatarHTML(disp, 48, 18)}
           ${c.type === "private" ? `<div class="online-dot ${online ? 'on' : ''}"></div>` : ""}
         </div>
         <div class="chat-item-info">
           <div class="chat-item-name">${groupPrefix}${escapeHtml(disp.title)}</div>
           <div class="chat-item-last">${escapeHtml(last)}</div>
         </div>
+        ${badge}
       </div>`;
   }).join("");
+
   list.querySelectorAll(".chat-item").forEach(el => {
     el.onclick = () => openChatById(el.dataset.id, el.dataset.uid, el.dataset.type);
     el.addEventListener("contextmenu", e => { e.preventDefault(); showChatMenu(e.clientX, e.clientY, el.dataset.id); });
@@ -685,6 +723,20 @@ function renderChatList(chats) {
     }, { passive: true });
     el.addEventListener("touchend", () => clearTimeout(pressTimer));
     el.addEventListener("touchmove", () => clearTimeout(pressTimer));
+  });
+
+  // Подписки на апдейты собеседников (без перерисовки — точечно)
+  chats.forEach(c => {
+    if (c.type === "private" && c.other?.uid) {
+      subscribeUser(c.other.uid, () => {
+        const el = list.querySelector(`.chat-item[data-uid="${c.other.uid}"]`);
+        if (!el) return;
+        const av = el.querySelector(".avatar-wrap");
+        if (av) {
+          av.innerHTML = `${avatarHTML(c.other, 48, 18)}<div class="online-dot ${isOnline(c.other) ? 'on' : ''}"></div>`;
+        }
+      });
+    }
   });
 }
 
@@ -697,7 +749,7 @@ function showChatMenu(x, y, chatId) {
   menu.querySelector('[data-action="unpin"]').style.display = isPinned ? "flex" : "none";
   menu.style.display = "block";
   let left = x, top = y;
-  const w = 200, h = 100;
+  const w = 200, h = 150;
   if (left + w > window.innerWidth) left = window.innerWidth - w - 10;
   if (top + h > window.innerHeight) top = window.innerHeight - h - 10;
   if (left < 10) left = 10;
@@ -711,6 +763,11 @@ function showChatMenu(x, y, chatId) {
       try {
         if (action === "pin") await updateDoc(doc(db, "chats", chatId), { [`pinned.${currentUser.uid}`]: true });
         else if (action === "unpin") await updateDoc(doc(db, "chats", chatId), { [`pinned.${currentUser.uid}`]: false });
+        else if (action === "delete") {
+          if (!confirm("Удалить чат? История сохранится, но чат исчезнет из списка.")) return;
+          await updateDoc(doc(db, "chats", chatId), { members: arrayRemove(currentUser.uid) });
+          if (currentChatId === chatId) closeChat();
+        }
       } catch (e) { alert("Ошибка: " + e.message); }
     };
   });
@@ -758,6 +815,12 @@ searchInput.addEventListener("input", async () => {
           const existing = await getDoc(chatRef);
           if (!existing.exists()) {
             await setDoc(chatRef, { members: [currentUser.uid, uid], type: "private", lastMessage: "", lastMessageAt: serverTimestamp(), createdAt: serverTimestamp() });
+          } else {
+            // если мы были удалены из members — добавимся обратно
+            const data = existing.data();
+            if (!data.members.includes(currentUser.uid)) {
+              await updateDoc(chatRef, { members: arrayUnion(currentUser.uid) });
+            }
           }
         } catch (e) {}
         searchInput.value = "";
@@ -781,10 +844,9 @@ async function openChatById(chatId, otherUid, type) {
   hideReplyPreview(); hideEditPreview();
   $("emoji-panel").classList.remove("on");
   $("chat-search-bar").classList.remove("on");
+  $("pinned-banner").classList.remove("on");
 
-  if (type === "private" && otherUid) {
-    currentChatUser = await getUserData(otherUid);
-  }
+  if (type === "private" && otherUid) currentChatUser = await getUserData(otherUid);
 
   $("empty-state").style.display = "none";
   $("chat-view").style.display = "flex";
@@ -793,13 +855,12 @@ async function openChatById(chatId, otherUid, type) {
 
   if (unsubChatDoc) unsubChatDoc();
   unsubChatDoc = onSnapshot(doc(db, "chats", chatId), snap => {
-    if (!snap.exists()) return;
+    if (!snap.exists()) { closeChat(); return; }
     currentChatData = snap.data();
     currentChatType = currentChatData.type || "private";
-    if (currentChatType === "group") {
-      loadGroupMembers(currentChatData.members);
-    }
+    if (currentChatType === "group") loadGroupMembers(currentChatData.members);
     renderChatHeader();
+    renderPinnedBanner();
     updateCheckmarks();
     updateChatStatus();
   });
@@ -830,6 +891,10 @@ async function openChatById(chatId, otherUid, type) {
 async function loadGroupMembers(memberUids) {
   for (const uid of memberUids) {
     if (!usersCache[uid]) await getUserData(uid);
+    if (!userSubs[uid]) subscribeUser(uid, () => {
+      currentChatMembers[uid] = usersCache[uid];
+      if (lastMsgs.length) renderMessages(lastMsgs);
+    });
   }
   currentChatMembers = {};
   memberUids.forEach(uid => { if (usersCache[uid]) currentChatMembers[uid] = usersCache[uid]; });
@@ -842,7 +907,7 @@ function renderChatHeader() {
     const memberCount = currentChatData?.members?.length || 0;
     $("chat-header").innerHTML = `
       <button id="back-btn" title="Назад">←</button>
-      <div class="avatar-wrap">${avatarHTML({ uid: currentChatId, name, avatar }, 42, 16, true)}</div>
+      <div class="avatar-wrap">${avatarHTML({ uid: currentChatId, nick: name, avatar }, 42, 16)}</div>
       <div class="chat-title-wrap" id="chat-title-wrap">
         <div class="name">${escapeHtml(name)}</div>
         <div class="status">${memberCount} участников</div>
@@ -868,7 +933,7 @@ function renderChatHeader() {
   if (titleWrap) {
     titleWrap.onclick = () => {
       if (currentChatType === "group") openGroupInfo();
-      else openUserInfo(currentChatUser);
+      else openUserProfile(currentChatUser);
     };
   }
 }
@@ -880,9 +945,7 @@ function toggleChatSearch() {
     $("chat-search-input").value = "";
     $("chat-search-info").textContent = "";
     $("chat-search-input").focus();
-  } else {
-    renderMessages(allMsgs);
-  }
+  } else renderMessages(allMsgs);
 }
 $("chat-search-close").onclick = () => { $("chat-search-bar").classList.remove("on"); renderMessages(allMsgs); };
 $("chat-search-input").addEventListener("input", e => {
@@ -902,6 +965,7 @@ function closeChat() {
   hideReplyPreview(); hideEditPreview();
   $("emoji-panel").classList.remove("on");
   $("chat-search-bar").classList.remove("on");
+  $("pinned-banner").classList.remove("on");
   $("chat-view").style.display = "none";
   $("empty-state").style.display = "flex";
   $("sidebar").classList.remove("hidden");
@@ -923,6 +987,26 @@ function updateChatStatus() {
   else { status.textContent = formatLastSeen(currentChatUser.lastSeen); status.className = "status"; }
   const dot = $("header-dot"); if (dot) dot.classList.toggle("on", online);
 }
+
+function renderPinnedBanner() {
+  const banner = $("pinned-banner");
+  if (!currentChatData?.pinnedMessage) { banner.classList.remove("on"); return; }
+  banner.classList.add("on");
+  banner.querySelector(".pin-text").textContent = currentChatData.pinnedMessage.text || "Сообщение";
+  banner.onclick = e => {
+    if (e.target.closest("#pin-unpin")) return;
+    const el = document.querySelector(`.msg[data-id="${currentChatData.pinnedMessage.id}"]`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("flash");
+      setTimeout(() => el.classList.remove("flash"), 800);
+    }
+  };
+}
+$("pin-unpin").onclick = async e => {
+  e.stopPropagation();
+  try { await updateDoc(doc(db, "chats", currentChatId), { pinnedMessage: null }); } catch (err) {}
+};
 
 function renderMessages(msgs, isSearch = false) {
   if (!isSearch) lastMsgs = msgs;
@@ -954,7 +1038,6 @@ function renderMessages(msgs, isSearch = false) {
       </div>`;
     }
 
-    // Имя отправителя в группе (для чужих сообщений)
     let senderNameBlock = "";
     if (currentChatType === "group" && !own) {
       const sender = currentChatMembers[m.senderId];
@@ -1008,7 +1091,7 @@ function showMenu(x, y, msgEl) {
   menu.querySelector('[data-action="edit"]').style.display = (isOwn && isText) ? "flex" : "none";
   menu.style.display = "block";
   const rect = menu.getBoundingClientRect();
-  const w = rect.width || 200, h = rect.height || 180;
+  const w = rect.width || 200, h = rect.height || 200;
   let left = x, top = y;
   if (left + w > window.innerWidth) left = window.innerWidth - w - 10;
   if (top + h > window.innerHeight) top = window.innerHeight - h - 10;
@@ -1027,16 +1110,21 @@ function showMenu(x, y, msgEl) {
         else if (msg.type === "voice") preview = "🎤 Голосовое";
         const senderData = await getUserData(msg.senderId);
         replyTo = { id: msg.id, text: preview.slice(0, 100), senderNick: senderData.nick };
-        showReplyPreview();
-        hideEditPreview();
-        editingMsgId = null;
+        showReplyPreview(); hideEditPreview(); editingMsgId = null;
         $("message-input").focus();
+      } else if (action === "pin") {
+        let preview = msg.text || "";
+        if (msg.type === "image") preview = "🖼 Фото";
+        else if (msg.type === "voice") preview = "🎤 Голосовое";
+        try {
+          await updateDoc(doc(db, "chats", currentChatId), {
+            pinnedMessage: { id: msg.id, text: preview.slice(0, 100), senderId: msg.senderId }
+          });
+        } catch (e) { alert("Ошибка: " + e.message); }
       } else if (action === "edit") {
-        editingMsgId = msg.id;
-        replyTo = null;
+        editingMsgId = msg.id; replyTo = null;
         hideReplyPreview();
-        msgInput.value = msg.text || "";
-        updateSendBtn();
+        msgInput.value = msg.text || ""; updateSendBtn();
         showEditPreview(msg.text || "");
         $("message-input").focus();
       } else if (action === "copy") {
@@ -1044,7 +1132,13 @@ function showMenu(x, y, msgEl) {
         if (text) navigator.clipboard.writeText(text).catch(() => {});
       } else if (action === "delete") {
         if (confirm("Удалить сообщение у всех?")) {
-          try { await deleteDoc(doc(db, "chats", currentChatId, "messages", msgId)); } catch (e) { alert("Ошибка: " + e.message); }
+          try {
+            await deleteDoc(doc(db, "chats", currentChatId, "messages", msgId));
+            // Если удаляем закреплённое — снимем пин
+            if (currentChatData?.pinnedMessage?.id === msgId) {
+              await updateDoc(doc(db, "chats", currentChatId), { pinnedMessage: null });
+            }
+          } catch (e) { alert("Ошибка: " + e.message); }
         }
       }
     };
@@ -1080,13 +1174,16 @@ function updateCheckmarks() {
 }
 
 async function markChatRead() {
-  if (!currentChatId || !currentUser || !currentChatData || lastMsgs.length === 0) return;
-  const lastMsg = lastMsgs[lastMsgs.length - 1];
-  const lastTs = lastMsg.createdAt?.toMillis?.() || 0;
-  if (lastTs === 0) return;
-  const myRead = currentChatData.lastRead?.[currentUser.uid];
-  if ((myRead?.toMillis?.() || 0) >= lastTs) return;
-  try { await updateDoc(doc(db, "chats", currentChatId), { [`lastRead.${currentUser.uid}`]: Timestamp.now() }); } catch (e) {}
+  if (!currentChatId || !currentUser || !currentChatData) return;
+  const total = currentChatData.messageCount || 0;
+  const myRead = (currentChatData.lastReadCount && currentChatData.lastReadCount[currentUser.uid]) || 0;
+  if (myRead >= total && currentChatData.lastRead?.[currentUser.uid]) return;
+  try {
+    await updateDoc(doc(db, "chats", currentChatId), {
+      [`lastRead.${currentUser.uid}`]: Timestamp.now(),
+      [`lastReadCount.${currentUser.uid}`]: total
+    });
+  } catch (e) {}
 }
 
 // ============ ОТПРАВКА ============
@@ -1121,15 +1218,31 @@ async function sendMessage(data) {
   const msg = { senderId: currentUser.uid, createdAt: serverTimestamp(), ...data };
   if (replyTo) { msg.replyTo = { id: replyTo.id, text: replyTo.text, senderNick: replyTo.senderNick }; }
   await addDoc(collection(db, "chats", currentChatId, "messages"), msg);
+
   let preview = data.text || "";
   if (data.type === "image") preview = "🖼 Фото";
   else if (data.type === "voice") preview = "🎤 Голосовое";
-  await updateDoc(doc(db, "chats", currentChatId), {
+
+  // Для приватных чатов — убедимся, что мы и собеседник в members
+  const updateData = {
     lastMessage: preview.slice(0, 60),
     lastMessageType: data.type || "text",
     lastMessageAt: serverTimestamp(),
     [`lastRead.${currentUser.uid}`]: Timestamp.now()
-  });
+  };
+  if (currentChatData?.messageCount !== undefined || true) {
+    updateData.messageCount = increment(1);
+    updateData[`lastReadCount.${currentUser.uid}`] = increment(1);
+  }
+  if (currentChatType === "private") {
+    const otherUid = currentChatData?.members?.find(u => u !== currentUser.uid);
+    if (otherUid && !currentChatData.members.includes(otherUid)) {
+      updateData.members = arrayUnion(currentUser.uid, otherUid);
+    } else if (!currentChatData?.members?.includes(currentUser.uid)) {
+      updateData.members = arrayUnion(currentUser.uid);
+    }
+  }
+  await updateDoc(doc(db, "chats", currentChatId), updateData);
   hideReplyPreview();
 }
 
@@ -1259,8 +1372,7 @@ ep.querySelectorAll("button").forEach(b => {
     const val = msgInput.value;
     msgInput.value = val.slice(0, start) + b.textContent + val.slice(end);
     msgInput.selectionStart = msgInput.selectionEnd = start + b.textContent.length;
-    msgInput.focus();
-    updateSendBtn();
+    msgInput.focus(); updateSendBtn();
   };
 });
 $("emoji-btn").onclick = e => { e.stopPropagation(); $("emoji-panel").classList.toggle("on"); };
@@ -1272,7 +1384,7 @@ function openSettings() {
   $("settings-modal").classList.add("on");
   const av = $("settings-avatar");
   av.innerHTML = "";
-  if (currentAvatar) { av.innerHTML = `<img src="${currentAvatar}" alt="">`; }
+  if (currentAvatar) { av.innerHTML = `<img src="${currentAvatar}" alt="">`; av.style.background = ""; }
   else { av.textContent = initials(currentNick); av.style.background = colorFromId(currentUser.uid); }
   $("settings-nick").textContent = "@" + currentNick;
   $("theme-dark-btn").classList.toggle("on", currentTheme === "dark");
@@ -1308,7 +1420,6 @@ $("nick-save").onclick = async () => {
   if (!NICK_RE.test(newNick)) { alert("Ник: 3-20 символов, латиница/цифры/_"); return; }
   if (newNick === currentNick) { $("nick-modal").classList.remove("on"); return; }
   try {
-    // Проверяем, занят ли ник
     const q = query(collection(db, "users"), where("nickLower", "==", newNick.toLowerCase()), limit(1));
     const snap = await getDocs(q);
     if (!snap.empty && snap.docs[0].id !== currentUser.uid) { alert("Этот ник уже занят"); return; }
@@ -1317,8 +1428,6 @@ $("nick-save").onclick = async () => {
     usersCache[currentUser.uid].nick = newNick;
     $("nick-modal").classList.remove("on");
     openSettings();
-    if (cachedChats.length) renderChatList(cachedChats);
-    if (currentChatType === "private" && currentChatUser) renderChatHeader();
   } catch (e) { alert("Ошибка: " + e.message); }
 };
 
@@ -1337,6 +1446,46 @@ $("settings-logout").onclick = () => {
     $("settings-modal").classList.remove("on");
     updateLastSeen().finally(() => signOut(auth));
   }
+};
+
+// ============ ПРОФИЛЬ СОБЕСЕДНИКА ============
+function openUserProfile(u) {
+  if (!u) return;
+  $("user-profile-modal").classList.add("on");
+  const av = $("user-profile-avatar");
+  av.innerHTML = "";
+  if (u.avatar) { av.innerHTML = `<img src="${u.avatar}" alt="">`; av.style.background = ""; }
+  else { av.textContent = initials(u.nick); av.style.background = colorFromId(u.uid); }
+  $("user-profile-nick").textContent = u.nick;
+  const online = isOnline(u);
+  $("user-profile-status").textContent = online ? "🟢 онлайн" : formatLastSeen(u.lastSeen);
+  // Обновление в реальном времени, пока открыто
+  const unsub = onSnapshot(doc(db, "users", u.uid), snap => {
+    if (!snap.exists()) return;
+    const nu = snap.data();
+    usersCache[u.uid] = nu;
+    if (nu.avatar) { av.innerHTML = `<img src="${nu.avatar}" alt="">`; }
+    else { av.textContent = initials(nu.nick); av.style.background = colorFromId(nu.uid); }
+    $("user-profile-nick").textContent = nu.nick;
+    $("user-profile-status").textContent = isOnline(nu) ? "🟢 онлайн" : formatLastSeen(nu.lastSeen);
+  });
+  $("user-profile-modal")._unsub = unsub;
+}
+
+$("user-profile-close").onclick = () => {
+  if ($("user-profile-modal")._unsub) { $("user-profile-modal")._unsub(); $("user-profile-modal")._unsub = null; }
+  $("user-profile-modal").classList.remove("on");
+};
+$("user-profile-modal").onclick = e => { if (e.target.id === "user-profile-modal") $("user-profile-close").click(); };
+
+$("user-profile-delete").onclick = async () => {
+  if (!confirm("Удалить чат? История сохранится, но чат исчезнет из списка.")) return;
+  try {
+    await updateDoc(doc(db, "chats", currentChatId), { members: arrayRemove(currentUser.uid) });
+    if ($("user-profile-modal")._unsub) { $("user-profile-modal")._unsub(); $("user-profile-modal")._unsub = null; }
+    $("user-profile-modal").classList.remove("on");
+    closeChat();
+  } catch (e) { alert("Ошибка: " + e.message); }
 };
 
 // ============ СОЗДАНИЕ ГРУППЫ ============
@@ -1420,13 +1569,14 @@ $("group-create").onclick = async () => {
   try {
     await setDoc(doc(db, "chats", groupId), {
       type: "group",
-      name,
-      members,
+      name, members,
       createdBy: currentUser.uid,
       createdAt: serverTimestamp(),
       lastMessage: "Группа создана",
       lastMessageType: "text",
-      lastMessageAt: serverTimestamp()
+      lastMessageAt: serverTimestamp(),
+      messageCount: 1,
+      lastReadCount: { [currentUser.uid]: 1 }
     });
     $("group-modal").classList.remove("on");
     openChatById(groupId, null, "group");
@@ -1443,7 +1593,7 @@ async function openGroupInfo() {
   await loadGroupMembers(currentChatData.members);
   const av = $("group-avatar-big");
   av.innerHTML = "";
-  if (currentChatData.avatar) { av.innerHTML = `<img src="${currentChatData.avatar}" alt="">`; }
+  if (currentChatData.avatar) { av.innerHTML = `<img src="${currentChatData.avatar}" alt="">`; av.style.background = ""; }
   else { av.textContent = initials(currentChatData.name || "ГГ"); av.style.background = colorFromId(currentChatId); }
   $("group-info-name").value = currentChatData.name || "";
   const list = $("members-list");
@@ -1477,13 +1627,6 @@ $("group-info-save").onclick = async () => {
   } catch (e) { alert("Ошибка: " + e.message); }
 };
 
-// ============ ИНФО О ЮЗЕРЕ ============
-function openUserInfo(u) {
-  // Просто покажем алерт, потом можно сделать красивую модалку
-  // Пока пропущу
-}
-
-// ============ СТАРТ ============
 updateSendBtn();
 </script>
 </body>
