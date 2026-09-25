@@ -37,9 +37,10 @@
   .chat-item { display: flex; padding: 12px 16px; cursor: pointer; align-items: center; gap: 12px; transition: background .1s; }
   .chat-item:hover { background: #202b36; }
   .chat-item.active { background: #2b5278; }
-  .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 18px; flex-shrink: 0; position: relative; }
+  .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 18px; flex-shrink: 0; position: relative; overflow: hidden; background-size: cover; background-position: center; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
   .avatar-wrap { position: relative; display: inline-block; flex-shrink: 0; }
-  .online-dot { position: absolute; bottom: 0; right: 0; width: 13px; height: 13px; border-radius: 50%; background: #4dcd5e; border: 2px solid #17212b; display: none; }
+  .online-dot { position: absolute; bottom: 0; right: 0; width: 13px; height: 13px; border-radius: 50%; background: #4dcd5e; border: 2px solid #17212b; display: none; z-index: 2; }
   .online-dot.on { display: block; }
   .chat-item-info { flex: 1; min-width: 0; }
   .chat-item-name { font-size: 15px; font-weight: 500; margin-bottom: 3px; }
@@ -63,6 +64,7 @@
   .msg.other { align-self: flex-start; background: #182533; border-bottom-left-radius: 4px; }
   .msg .time { font-size: 11px; color: rgba(255,255,255,.5); float: right; margin: 6px 0 0 8px; display: inline-flex; align-items: center; gap: 3px; }
   .msg .msg-text { white-space: pre-wrap; }
+  .msg .edited { font-size: 10px; color: rgba(255,255,255,.4); font-style: italic; margin-right: 3px; }
   .check { display: inline-block; font-size: 12px; letter-spacing: -3px; color: rgba(255,255,255,.55); transition: color .2s; }
   .check.read { color: #4dcd5e; }
   .msg-image { max-width: 100%; max-height: 320px; border-radius: 8px; display: block; cursor: zoom-in; margin-bottom: 4px; }
@@ -80,7 +82,13 @@
   #reply-preview .rp-name { font-size: 13px; color: #5288c1; font-weight: 600; }
   #reply-preview .rp-text { font-size: 13px; color: rgba(255,255,255,.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #reply-preview .rp-close { background: none; border: none; color: #7f91a4; font-size: 20px; cursor: pointer; padding: 4px 8px; }
-  #input-area { padding: 12px 20px; background: #17212b; border-top: 1px solid #0e1621; display: flex; align-items: flex-end; gap: 8px; }
+  #edit-preview { display: none; padding: 8px 20px; background: #1c2836; border-top: 1px solid #0e1621; align-items: center; gap: 10px; }
+  #edit-preview .ep-line { width: 3px; height: 34px; background: #e5ca77; border-radius: 2px; flex-shrink: 0; }
+  #edit-preview .ep-info { flex: 1; min-width: 0; }
+  #edit-preview .ep-name { font-size: 13px; color: #e5ca77; font-weight: 600; }
+  #edit-preview .ep-text { font-size: 13px; color: rgba(255,255,255,.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #edit-preview .ep-close { background: none; border: none; color: #7f91a4; font-size: 20px; cursor: pointer; padding: 4px 8px; }
+  #input-area { padding: 12px 20px; background: #17212b; border-top: 1px solid #0e1621; display: flex; align-items: flex-end; gap: 8px; position: relative; }
   #message-input { flex: 1; padding: 12px 16px; background: #242f3d; border: none; border-radius: 12px; color: #fff; font-size: 15px; outline: none; resize: none; max-height: 150px; font-family: inherit; line-height: 1.4; }
   .icon-btn { width: 40px; height: 40px; border-radius: 50%; background: transparent; border: none; color: #7f91a4; font-size: 20px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s; }
   .icon-btn:hover { background: #242f3d; color: #5288c1; }
@@ -101,6 +109,27 @@
   #lightbox img { max-width: 95%; max-height: 95%; border-radius: 8px; }
   #upload-progress { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #2b5278; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 14px; z-index: 200; display: none; }
   #upload-progress.on { display: block; }
+  /* Эмодзи */
+  #emoji-panel { display: none; position: absolute; bottom: 100%; left: 0; right: 0; background: #17212b; border-top: 1px solid #0e1621; max-height: 260px; overflow-y: auto; padding: 10px; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 4px; }
+  #emoji-panel.on { display: grid; }
+  #emoji-panel button { background: none; border: none; font-size: 24px; cursor: pointer; padding: 6px; border-radius: 6px; transition: background .1s; }
+  #emoji-panel button:hover { background: #242f3d; }
+  /* Модалка профиля */
+  #modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 400; }
+  #modal-bg.on { display: flex; }
+  #profile-modal { background: #17212b; border-radius: 14px; width: 380px; max-width: 90vw; padding: 30px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+  #profile-modal h2 { font-size: 20px; margin-bottom: 20px; }
+  #profile-avatar-big { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 600; cursor: pointer; position: relative; overflow: hidden; background-size: cover; background-position: center; border: 3px solid #2b5278; }
+  #profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
+  #profile-avatar-big::after { content: "📷"; position: absolute; bottom: 0; right: 0; background: #5288c1; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 3px solid #17212b; }
+  #profile-modal .p-nick { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  #profile-modal .p-hint { font-size: 13px; color: #7f91a4; margin-bottom: 22px; }
+  #profile-modal .p-buttons { display: flex; gap: 10px; }
+  #profile-modal button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  #profile-modal .p-close { background: #242f3d; color: #fff; }
+  #profile-modal .p-close:hover { background: #2b3a4d; }
+  #profile-modal .p-logout { background: #e53935; color: #fff; }
+  #profile-modal .p-logout:hover { background: #c62828; }
   @media (max-width: 768px) {
     #sidebar { width: 100%; position: absolute; z-index: 10; }
     #sidebar.hidden { display: none; }
@@ -128,7 +157,7 @@
   <aside id="sidebar">
     <div id="sidebar-header">
       <div class="logo">GURU</div>
-      <div id="me-info" title="Выйти">
+      <div id="me-info" title="Профиль">
         <div class="avatar" id="me-avatar" style="width:32px;height:32px;font-size:13px"></div>
         <span class="me-name" id="me-name"></span>
       </div>
@@ -148,20 +177,29 @@
         <div class="rp-info"><div class="rp-name"></div><div class="rp-text"></div></div>
         <button class="rp-close" id="rp-close">✕</button>
       </div>
+      <div id="edit-preview">
+        <div class="ep-line"></div>
+        <div class="ep-info"><div class="ep-name">Редактирование</div><div class="ep-text"></div></div>
+        <button class="ep-close" id="ep-close">✕</button>
+      </div>
       <div id="input-area">
+        <button class="icon-btn" id="emoji-btn" title="Эмодзи">😀</button>
         <button class="icon-btn" id="attach-btn" title="Фото">🖼</button>
         <textarea id="message-input" rows="1" placeholder="Написать сообщение..."></textarea>
         <button class="icon-btn" id="mic-btn" title="Голосовое (зажми)">🎤</button>
         <button id="send-btn">➤</button>
+        <div id="emoji-panel"></div>
       </div>
     </div>
   </main>
 </div>
 
 <input type="file" id="file-input" accept="image/*" style="display:none">
+<input type="file" id="avatar-input" accept="image/*" style="display:none">
 
 <div id="msg-menu">
   <button data-action="reply">↩️ Ответить</button>
+  <button data-action="edit">✏️ Редактировать</button>
   <button data-action="copy">📋 Копировать</button>
   <button data-action="delete" class="danger">🗑 Удалить у всех</button>
 </div>
@@ -170,6 +208,19 @@
 <div id="upload-progress">⏳ Отправка...</div>
 
 <div id="lightbox"><img id="lightbox-img" src=""></div>
+
+<div id="modal-bg">
+  <div id="profile-modal">
+    <h2>Профиль</h2>
+    <div id="profile-avatar-big"></div>
+    <div class="p-nick" id="profile-nick"></div>
+    <div class="p-hint" id="profile-hint">Нажми на аватар, чтобы изменить</div>
+    <div class="p-buttons">
+      <button class="p-close" id="profile-close">Закрыть</button>
+      <button class="p-logout" id="profile-logout">Выйти</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -190,13 +241,14 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const DOMAIN = "@guru.app";
 
-let currentUser = null, currentNick = null;
+let currentUser = null, currentNick = null, currentAvatar = null;
 let currentChatId = null, currentChatUser = null, currentChatData = null;
 let lastMsgs = [];
 let unsubMessages, unsubChats, unsubChatDoc, unsubOtherUser;
 let usersCache = {};
 let lastTypingSent = 0, heartbeatTimer = null;
 let replyTo = null;
+let editingMsgId = null;
 
 const $ = id => document.getElementById(id);
 const authScreen = $("auth-screen"), appScreen = $("app");
@@ -287,9 +339,9 @@ onAuthStateChanged(auth, async user => {
         await setDoc(userRef, data);
       } else data = snap.data();
       currentNick = data.nick;
+      currentAvatar = data.avatar || null;
       usersCache[user.uid] = data;
-      $("me-avatar").textContent = initials(currentNick);
-      $("me-avatar").style.background = colorFromId(user.uid);
+      renderMyAvatar();
       $("me-name").textContent = "@" + currentNick;
       authScreen.style.display = "none";
       appScreen.style.display = "flex";
@@ -302,8 +354,9 @@ onAuthStateChanged(auth, async user => {
       await signOut(auth);
     }
   } else {
-    currentUser = null; currentNick = null; currentChatId = null; currentChatUser = null;
-    currentChatData = null; lastMsgs = [];
+    currentUser = null; currentNick = null; currentAvatar = null;
+    currentChatId = null; currentChatUser = null; currentChatData = null;
+    lastMsgs = [];
     stopHeartbeat();
     [unsubChats, unsubMessages, unsubChatDoc, unsubOtherUser].forEach(u => u && u());
     unsubChats = unsubMessages = unsubChatDoc = unsubOtherUser = null;
@@ -315,13 +368,77 @@ onAuthStateChanged(auth, async user => {
   }
 });
 
-$("me-info").onclick = () => { if (confirm("Выйти из GURU?")) updateLastSeen().finally(() => signOut(auth)); };
+function renderMyAvatar() {
+  const el = $("me-avatar");
+  el.innerHTML = "";
+  if (currentAvatar) {
+    el.innerHTML = `<img src="${currentAvatar}" alt="">`;
+  } else {
+    el.textContent = initials(currentNick);
+    el.style.background = colorFromId(currentUser.uid);
+  }
+}
 
+// ============ ПРОФИЛЬ ============
+$("me-info").onclick = () => openProfile();
+
+function openProfile() {
+  $("modal-bg").classList.add("on");
+  const av = $("profile-avatar-big");
+  av.innerHTML = "";
+  if (currentAvatar) {
+    av.innerHTML = `<img src="${currentAvatar}" alt="">`;
+    av.style.background = "";
+  } else {
+    av.textContent = initials(currentNick);
+    av.style.background = colorFromId(currentUser.uid);
+  }
+  $("profile-nick").textContent = "@" + currentNick;
+}
+
+$("profile-close").onclick = () => $("modal-bg").classList.remove("on");
+$("modal-bg").onclick = e => { if (e.target.id === "modal-bg") $("modal-bg").classList.remove("on"); };
+
+$("profile-avatar-big").onclick = () => $("avatar-input").click();
+$("avatar-input").onchange = async () => {
+  const file = $("avatar-input").files[0];
+  $("avatar-input").value = "";
+  if (!file) return;
+  $("profile-hint").textContent = "⏳ Загрузка...";
+  try {
+    const base64 = await compressImage(file, 400, 0.8);
+    await updateDoc(doc(db, "users", currentUser.uid), { avatar: base64 });
+    currentAvatar = base64;
+    usersCache[currentUser.uid].avatar = base64;
+    renderMyAvatar();
+    openProfile();
+    $("profile-hint").textContent = "✅ Сохранено";
+    setTimeout(() => $("profile-hint").textContent = "Нажми на аватар, чтобы изменить", 2000);
+    // Обновить аватар в списке чатов
+    renderChatListFromCache();
+  } catch (e) { $("profile-hint").textContent = "❌ Ошибка: " + e.message; }
+};
+
+$("profile-logout").onclick = () => {
+  if (confirm("Выйти из GURU?")) {
+    $("modal-bg").classList.remove("on");
+    updateLastSeen().finally(() => signOut(auth));
+  }
+};
+
+// ============ УТИЛИТЫ ============
 function initials(n) { return n ? n.trim().slice(0, 2).toUpperCase() : "?"; }
 function colorFromId(id) {
   const c = ["#e17076","#7bc862","#e5ca77","#65aadd","#a695e7","#ee7aae","#6ec9cb","#faa774"];
   let h = 0; for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
   return c[Math.abs(h) % c.length];
+}
+function avatarHTML(user, size = 48, fontSize = 18) {
+  if (!user) return "";
+  if (user.avatar) {
+    return `<div class="avatar" style="width:${size}px;height:${size}px"><img src="${user.avatar}" alt=""></div>`;
+  }
+  return `<div class="avatar" style="background:${colorFromId(user.uid)};width:${size}px;height:${size}px;font-size:${fontSize}px">${initials(user.nick)}</div>`;
 }
 function formatTime(ts) {
   if (!ts) return "";
@@ -364,28 +481,24 @@ function isOnline(u) {
   return (Date.now() - ts) < 60000;
 }
 
-function compressImage(file) {
+function compressImage(file, maxSize = 1000, quality = 0.75) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        const MAX = 1000;
         let w = img.width, h = img.height;
-        if (w > MAX || h > MAX) {
-          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-          else { w = Math.round(w * MAX / h); h = MAX; }
+        if (w > maxSize || h > maxSize) {
+          if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+          else { w = Math.round(w * maxSize / h); h = maxSize; }
         }
         canvas.width = w; canvas.height = h;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, w, h);
-        let quality = 0.75;
-        let dataUrl = canvas.toDataURL("image/jpeg", quality);
-        while (dataUrl.length > 900000 && quality > 0.3) {
-          quality -= 0.15;
-          dataUrl = canvas.toDataURL("image/jpeg", quality);
-        }
+        let q = quality;
+        let dataUrl = canvas.toDataURL("image/jpeg", q);
+        while (dataUrl.length > 900000 && q > 0.3) { q -= 0.15; dataUrl = canvas.toDataURL("image/jpeg", q); }
         resolve(dataUrl);
       };
       img.onerror = reject;
@@ -405,6 +518,8 @@ function blobToBase64(blob) {
   });
 }
 
+// ============ СПИСОК ЧАТОВ ============
+let cachedChats = [];
 function loadChats() {
   if (unsubChats) unsubChats();
   const q = query(collection(db, "chats"), where("members", "array-contains", currentUser.uid));
@@ -417,9 +532,12 @@ function loadChats() {
       chats.push({ id: d.id, ...data, other });
     }
     chats.sort((a, b) => (b.lastMessageAt?.toMillis?.() || 0) - (a.lastMessageAt?.toMillis?.() || 0));
+    cachedChats = chats;
     renderChatList(chats);
   }, err => console.error("Chats error:", err));
 }
+
+function renderChatListFromCache() { renderChatList(cachedChats); }
 
 function renderChatList(chats) {
   const list = $("chat-list");
@@ -432,7 +550,7 @@ function renderChatList(chats) {
     return `
       <div class="chat-item ${c.id === currentChatId ? 'active' : ''}" data-id="${c.id}" data-uid="${c.other.uid}">
         <div class="avatar-wrap">
-          <div class="avatar" style="background:${colorFromId(c.other.uid)}">${initials(c.other.nick)}</div>
+          ${avatarHTML(c.other)}
           <div class="online-dot ${online ? 'on' : ''}"></div>
         </div>
         <div class="chat-item-info">
@@ -466,7 +584,7 @@ searchInput.addEventListener("input", async () => {
       return `
         <div class="chat-item" data-uid="${u.uid}">
           <div class="avatar-wrap">
-            <div class="avatar" style="background:${colorFromId(u.uid)}">${initials(u.nick)}</div>
+            ${avatarHTML(u)}
             <div class="online-dot ${online ? 'on' : ''}"></div>
           </div>
           <div class="chat-item-info"><div class="chat-item-name">${escapeHtml(u.nick)}</div><div class="chat-item-last">@${escapeHtml(u.nick)}</div></div>
@@ -497,8 +615,9 @@ async function openChat(chatId, otherUid) {
   currentChatUser = await getUserData(otherUid);
   currentChatData = null;
   lastMsgs = [];
-  replyTo = null;
-  hideReplyPreview();
+  replyTo = null; editingMsgId = null;
+  hideReplyPreview(); hideEditPreview();
+  $("emoji-panel").classList.remove("on");
 
   $("empty-state").style.display = "none";
   $("chat-view").style.display = "flex";
@@ -519,6 +638,7 @@ async function openChat(chatId, otherUid) {
       usersCache[otherUid] = snap.data();
       currentChatUser = usersCache[otherUid];
       updateChatStatus();
+      renderChatHeader();
     }
   });
 
@@ -537,7 +657,7 @@ function renderChatHeader() {
   $("chat-header").innerHTML = `
     <button id="back-btn" title="Назад">←</button>
     <div class="avatar-wrap">
-      <div class="avatar" style="background:${colorFromId(currentChatUser.uid)};width:42px;height:42px;font-size:16px">${initials(currentChatUser.nick)}</div>
+      ${avatarHTML(currentChatUser, 42, 16)}
       <div class="online-dot ${online ? 'on' : ''}" id="header-dot"></div>
     </div>
     <div style="flex:1;min-width:0">
@@ -551,8 +671,9 @@ function closeChat() {
   [unsubMessages, unsubChatDoc, unsubOtherUser].forEach(u => u && u());
   unsubMessages = unsubChatDoc = unsubOtherUser = null;
   currentChatId = null; currentChatUser = null; currentChatData = null;
-  lastMsgs = []; replyTo = null;
-  hideReplyPreview();
+  lastMsgs = []; replyTo = null; editingMsgId = null;
+  hideReplyPreview(); hideEditPreview();
+  $("emoji-panel").classList.remove("on");
   $("chat-view").style.display = "none";
   $("empty-state").style.display = "flex";
   $("sidebar").classList.remove("hidden");
@@ -604,10 +725,11 @@ function renderMessages(msgs) {
       </div>`;
     }
 
+    const editedMark = m.edited ? `<span class="edited">изм.</span>` : "";
     const check = own ? `<span class="check" data-ts="${ts}">✓</span>` : "";
-    return `<div class="msg ${own ? 'own' : 'other'}" data-id="${m.id}" data-ts="${ts}" data-own="${own ? 1 : 0}">
+    return `<div class="msg ${own ? 'own' : 'other'}" data-id="${m.id}" data-ts="${ts}" data-own="${own ? 1 : 0}" data-type="${m.type || 'text'}">
       ${replyBlock}${content}
-      <span class="time">${formatTime(m.createdAt)}${check ? ' ' + check : ''}</span>
+      <span class="time">${editedMark}${formatTime(m.createdAt)}${check ? ' ' + check : ''}</span>
     </div>`;
   }).join("");
 
@@ -641,13 +763,15 @@ function showMenu(x, y, msgEl) {
   const menu = $("msg-menu");
   const msgId = msgEl.dataset.id;
   const isOwn = msgEl.dataset.own === "1";
+  const isText = msgEl.dataset.type === "text";
   const msg = lastMsgs.find(m => m.id === msgId);
   if (!msg) return;
 
   menu.querySelector('[data-action="delete"]').style.display = isOwn ? "flex" : "none";
+  menu.querySelector('[data-action="edit"]').style.display = (isOwn && isText) ? "flex" : "none";
   menu.style.display = "block";
   const rect = menu.getBoundingClientRect();
-  const w = rect.width || 200, h = rect.height || 150;
+  const w = rect.width || 200, h = rect.height || 180;
   let left = x, top = y;
   if (left + w > window.innerWidth) left = window.innerWidth - w - 10;
   if (top + h > window.innerHeight) top = window.innerHeight - h - 10;
@@ -667,6 +791,17 @@ function showMenu(x, y, msgEl) {
         const senderData = await getUserData(msg.senderId);
         replyTo = { id: msg.id, text: preview.slice(0, 100), senderNick: senderData.nick };
         showReplyPreview();
+        hideEditPreview();
+        editingMsgId = null;
+        $("message-input").focus();
+      } else if (action === "edit") {
+        editingMsgId = msg.id;
+        replyTo = null;
+        hideReplyPreview();
+        msgInput.value = msg.text || "";
+        updateSendBtn();
+        showEditPreview(msg.text || "");
+        $("message-input").focus();
       } else if (action === "copy") {
         const text = msg.text || "";
         if (text) navigator.clipboard.writeText(text).catch(() => {});
@@ -678,7 +813,10 @@ function showMenu(x, y, msgEl) {
     };
   });
 }
-document.addEventListener("click", e => { if (!e.target.closest("#msg-menu") && !e.target.closest(".msg")) $("msg-menu").style.display = "none"; });
+document.addEventListener("click", e => {
+  if (!e.target.closest("#msg-menu") && !e.target.closest(".msg")) $("msg-menu").style.display = "none";
+  if (!e.target.closest("#emoji-panel") && !e.target.closest("#emoji-btn")) $("emoji-panel").classList.remove("on");
+});
 
 function showReplyPreview() {
   if (!replyTo) return;
@@ -691,6 +829,20 @@ function hideReplyPreview() {
   replyTo = null;
 }
 $("rp-close").onclick = hideReplyPreview;
+
+function showEditPreview(text) {
+  $("edit-preview").style.display = "flex";
+  $("edit-preview").querySelector(".ep-text").textContent = text.slice(0, 100);
+}
+function hideEditPreview() {
+  $("edit-preview").style.display = "none";
+  editingMsgId = null;
+}
+$("ep-close").onclick = () => {
+  hideEditPreview();
+  msgInput.value = "";
+  updateSendBtn();
+};
 
 function updateCheckmarks() {
   if (!currentChatUser || !currentChatData) return;
@@ -713,6 +865,7 @@ async function markChatRead() {
   try { await updateDoc(doc(db, "chats", currentChatId), { [`lastRead.${currentUser.uid}`]: Timestamp.now() }); } catch (e) {}
 }
 
+// ============ ОТПРАВКА ============
 const msgInput = $("message-input"), sendBtn = $("send-btn"), micBtn = $("mic-btn"), attachBtn = $("attach-btn"), fileInput = $("file-input");
 
 function updateSendBtn() {
@@ -759,6 +912,21 @@ async function sendMessage(data) {
 sendBtn.onclick = async () => {
   const text = msgInput.value.trim();
   if (!text) return;
+
+  // Режим редактирования
+  if (editingMsgId) {
+    const id = editingMsgId;
+    msgInput.value = "";
+    msgInput.style.height = "auto";
+    updateSendBtn();
+    hideEditPreview();
+    try {
+      await updateDoc(doc(db, "chats", currentChatId, "messages", id), { text, edited: true });
+      await updateDoc(doc(db, "chats", currentChatId), { lastMessage: text.slice(0, 60), lastMessageAt: serverTimestamp() });
+    } catch (e) { alert("Ошибка: " + e.message); }
+    return;
+  }
+
   msgInput.value = "";
   msgInput.style.height = "auto";
   updateSendBtn();
@@ -801,10 +969,7 @@ async function startRecording() {
       const dur = (Date.now() - recStartTime) / 1000;
       if (dur < 1) return;
       const blob = new Blob(audioChunks, { type: "audio/webm" });
-      if (blob.size > 550000) {
-        alert("Голосовое слишком длинное. Ограничение ~3.5 минуты.");
-        return;
-      }
+      if (blob.size > 550000) { alert("Голосовое слишком длинное. Ограничение ~3.5 минуты."); return; }
       $("upload-progress").classList.add("on");
       $("upload-progress").textContent = "⏳ Отправка голосового...";
       try {
@@ -867,6 +1032,22 @@ function bindVoicePlayers() {
     };
   });
 }
+
+// ============ ЭМОДЗИ ============
+const EMOJIS = ["😀","😃","😄","😁","😆","😅","🤣","😂","🙂","🙃","😉","😊","😇","🥰","😍","🤩","😘","😗","😚","😙","🥲","😋","😛","😜","🤪","😝","🤑","🤗","🤭","🤫","🤔","🤐","🤨","😐","😑","😶","😏","😒","🙄","😬","🤥","😌","😔","😪","🤤","😴","😷","🤒","🤕","🤢","🤮","🤧","🥵","🥶","🥴","😵","🤯","🤠","🥳","🥸","😎","🤓","🧐","😕","😟","🙁","😮","😯","😲","😳","🥺","😦","😧","😨","😰","😥","😢","😭","😱","😖","😣","😞","😓","😩","😫","🥱","😤","😡","😠","🤬","😈","👿","💀","☠️","💩","🤡","👹","👺","👻","👽","👾","🤖","😺","😸","😹","😻","😼","😽","🙀","😿","😾","🙈","🙉","🙊","💋","💌","💘","💝","💖","💗","💓","💞","💕","💟","❣️","💔","❤️","🧡","💛","💚","💙","💜","🤎","🖤","🤍","💯","💢","💥","💫","💦","💨","🕳️","💣","💬","👁️‍🗨️","🗨️","🗯️","💭","💤","👋","🤚","🖐️","✋","🖖","👌","🤌","🤏","✌️","🤞","🤟","🤘","🤙","👈","👉","👆","🖕","👇","☝️","👍","👎","✊","👊","🤛","🤜","👏","🙌","👐","🤲","🤝","🙏","✍️","💅","🤳","💪","🦾","🦿","🦵","🦶","👂","🦻","👃","🧠","🫀","🫁","🦷","🦴","👀","👁️","👅","👄","🎉","🎊","🎈","🎁","🎂","🍰","🧁","🍾","🥂","🍻","🍺","🍷","🥃","🍸","🍹","☕","🍵","🍶","🍕","🍔","🍟","🌭","🍿","🍩","🍪","🍫","🍬","🍭","🍮","🍯","🍎","🍏","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🥑","⚽","🏀","🏈","⚾","🎾","🏐","🏉","🎱","🏓","🏸","🥅","🏒","🏑","🥍","🏏","🎿","⛷️","🏂","🪂","🏋️","🤼","🤸","⛹️","🤺","🤾","🏌️","🏇","🧘","🏄","🏊","🤽","🚴","🚵","🎯","🎮","🕹️","🎲","🎰","🃏","🀄","🎴","🎭","🎨","🎬","🎤","🎧","🎼","🎹","🥁","🎷","🎺","🎸","🪕","🎻","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🛻","🚚","🚛","🚜","🛵","🏍️","🛺","🚲","🛴","🛹","🛼","🚂","🚆","🚇","🚊","🚉","✈️","🛫","🛬","🛩️","💺","🚀","🛸","🚁","🛶","⛵","🚤","🛥️","🛳️","⛴️","🚢","🌍","🌎","🌏","🌐","🗺️","🗾","🧭","🏔️","⛰️","🌋","🗻","🏕️","🏖️","🏜️","🏝️","🏞️","🏟️","🏛️","🏗️","🏘️","🏚️","🏠","🏡","🏢","🏣","🏤","🏥","🏦","🏨","🏩","🏪","🏫","🏬","🏭","🏯","🏰","💒","🗼","🗽","⛪","🕌","🛕","🕍","⛩️","🕋","⛲","⛺","🌁","🌃","🏙️","🌄","🌅","🌆","🌇","🌉","🌌","🌠","🎇","🎆","🌈","☀️","🌤️","⛅","🌥️","☁️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","🌬️","💨","🌪️","🌫️","🌊","💧","🔥","⭐","🌟","✨","⚡","☄️","💫","🌙","🌛","🌜","🌚","🌕","🌖","🌗","🌘","🌑","🌒","🌓","🌔","🌝","🌞","🪐","🌍"];
+const ep = $("emoji-panel");
+ep.innerHTML = EMOJIS.map(e => `<button type="button">${e}</button>`).join("");
+ep.querySelectorAll("button").forEach(b => {
+  b.onclick = () => {
+    const start = msgInput.selectionStart, end = msgInput.selectionEnd;
+    const val = msgInput.value;
+    msgInput.value = val.slice(0, start) + b.textContent + val.slice(end);
+    msgInput.selectionStart = msgInput.selectionEnd = start + b.textContent.length;
+    msgInput.focus();
+    updateSendBtn();
+  };
+});
+$("emoji-btn").onclick = e => { e.stopPropagation(); $("emoji-panel").classList.toggle("on"); };
 
 setInterval(() => {
   if (currentChatUser && currentChatData) updateChatStatus();
