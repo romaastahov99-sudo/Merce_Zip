@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>GURU</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5288c1">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
   :root {
     --bg-main: #0e1621; --bg-sidebar: #17212b; --bg-input: #242f3d;
@@ -2118,6 +2121,11 @@ function endCall(silent, saveRecord) {
 // Слушаем приход сигнала "accepted" — стартуем таймер (уже делаем в onconnectionstatechange)
 // Дополнительно: если удалённая сторона резко закрыла — endCall через onSnapshot выше
 
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
 </script>
 </body>
 </html>

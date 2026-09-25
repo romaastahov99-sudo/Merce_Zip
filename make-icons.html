@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>GURU — Генератор иконок</title>
+<style>
+  body {
+    margin: 0; padding: 40px; background: #0e1621; color: #fff;
+    font-family: -apple-system, sans-serif; text-align: center;
+  }
+  h1 { font-weight: 800; letter-spacing: 4px; background: linear-gradient(135deg, #5288c1, #7bc862); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  p { color: #7f91a4; margin-bottom: 30px; }
+  .preview { display: flex; justify-content: center; gap: 30px; margin: 30px 0; flex-wrap: wrap; }
+  .preview > div { text-align: center; }
+  .preview canvas { border-radius: 22%; box-shadow: 0 10px 40px rgba(0,0,0,.5); }
+  .preview .round canvas { border-radius: 50%; }
+  button {
+    padding: 15px 40px; font-size: 16px; font-weight: 600;
+    background: #5288c1; color: #fff; border: none; border-radius: 10px;
+    cursor: pointer; margin: 10px;
+  }
+  button:hover { background: #4679ae; }
+  .label { font-size: 12px; color: #7f91a4; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<h1>GURU</h1>
+<p>Превью иконок для Android приложения</p>
+
+<div class="preview">
+  <div><canvas id="c1" width="192" height="192"></canvas><div class="label">192×192</div></div>
+  <div><canvas id="c2" width="512" height="512" style="width:192px;height:192px"></canvas><div class="label">512×512</div></div>
+  <div class="round"><canvas id="c3" width="192" height="192"></canvas><div class="label">Круглая</div></div>
+</div>
+
+<div>
+  <button onclick="downloadAll()">⬇️ Скачать все иконки</button>
+</div>
+
+<script>
+const SIZES = [72, 96, 128, 144, 152, 192, 384, 512];
+
+function drawIcon(canvas, size, round = false) {
+  const ctx = canvas.getContext('2d');
+  const s = size;
+
+  // Фон — градиент от синего к синему-светлому (как у Телеграма)
+  const grad = ctx.createLinearGradient(0, 0, s, s);
+  grad.addColorStop(0, '#5288c1');
+  grad.addColorStop(1, '#3a6fa0');
+
+  // Фон
+  ctx.fillStyle = grad;
+  if (round) {
+    ctx.beginPath();
+    ctx.arc(s/2, s/2, s/2, 0, Math.PI*2);
+    ctx.fill();
+  } else {
+    ctx.fillRect(0, 0, s, s);
+  }
+
+  // Декоративный светящийся круг за буквой
+  const glow = ctx.createRadialGradient(s*0.5, s*0.45, s*0.05, s*0.5, s*0.45, s*0.55);
+  glow.addColorStop(0, 'rgba(255,255,255,0.15)');
+  glow.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = glow;
+  if (round) {
+    ctx.beginPath();
+    ctx.arc(s/2, s/2, s/2, 0, Math.PI*2);
+    ctx.fill();
+  } else {
+    ctx.fillRect(0, 0, s, s);
+  }
+
+  // Буква G
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `bold ${s * 0.65}px -apple-system, "Segoe UI", Roboto, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('G', s * 0.5, s * 0.53);
+}
+
+function renderAll() {
+  drawIcon(document.getElementById('c1'), 192, false);
+  drawIcon(document.getElementById('c2'), 512, false);
+  drawIcon(document.getElementById('c3'), 192, true);
+}
+
+function download(canvas, name) {
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }, 'image/png');
+}
+
+function downloadAll() {
+  SIZES.forEach((size, i) => {
+    setTimeout(() => {
+      const c = document.createElement('canvas');
+      c.width = size; c.height = size;
+      drawIcon(c, size, false);
+      download(c, `icon-${size}.png`);
+    }, i * 300);
+  });
+
+  // Плюс круглая 192
+  setTimeout(() => {
+    const c = document.createElement('canvas');
+    c.width = 192; c.height = 192;
+    drawIcon(c, 192, true);
+    download(c, 'icon-192-round.png');
+  }, SIZES.length * 300);
+}
+
+renderAll();
+</script>
+
+</body>
+</html>
